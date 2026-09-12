@@ -1,0 +1,191 @@
+# Complete Game Overhaul, Bug Fixes, Balance & Polish
+
+The previous updates did NOT properly implement many of the remaining requested changes. Go through the entire game, inspect the HTML/JavaScript/CSS and relevant images/screenshots, identify the actual underlying causes, and implement everything below properly.
+
+IMPORTANT — REQUIREMENT PRIORITY
+
+- DELETE & REBUILD takes priority over FIX or POLISH. If something is explicitly marked "delete and rebuild", remove the old implementation completely instead of fixing the old version
+- REWORK means substantially improve the existing system while keeping its core identity
+- FIX means keep the existing system and correct the specific bug
+- POLISH means improve visuals, animations, effects, or feel without unnecessarily changing the mechanics
+- If two requirements conflict, follow the more specific requirement and do not combine incompatible old and new implementations
+
+# 1. MELEE WEAPONS
+
+- The melee weapon nerf was too harsh. Give melee weapons another slight damage/combo buff
+- Increase their knockback even further
+- Keep them useful and satisfying without allowing unavoidable infinite/doom combos
+
+# 2. BASKETBALL
+
+- Basketball still needs better overall balance
+- It is currently too easy to counter by platforming/sky camping because the ball bounces off platforms. Make it more reliable against players who stay on platforms without making it overpowered
+- Basketball has very short cooldowns and allows players to spam multiple attack buttons at once. Make repeatedly pressing every attack button simultaneously less effective so button-spamming is not the optimal strategy
+- Keep the existing burn, heat-seeking, and visual redesign rather than replacing them
+- Polish the basketball sprite, including improvements to visuals, animations, and visual effects (VFX).
+
+# 3. SHOTGUN — DELETE & COMPLETELY REBUILD
+
+The current Shotgun is STILL not the completely new concept requested.
+
+- Completely delete the current Shotgun implementation
+- Remove its old concept, abilities, mechanics, attack behavior, and related old logic
+- Create an entirely new Shotgun concept from scratch
+- The new weapon must have completely different gameplay, mechanics, attacks, abilities, and overall identity
+- It must NOT resemble the current 4-round/pellet/slugs-based design
+- Do not simply change pellet count, damage, cooldowns, spread, or projectile behavior and call it a rework
+- Create genuinely new mechanics and abilities
+- Make sure the new Shotgun works correctly for both the player and the bot
+- Keep the automatic reload system working correctly for both player and bot
+- Make sure the bot understands and properly uses every new Shotgun mechanic
+- Remove old Shotgun logic that is no longer relevant to the new design
+- (OPTIONAL) Make the new weapon space-themed
+
+# 4. ION STORM
+
+- The current overall Ion Storm nerf should remain
+- Prevent repeated abilities from continuously refreshing the same stun and creating unavoidable combos
+- It also needs major overhaul, and general buffs
+
+# 5. LASER SWORD
+
+## Uppercut
+
+- The Laser Sword Uppercut hitbox is still inaccurate
+- It is intended to have a large AOE, but parts of the intended/visible AOE do not actually register hits
+- Make the actual hitbox accurately match the intended AOE
+
+## Heavy Attack Tornado
+
+- Reduce the Laser Sword Heavy Attack cooldown
+- Increase the Tornado's pull strength significantly
+- The stronger pull must NOT create an infinite-hit or repeated-hit glitch
+- Reduce excessive upward launch/knockback so players are not sent ridiculously high
+- Make the final behavior strong and useful without creating infinite combos
+
+# 6. BOT AI & PATHFINDING
+
+The bot still has a major pathfinding/decision-making problem.
+
+When I am completely AFK, standing still and already within attack range, it can get stuck in this cycle:
+
+hit me → jump unecessarily onto a platform → move left away from me → fall off the platform → move right toward me → hit me → repeat
+
+- If the player is already reachable, stationary, and within effective attack range, the bot should stop unnecessarily jumping
+- It should recognize that and combo me to death
+
+## Atom AI
+
+- The bot retreats a lot when using Atom
+- It can maintain so much distance that short-range weapons become nearly useless
+- Improve weapon-aware distancing so Atom maintains useful spacing without endlessly retreating
+- Short-range weapons must have realistic opportunities to reach and attack the bot
+
+## General AI
+
+- Improve combo potential
+- Fix mindless jumping
+- Fix unnecessary platform navigation
+- Fix useless retreating
+- Make the bot properly use every weapon's mechanics and abilities
+- Improve its decision-making skills based on the situation
+
+# 7. MODES & WEAPON OWNERSHIP
+
+- Fix the exploit where a weapon selected in 2 Player mode carries over into Vs Bot mode
+- Introduce an ownership validation system
+- Switching modes must not grant access to unowned weapons
+- Create a custom memory for each mode's selections
+
+# 8. SHOP BUGS
+
+## Duplicate purchase bug
+
+- If I own a weapon, buy another, then try switching back to the first one, I have to pay for it again
+- Once a weapon has been purchased, it must remain permanently owned (reset weapons ownership tho)
+- Separate ownership from currently equipped/selected weapon
+
+## Freeplay → Main Menu → Shop bug
+
+- Enter Freeplay
+- Return to the Main Menu
+- Open the Shop
+- Weapons can appear FREE and already selected even when they are not actually owned (Visual bug)
+- Fix the underlying state synchronization
+- Prices, ownership, selected weapon, and equipped state must remain correct when switching between modes and menus
+- Check for similar GUI/state bugs caused by stale mode or selection data
+
+# 9. ACHIEVEMENTS
+
+- Achievements must NOT be obtainable in 2 Player mode
+- Disable achievement progress and unlocking entirely during 2 Player matches
+- Keep bot actions completely separate from human-player achievement conditions
+
+# 10. LOCALIZATION
+
+- Make sure EVERY visible game element is fully translated into:
+  - Arabic
+  - English
+  - French
+- This includes UI, tutorial text, controls, weapon information, shop text, achievements, prompts, victory/defeat messages, cooldown messages, notifications, and any other visible text
+- Remove remaining hardcoded English strings that bypass the localization system
+- Make sure Arabic RTL layout is handled correctly
+- Make sure translated text remains readable and properly positioned in all three languages
+
+# 11. MAP BOUNDARIES & PHYSICS
+
+- Add proper invisible walls/barriers to the borders of every map
+- Players mustn't be able to exit the intended playable area
+- Do not rely only on normal movement clamping; the barriers should prevent players from escaping the arena even during extreme physics events
+- Make sure the boundaries do not interfere with normal combat
+
+# 12. GENERAL BUG PREVENTION
+
+- Re-check the entire game instead of assuming previous fixes are correct
+- Find underlying causes rather than patching visible symptoms
+- Check for invalid hit detection
+- Check for stale state when switching modes
+- Check for incorrect ownership state
+- Make sure cooldowns and animations stay synchronized
+- Make sure unavailable attacks cannot perform their attack/charge animation while on cooldown
+- Prevent false hit effects, knockback, or particles without a valid collision
+- Make sure deleted weapon systems are actually removed instead of leaving old logic behind
+- Fix any regressions caused by these changes
+
+# 13. TESTING
+
+After implementing everything, thoroughly test:
+
+- Player 1 controls
+- Player 2 controls
+- Tutorial
+- Vs Bot
+- 2 Player
+- Freeplay
+- Shop navigation
+- Weapon ownership
+- Weapon switching
+- Mode switching
+- Achievements
+- Every weapon
+- Bot behavior with every weapon
+- Bot behavior when the player is stationary
+- Bot behavior around platforms
+- Short-range weapons against Atom
+- Laser Sword hitboxes and Tornado
+- Basketball attacks and spam behavior
+- Shotgun with both player and bot
+- All three languages
+- Extreme knockback and map boundaries
+
+If a fix causes a regression, fix the regression before finishing.
+
+Do not leave partially implemented features, obsolete logic, placeholder behavior, or known bugs.
+
+# FINAL DELIVERABLE
+
+Read through the HTML file thoroughly & avoid regressions/mess.
+
+Adress the issues & problems above and test the final game.
+
+Last but not least, provide the fully updated HTML game as a downloadable file/card. Do not only describe the changes or provide partial code. The final deliverable must be the actual working updated HTML file.
