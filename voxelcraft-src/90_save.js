@@ -9,17 +9,33 @@
 const SAVE_VERSION=2;
 const DB_NAME='voxelcraft',JOURNAL_KEY='voxelcraft.journal.v2';
 let dbp=null;
-const ensureStores=db=>{if(!db.objectStoreNames.contains('worlds'))db.createObjectStore('worlds',{keyPath:'id'});if(!db.objectStoreNames.contains('chunks'))db.createObjectStore('chunks');};
-// A 'voxelcraft' database may already exist at some other version — e.g. file:// pages can share one IndexedDB
-// origin across unrelated copies/builds of this file opened over time. Requesting a hardcoded version would make
-// a lower existing version fail to open (VersionError) and a higher one force an unwanted downgrade. So: open
-// with no version (adopts whatever is already there, or creates fresh at version 1), then only if the expected
-// object stores are still missing, reopen once with version+1 to run the upgrade and create them.
-function openDBAt(version){
+// worlds: keyed by its own 'id' field (in-line). chunks: keyed by the caller-supplied string (out-of-line, keyPath:null).
+const STORE_SPEC={worlds:'id',chunks:null};
+const ensureStores=(db,recreate)=>{for(const name in STORE_SPEC){
+  if(recreate&&recreate.includes(name)&&db.objectStoreNames.contains(name))db.deleteObjectStore(name);
+  if(!db.objectStoreNames.contains(name))db.createObjectStore(name,STORE_SPEC[name]==null?undefined:{keyPath:STORE_SPEC[name]});
+}};
+// mismatched stores this open found: an existing store of the right name but the wrong keying (e.g. in-line where
+// out-of-line is expected), which must be recreated rather than merely left alone
+function mismatchedStores(db){
+  const bad=[];
+  for(const name in STORE_SPEC){if(!db.objectStoreNames.contains(name))continue;
+    if(db.transaction(name,'readonly').objectStore(name).keyPath!==STORE_SPEC[name])bad.push(name);}
+  return bad;
+}
+// A 'voxelcraft' database may already exist at some other version and schema — e.g. file:// pages can share one
+// IndexedDB origin across unrelated copies/builds of this file opened over time. Requesting a hardcoded version
+// would make a lower existing version fail to open (VersionError) and a higher one force an unwanted downgrade;
+// reusing a same-named store with incompatible keying would make every put() fail (DataError). So: open with no
+// version (adopts whatever is already there, or creates fresh at version 1); if the expected object stores are
+// missing or keyed incompatibly with what this code always writes, reopen once at version+1 to fix them up. Any
+// data in a recreated store was written under a foreign, unrelated schema and was never readable by this code
+// anyway, so nothing of this app's is lost.
+function openDBAt(version,recreate){
   return new Promise((res,rej)=>{
     if(!window.indexedDB){rej(new Error('IndexedDB not available'));return;}
     const r=version?indexedDB.open(DB_NAME,version):indexedDB.open(DB_NAME);
-    r.onupgradeneeded=()=>ensureStores(r.result);
+    r.onupgradeneeded=()=>ensureStores(r.result,recreate);
     r.onsuccess=()=>{const db=r.result;db.onversionchange=()=>db.close();res(db);};r.onerror=()=>rej(r.error);r.onblocked=()=>rej(new Error('database blocked by another tab'));
   });
 }
@@ -27,8 +43,11 @@ function openDB(){
   if(dbp)return dbp;
   dbp=(async()=>{
     let db=await openDBAt();
-    if(!db.objectStoreNames.contains('worlds')||!db.objectStoreNames.contains('chunks')){
-      const v=db.version;db.close();db=await openDBAt(v+1);
+    const missing=Object.keys(STORE_SPEC).filter(n=>!db.objectStoreNames.contains(n));
+    const bad=mismatchedStores(db);
+    if(missing.length||bad.length){
+      const v=db.version;db.close();db=await openDBAt(v+1,bad);
+      if(bad.length)log('recreated incompatible object store(s):',bad.join(', '));
     }
     return db;
   })();
