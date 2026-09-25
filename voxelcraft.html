@@ -5049,7 +5049,8 @@ async function loadDimRecords(id,dim){
   return out;
 }
 async function deleteWorld(id){const db=await openDB();const tx=db.transaction(['worlds','chunks'],'readwrite');tx.objectStore('worlds').delete(id);
-  tx.objectStore('chunks').delete(IDBKeyRange.bound(id+'|',id+'|￿'));await txDone(tx);}
+  tx.objectStore('chunks').delete(IDBKeyRange.bound(id+'|',id+'|￿'));await txDone(tx);
+  try{const j=JSON.parse(localStorage.getItem(JOURNAL_KEY)||'null');if(j&&j.world===id)localStorage.removeItem(JOURNAL_KEY);}catch(e){}}
 /* ---------------- validation ---------------- */
 function sanitizeMetaHeader(m){if(!m||typeof m!=='object'||typeof m.id!=='string')return null;
   return {id:m.id,name:typeof m.name==='string'?m.name.slice(0,40):'World',seed:m.seed|0,lastPlayed:finite(m.lastPlayed,0),mode:GAMEMODES.includes(m.player&&m.player.mode)?m.player.mode:'survival',
