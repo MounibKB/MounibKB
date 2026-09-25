@@ -254,10 +254,15 @@ async function exportWorld(id){
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(meta.name||'world').replace(/[^\w\- ]+/g,'_')+'.voxelcraft.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000);
 }
 async function importWorld(file){
-  const txt=await file.text();const o=JSON.parse(txt);if(!o||o.format!=='voxelcraft-world'||!o.meta)throw new Error('not a VoxelCraft world file');
-  const id='w'+Date.now().toString(36)+'i';const meta=Object.assign({},o.meta,{id,name:String(o.meta.name||'Imported').slice(0,36)+' (imported)',lastPlayed:Date.now()});
-  sanitizeMeta(meta); // throws on nothing; ensures structure is readable
+  const txt=await file.text();const o=JSON.parse(txt);if(!o||o.format!=='voxelcraft-world'||!o.meta||typeof o.meta!=='object')throw new Error('not a VoxelCraft world file');
+  const id='w'+Date.now().toString(36)+'i';
+  const meta=Object.assign(sanitizeMeta(Object.assign({},o.meta,{id,name:String(o.meta.name||'Imported').slice(0,36)+' (imported)'})),{version:o.meta.version|0,lastPlayed:Date.now()});
+  // validate every chunk record before opening the transaction, so a bad file never leaves a half-imported world
+  const recs=[];const src=o.chunks&&typeof o.chunks==='object'?o.chunks:{};
+  for(const k of Object.keys(src)){if(!/^[0-2]\|-?\d{1,7},-?\d{1,7}$/.test(k))continue;const r0=src[k];if(!r0||typeof r0!=='object')continue;
+    const r=Object.assign({},r0);if(typeof r.edits==='string'){try{r.edits=S.b64dec(r.edits);S.decodeEdits(r.edits);}catch(e){throw new Error('corrupt chunk data at '+k);}}
+    recs.push([id+'|'+k,r]);if(recs.length>200000)throw new Error('world file too large');}
   const db=await openDB();const tx=db.transaction(['worlds','chunks'],'readwrite');tx.objectStore('worlds').put(meta);
-  for(const k in o.chunks){const parts=k.split('|');if(parts.length!==2)continue;const r=Object.assign({},o.chunks[k]);if(typeof r.edits==='string')r.edits=S.b64dec(r.edits);tx.objectStore('chunks').put(r,id+'|'+k);}
+  for(const [k,r] of recs)tx.objectStore('chunks').put(r,k);
   await txDone(tx);return id;
 }
