@@ -9,14 +9,29 @@
 const SAVE_VERSION=2;
 const DB_NAME='voxelcraft',JOURNAL_KEY='voxelcraft.journal.v2';
 let dbp=null;
-function openDB(){
-  if(dbp)return dbp;
-  dbp=new Promise((res,rej)=>{
+const ensureStores=db=>{if(!db.objectStoreNames.contains('worlds'))db.createObjectStore('worlds',{keyPath:'id'});if(!db.objectStoreNames.contains('chunks'))db.createObjectStore('chunks');};
+// A 'voxelcraft' database may already exist at some other version — e.g. file:// pages can share one IndexedDB
+// origin across unrelated copies/builds of this file opened over time. Requesting a hardcoded version would make
+// a lower existing version fail to open (VersionError) and a higher one force an unwanted downgrade. So: open
+// with no version (adopts whatever is already there, or creates fresh at version 1), then only if the expected
+// object stores are still missing, reopen once with version+1 to run the upgrade and create them.
+function openDBAt(version){
+  return new Promise((res,rej)=>{
     if(!window.indexedDB){rej(new Error('IndexedDB not available'));return;}
-    const r=indexedDB.open(DB_NAME,1);
-    r.onupgradeneeded=()=>{const db=r.result;if(!db.objectStoreNames.contains('worlds'))db.createObjectStore('worlds',{keyPath:'id'});if(!db.objectStoreNames.contains('chunks'))db.createObjectStore('chunks');};
+    const r=version?indexedDB.open(DB_NAME,version):indexedDB.open(DB_NAME);
+    r.onupgradeneeded=()=>ensureStores(r.result);
     r.onsuccess=()=>{const db=r.result;db.onversionchange=()=>db.close();res(db);};r.onerror=()=>rej(r.error);r.onblocked=()=>rej(new Error('database blocked by another tab'));
   });
+}
+function openDB(){
+  if(dbp)return dbp;
+  dbp=(async()=>{
+    let db=await openDBAt();
+    if(!db.objectStoreNames.contains('worlds')||!db.objectStoreNames.contains('chunks')){
+      const v=db.version;db.close();db=await openDBAt(v+1);
+    }
+    return db;
+  })();
   dbp.catch(()=>{dbp=null;});
   return dbp;
 }
