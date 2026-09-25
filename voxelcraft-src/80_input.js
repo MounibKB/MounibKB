@@ -21,7 +21,9 @@ document.addEventListener('pointerlockchange',()=>{
   if(locked()){paused=false;hidePanels();}
   else{clearInput();if(!screen&&!chatOpen&&player.alive()&&gameRunning)showPause();}
 });
-document.addEventListener('pointerlockerror',()=>{if(gameRunning&&!IS_TOUCH)toast('Click the game to capture the mouse');});
+document.addEventListener('pointerlockerror',()=>{if(!gameRunning||IS_TOUCH)return;toast('Click the game to capture the mouse');
+  // a refused lock after "Back to game" would otherwise leave the game paused with no visible menu
+  if(paused&&!screen&&!chatOpen&&player.alive())showPause();});
 document.addEventListener('mousemove',e=>{
   if(!locked()||!player.alive()||player.sleeping)return;
   const s=settings.sens*0.000275;player.yaw-=e.movementX*s;player.pitch-=e.movementY*s*(settings.invertY?-1:1);
@@ -37,7 +39,7 @@ canvas.addEventListener('mousedown',e=>{
 });
 document.addEventListener('mouseup',e=>{if(e.button===0){input.attack=false;player.breaking=null;player.breakProg=0;}if(e.button===2)input.use=false;});
 document.addEventListener('contextmenu',e=>{if(e.target===canvas||locked()||screen)e.preventDefault();});
-document.addEventListener('wheel',e=>{if(!locked()||screen)return;player.inv.sel=(player.inv.sel+(e.deltaY>0?1:8))%9;player.using=null;onInventoryChanged(true);},{passive:true});
+document.addEventListener('wheel',e=>{if(!gameRunning||paused||screen||chatOpen||!player.alive())return;player.inv.sel=(player.inv.sel+(e.deltaY>0?1:8))%9;player.using=null;onInventoryChanged(true);},{passive:true});
 window.addEventListener('blur',()=>{clearInput();input.attack=input.use=false;});
 document.addEventListener('keydown',e=>{
   if(rebinding){e.preventDefault();if(e.code!=='Escape')settings.keys[rebinding]=e.code;rebinding=null;saveSettings();renderSettings();return;}

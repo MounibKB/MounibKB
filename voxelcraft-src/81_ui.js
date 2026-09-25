@@ -79,6 +79,7 @@ function armorGroup(){return {id:'armor',arr:player.inv.armor,from:0,n:4,cols:1,
 function renderScreen(){
   if(!screen)return;screenDirty=false;const box=$('scrBox');box.innerHTML='';
   const sc=screen;
+  const xb=document.createElement('button');xb.className='xclose';xb.textContent='✕';xb.title='Close';xb.onclick=e=>{e.stopPropagation();closeScreen();};box.appendChild(xb);
   const title=document.createElement('h2');title.textContent=sc.title;box.appendChild(title);
   const top=document.createElement('div');top.className='sect';box.appendChild(top);
   if(sc.renderTop)sc.renderTop(top);
@@ -347,7 +348,8 @@ function openSettings(back){
   <div class="frow"><label>Simulation distance</label><input type="range" id="sSD" min="2" max="8" value="${settings.simDist}"><span id="sSDv">${settings.simDist}</span></div>
   <div class="frow"><label>Field of view</label><input type="range" id="sFov" min="30" max="110" value="${settings.fov}"><span id="sFovv">${settings.fov}</span></div>
   <div class="frow"><label>Mouse sensitivity</label><input type="range" id="sSens" min="1" max="30" value="${settings.sens}"><label style="min-width:0"><input type="checkbox" id="sInv" ${settings.invertY?'checked':''}> invert Y</label></div>
-  <div class="frow"><label>Volume</label><input type="range" id="sVol" min="0" max="100" value="${settings.volume*100}"><label style="min-width:0">Music</label><input type="range" id="sMus" min="0" max="100" value="${settings.music*100}"></div>
+  <div class="frow"><label>Volume</label><input type="range" id="sVol" min="0" max="100" value="${settings.volume*100}"></div>
+  <div class="frow"><label>Music</label><input type="range" id="sMus" min="0" max="100" value="${settings.music*100}"></div>
   <div class="frow"><label>GUI scale</label><input type="range" id="sGui" min="60" max="200" value="${settings.guiScale*100}"><label style="min-width:0"><input type="checkbox" id="sBob" ${settings.bobbing?'checked':''}> view bobbing</label></div>
   <div class="frow"><label>Toggles</label><label style="min-width:0"><input type="checkbox" id="sSpr" ${settings.sprintToggle?'checked':''}> toggle sprint</label><label style="min-width:0"><input type="checkbox" id="sCro" ${settings.crouchToggle?'checked':''}> toggle sneak</label></div>
   <h2>Key bindings <span class="small">(click, then press a key; Esc cancels)</span></h2><table class="kb">${Object.keys(DEFAULT_KEYS).map(k=>`<tr><td>${k}</td><td><button data-k="${k}">${rebinding===k?'…press a key…':kname(K[k])}</button></td></tr>`).join('')}</table>

@@ -227,10 +227,12 @@ function spawnCycle(){
   let mon=0,cre=0;for(const e of world.entities){if(!e.def)continue;if(e.def.category==='monster')mon++;else cre++;}
   const cats=[];if(world.difficulty>0&&mon<(world.dim===1?30:25))cats.push('monster');if(cre<10&&world.gameTime%400===0)cats.push('creature');
   for(const cat of cats){
-    for(let attempt=0;attempt<3;attempt++){
+    for(let attempt=0;attempt<(cat==='monster'?16:3);attempt++){
       const cx=pcx+randInt(-R,R),cz=pcz+randInt(-R,R),c=chunks.get(ckey(cx,cz));if(!c||!c.data)continue;
       const x=cx*16+randInt(0,15),z=cz*16+randInt(0,15),top=heightAt(x,z);if(top<0)continue;
-      const y=cat==='creature'?top+1:randInt(1,Math.min(250,top+1));
+      let y=cat==='creature'?top+1:randInt(1,Math.min(250,top+1));
+      // walk up to the nearest open space with a floor (keeps cave/surface spawns uniform without wasting attempts inside rock)
+      if(cat==='monster'){let k=0;while(k<24&&y<=top+1&&!(getV(x,y,z)===0&&getV(x,y+1,z)===0&&(FLAGS[getV(x,y-1,z)]&F_SOLID)))(y++,k++);if(k>=24)continue;}
       const dx=x+0.5-player.pos[0],dz=z+0.5-player.pos[2],d2=dx*dx+dz*dz+(y-player.pos[1])**2;if(d2<24*24||d2>128*128)continue;
       const bi=BIOMES[biomeAt(x,z)]||BIOMES[3];const list=(cat==='monster'?bi.monsters:bi.creatures).filter(e=>e[1]>0&&MOBS[e[0]]);if(!list.length)continue;
       const type=S.pickWeighted(list,Math.random());const def=MOBS[type];

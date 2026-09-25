@@ -63,6 +63,7 @@ input[type=text],select{background:#111;color:#fff;border:2px solid #666;padding
 #worlds{min-width:min(460px,86vw);max-height:40vh;overflow:auto;border:2px solid #111;background:#1a1a1a;margin:6px 0}
 .world{padding:6px 10px;border-bottom:1px solid #333;cursor:pointer}.world:hover{background:#333}.world.sel{background:#3b4a6b}
 .world small{color:#999}
+#scr .xclose{float:right;position:sticky;top:0;min-width:34px;min-height:34px;font-size:18px;margin:-6px -8px 0 8px;z-index:2}
 #scr .grid{display:grid;gap:0;margin:2px 0}
 #scr .sect{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
 #scr .col{display:flex;flex-direction:column}
@@ -3617,10 +3618,12 @@ function spawnCycle(){
   let mon=0,cre=0;for(const e of world.entities){if(!e.def)continue;if(e.def.category==='monster')mon++;else cre++;}
   const cats=[];if(world.difficulty>0&&mon<(world.dim===1?30:25))cats.push('monster');if(cre<10&&world.gameTime%400===0)cats.push('creature');
   for(const cat of cats){
-    for(let attempt=0;attempt<3;attempt++){
+    for(let attempt=0;attempt<(cat==='monster'?16:3);attempt++){
       const cx=pcx+randInt(-R,R),cz=pcz+randInt(-R,R),c=chunks.get(ckey(cx,cz));if(!c||!c.data)continue;
       const x=cx*16+randInt(0,15),z=cz*16+randInt(0,15),top=heightAt(x,z);if(top<0)continue;
-      const y=cat==='creature'?top+1:randInt(1,Math.min(250,top+1));
+      let y=cat==='creature'?top+1:randInt(1,Math.min(250,top+1));
+      // walk up to the nearest open space with a floor (keeps cave/surface spawns uniform without wasting attempts inside rock)
+      if(cat==='monster'){let k=0;while(k<24&&y<=top+1&&!(getV(x,y,z)===0&&getV(x,y+1,z)===0&&(FLAGS[getV(x,y-1,z)]&F_SOLID)))(y++,k++);if(k>=24)continue;}
       const dx=x+0.5-player.pos[0],dz=z+0.5-player.pos[2],d2=dx*dx+dz*dz+(y-player.pos[1])**2;if(d2<24*24||d2>128*128)continue;
       const bi=BIOMES[biomeAt(x,z)]||BIOMES[3];const list=(cat==='monster'?bi.monsters:bi.creatures).filter(e=>e[1]>0&&MOBS[e[0]]);if(!list.length)continue;
       const type=S.pickWeighted(list,Math.random());const def=MOBS[type];
@@ -4424,7 +4427,9 @@ document.addEventListener('pointerlockchange',()=>{
   if(locked()){paused=false;hidePanels();}
   else{clearInput();if(!screen&&!chatOpen&&player.alive()&&gameRunning)showPause();}
 });
-document.addEventListener('pointerlockerror',()=>{if(gameRunning&&!IS_TOUCH)toast('Click the game to capture the mouse');});
+document.addEventListener('pointerlockerror',()=>{if(!gameRunning||IS_TOUCH)return;toast('Click the game to capture the mouse');
+  // a refused lock after "Back to game" would otherwise leave the game paused with no visible menu
+  if(paused&&!screen&&!chatOpen&&player.alive())showPause();});
 document.addEventListener('mousemove',e=>{
   if(!locked()||!player.alive()||player.sleeping)return;
   const s=settings.sens*0.000275;player.yaw-=e.movementX*s;player.pitch-=e.movementY*s*(settings.invertY?-1:1);
@@ -4440,7 +4445,7 @@ canvas.addEventListener('mousedown',e=>{
 });
 document.addEventListener('mouseup',e=>{if(e.button===0){input.attack=false;player.breaking=null;player.breakProg=0;}if(e.button===2)input.use=false;});
 document.addEventListener('contextmenu',e=>{if(e.target===canvas||locked()||screen)e.preventDefault();});
-document.addEventListener('wheel',e=>{if(!locked()||screen)return;player.inv.sel=(player.inv.sel+(e.deltaY>0?1:8))%9;player.using=null;onInventoryChanged(true);},{passive:true});
+document.addEventListener('wheel',e=>{if(!gameRunning||paused||screen||chatOpen||!player.alive())return;player.inv.sel=(player.inv.sel+(e.deltaY>0?1:8))%9;player.using=null;onInventoryChanged(true);},{passive:true});
 window.addEventListener('blur',()=>{clearInput();input.attack=input.use=false;});
 document.addEventListener('keydown',e=>{
   if(rebinding){e.preventDefault();if(e.code!=='Escape')settings.keys[rebinding]=e.code;rebinding=null;saveSettings();renderSettings();return;}
@@ -4599,6 +4604,7 @@ function armorGroup(){return {id:'armor',arr:player.inv.armor,from:0,n:4,cols:1,
 function renderScreen(){
   if(!screen)return;screenDirty=false;const box=$('scrBox');box.innerHTML='';
   const sc=screen;
+  const xb=document.createElement('button');xb.className='xclose';xb.textContent='✕';xb.title='Close';xb.onclick=e=>{e.stopPropagation();closeScreen();};box.appendChild(xb);
   const title=document.createElement('h2');title.textContent=sc.title;box.appendChild(title);
   const top=document.createElement('div');top.className='sect';box.appendChild(top);
   if(sc.renderTop)sc.renderTop(top);
@@ -4867,7 +4873,8 @@ function openSettings(back){
   <div class="frow"><label>Simulation distance</label><input type="range" id="sSD" min="2" max="8" value="${settings.simDist}"><span id="sSDv">${settings.simDist}</span></div>
   <div class="frow"><label>Field of view</label><input type="range" id="sFov" min="30" max="110" value="${settings.fov}"><span id="sFovv">${settings.fov}</span></div>
   <div class="frow"><label>Mouse sensitivity</label><input type="range" id="sSens" min="1" max="30" value="${settings.sens}"><label style="min-width:0"><input type="checkbox" id="sInv" ${settings.invertY?'checked':''}> invert Y</label></div>
-  <div class="frow"><label>Volume</label><input type="range" id="sVol" min="0" max="100" value="${settings.volume*100}"><label style="min-width:0">Music</label><input type="range" id="sMus" min="0" max="100" value="${settings.music*100}"></div>
+  <div class="frow"><label>Volume</label><input type="range" id="sVol" min="0" max="100" value="${settings.volume*100}"></div>
+  <div class="frow"><label>Music</label><input type="range" id="sMus" min="0" max="100" value="${settings.music*100}"></div>
   <div class="frow"><label>GUI scale</label><input type="range" id="sGui" min="60" max="200" value="${settings.guiScale*100}"><label style="min-width:0"><input type="checkbox" id="sBob" ${settings.bobbing?'checked':''}> view bobbing</label></div>
   <div class="frow"><label>Toggles</label><label style="min-width:0"><input type="checkbox" id="sSpr" ${settings.sprintToggle?'checked':''}> toggle sprint</label><label style="min-width:0"><input type="checkbox" id="sCro" ${settings.crouchToggle?'checked':''}> toggle sneak</label></div>
   <h2>Key bindings <span class="small">(click, then press a key; Esc cancels)</span></h2><table class="kb">${Object.keys(DEFAULT_KEYS).map(k=>`<tr><td>${k}</td><td><button data-k="${k}">${rebinding===k?'…press a key…':kname(K[k])}</button></td></tr>`).join('')}</table>
