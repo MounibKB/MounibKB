@@ -105,9 +105,9 @@ function collectDirty(){
 let saving=false,saveQueued=false,saveErrors=0,saveLocked=false;
 function requestSave(reason){if(!world.id||!worldReady)return;if(saving){saveQueued=true;return;}doSave(reason);}
 async function doSave(reason){
-  if(!world.id||!worldReady||saveLocked)return;
-  if(saving){saveQueued=true;return;}
-  saving=true;
+  if(!world.id||!worldReady||saveLocked)return false;
+  if(saving){saveQueued=true;return false;}
+  saving=true;let ok=false;
   const snapRev=world.rev,wid=world.id,dim=world.dim;
   try{
     const meta=buildMeta();const dirty=collectDirty();
@@ -120,10 +120,23 @@ async function doSave(reason){
       for(const d of dirty){const m=metaOf(d.key);m.savedRev=Math.max(m.savedRev,d.rev);m.lastEnt=d.entJSON;}
       world.metaDirty=false;saveErrors=0;
       try{const j=JSON.parse(localStorage.getItem(JOURNAL_KEY)||'null');if(j&&j.world===wid&&j.rev<=snapRev)localStorage.removeItem(JOURNAL_KEY);}catch(e){}
-      $('saveState')&&($('saveState').textContent='Saved '+new Date().toLocaleTimeString());
+      $('saveState')&&($('saveState').textContent='Saved '+new Date().toLocaleTimeString());ok=true;
     }
   }catch(err){saveErrors++;reportError('save',err);if(saveErrors===1)toast('Saving failed: '+(err&&err.message||err)+' — progress is kept in memory and will be retried');}
   finally{saving=false;if(saveQueued){saveQueued=false;setTimeout(()=>doSave('queued'),50);}}
+  return ok;
+}
+// Complete a save whose snapshot is taken now: an in-flight autosave is waited out first, because its snapshot
+// may predate the latest changes. Returns false if the data could not be written; callers must then keep the
+// in-memory state instead of discarding it.
+async function flushSave(reason){
+  for(let i=0;i<3;i++){
+    for(let w=0;saving&&w<600;w++)await new Promise(r=>setTimeout(r,25));
+    if(saving)return false;
+    saveQueued=false;if(await doSave(reason))return true;
+    await new Promise(r=>setTimeout(r,150));
+  }
+  return false;
 }
 // synchronous emergency journal (page is being hidden/closed)
 function writeJournal(){
@@ -132,9 +145,9 @@ function writeJournal(){
     const dirty=collectDirty();const chunksOut={};
     for(const d of dirty){const r=Object.assign({},d.rec);if(r.edits)r.edits=S.b64enc(r.edits);chunksOut[d.key]=r;}
     const s=JSON.stringify({world:world.id,dim:world.dim,rev:world.rev,time:Date.now(),meta:buildMeta(),chunks:chunksOut});
-    if(s.length>4.5e6){log('journal too large, skipped');return;}
-    localStorage.setItem(JOURNAL_KEY,s);
-  }catch(e){log('journal failed',e);}
+    if(s.length>4.5e6){log('journal too large, skipped');return false;}
+    localStorage.setItem(JOURNAL_KEY,s);return true;
+  }catch(e){log('journal failed',e);return false;}
 }
 window.addEventListener('pagehide',()=>{writeJournal();doSave('pagehide');});
 window.addEventListener('beforeunload',()=>{writeJournal();});
@@ -150,6 +163,7 @@ async function acquireLock(id){
 }
 function releaseLock(){if(worldLock){worldLock();worldLock=null;}}
 function resetWorldState(){
+  epoch++; // results still in flight from the previous world/dimension's workers are stale from now on
   for(const c of [...chunks.values()]){freeMesh(c.opq);freeMesh(c.trn);}chunks.clear();hiQueue=[];loadQueue=[];lastCenter='';
   world.edits=new Map();world.meta=new Map();world.bases=new Map();world.baseReq=new Set();world.be=new Map();world.entities=[];
   tickHeap.length=0;tickKeys.clear();updQ.length=0;updHead=0;pendingSets=[];particles.length=0;wirePending.clear();world.endGen=null;
@@ -214,8 +228,12 @@ async function changeDimension(dim,pos,isRespawn){
     showLoading('Loading '+DIMS[dim].name+'…');
     // persist everything in the current dimension first (entities stashed, full save)
     for(const c of [...chunks.values()])stashChunkEntities(c);
-    await doSave('dimension');
-    if(saving)await new Promise(r=>{const t=setInterval(()=>{if(!saving){clearInterval(t);r();}},30);});
+    if(!await flushSave('dimension')){
+      // never discard unsaved chunks: stay in this dimension and bring the stashed entities back
+      for(const c of chunks.values()){const m=world.meta.get(c.key);if(m&&m.ents.length){for(const o of m.ents){const e=entityFromSave(o);if(e)world.entities.push(e);}m.ents=[];}}
+      pendingPortal=null;hideLoading();toast('Could not save the world — staying in this dimension so nothing is lost');player.portalCooldown=200;
+      if(isRespawn){player.dead=true;showDeath(player.deathMsg||'You died!');} // let the player retry the respawn
+      return;}
     const keepPlayer=player;
     resetWorldState();
     world.dim=dim;

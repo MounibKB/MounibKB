@@ -213,7 +213,7 @@ function frame(now){
   if(!gameRunning||glLost){gl.clearColor(0.08,0.07,0.06,1);gl.clear(gl.COLOR_BUFFER_BIT);$('hud').style.display='none';return;}
   try{
     const pcx=Math.floor(player.pos[0]/16),pcz=Math.floor(player.pos[2]/16);
-    updateChunks(dt,false,pcx,pcz);
+    if(!dimSwitching)updateChunks(dt,false,pcx,pcz); // no chunk jobs while the old dimension's workers are being replaced
     checkAwaitSpawn();
     if(simActive()){
       refreshMoveInput();
@@ -261,7 +261,13 @@ async function quitToTitle(){
   if(!gameRunning)return;
   showLoading('Saving…');closeScreen(true);
   for(const c of [...chunks.values()])stashChunkEntities(c);
-  await doSave('quit');for(let i=0;i<100&&(saving||saveQueued);i++)await new Promise(r=>setTimeout(r,50));
+  if(!await flushSave('quit')){
+    // IndexedDB refused the data: keep it in the synchronous journal (recovered on next load) or let the player decide
+    const kept=writeJournal();
+    if(!kept&&!confirm('The world could not be saved. Quit anyway and lose unsaved changes?')){
+      for(const c of chunks.values()){const mm=world.meta.get(c.key);if(mm&&mm.ents.length){for(const o of mm.ents){const e=entityFromSave(o);if(e)world.entities.push(e);}mm.ents=[];}}
+      hideLoading();showPause();return;}
+  }
   gameRunning=false;worldReady=false;resetWorldState();for(const w of workers)w.w.terminate();workers.length=0;releaseLock();world.id=null;
   $('pause').classList.remove('show');hideDeath();hideLoading();document.exitPointerLock&&document.exitPointerLock();
   await refreshWorldList();$('title').classList.add('show');
