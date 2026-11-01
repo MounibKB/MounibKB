@@ -12,33 +12,20 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@600;700;800&display=swap">
 <style>
-/* Layout: input desk on top, the generated خطاطة as a framed study sheet, the plain explanation beneath it. */
+/* Layout: input desk on top, the generated خطاطة as a framed study sheet with its visuals, then the simple explanation and a question box. */
 :root {
-  --bg: #eef1f6;
-  --surface: #ffffff;
-  --surface-2: #f6f8fb;
-  --fg: #1d2638;
-  --muted: #5d6779;
-  --line: #d7dde8;
-  --navy: #1f3a68;
-  --navy-soft: #e7eefa;
-  --gold: #b8892a;
-  --gold-soft: #fbf5e6;
-  --gold-line: #e6d3a3;
-  --concept-a: #eef3fc;
-  --concept-b: #e3ebf8;
-  --concept-line: #b7c7e6;
-  --ok: #2f7d4f;
-  --danger: #b3412f;
-  --danger-soft: #fbece9;
-
+  --bg: #eef1f6; --surface: #ffffff; --surface-2: #f6f8fb; --fg: #1d2638; --muted: #5d6779; --line: #d7dde8;
+  --navy: #1f3a68; --navy-soft: #e7eefa; --gold: #b8892a; --gold-soft: #fbf5e6; --gold-line: #e6d3a3;
+  --concept-a: #eef3fc; --concept-b: #e3ebf8; --concept-line: #b7c7e6;
+  --ok: #2f7d4f; --danger: #b3412f;
   --p1-bg: #e9f4ec; --p1-line: #a9d3b6; --p1-fg: #2a7046;
   --p2-bg: #e8eefa; --p2-line: #aebfe3; --p2-fg: #2c4f8c;
   --p3-bg: #fdeedf; --p3-line: #f0c597; --p3-fg: #b45f17;
   --p4-bg: #f1eafa; --p4-line: #cbb6e8; --p4-fg: #6a3f9e;
   --p5-bg: #e5f4f4; --p5-line: #9fd2d2; --p5-fg: #1f6f6f;
   --p6-bg: #fbe9ee; --p6-line: #eab0c0; --p6-fg: #a2385a;
-
+  --d-ink: #1f2937; --d-blue: #2563eb; --d-red: #dc2626; --d-green: #16a34a; --d-orange: #ea580c; --d-purple: #7c3aed; --d-grey: #9ca3af;
+  --grid: #e3e8f0; --axis: #475569;
   --font-display: "Noto Kufi Arabic", "IBM Plex Sans Arabic", Tahoma, sans-serif;
   --font-body: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
   --font-scripture: "Amiri", "Traditional Arabic", "Times New Roman", serif;
@@ -48,165 +35,120 @@
   :root:not([data-theme="light"]) {
     --bg: #12161f; --surface: #1a202c; --surface-2: #202737; --fg: #e6e9f0; --muted: #a2abbd; --line: #333c4f;
     --navy: #9fb9ea; --navy-soft: #24314b; --gold: #ddb460; --gold-soft: #2a2516; --gold-line: #5a4a24;
-    --concept-a: #1f2a40; --concept-b: #1b2538; --concept-line: #3b4d72;
-    --ok: #6cc28f; --danger: #ef8a78; --danger-soft: #3a211d;
-    --p1-bg: #17291f; --p1-line: #2f5a3e; --p1-fg: #7fd09c;
-    --p2-bg: #1a2438; --p2-line: #34476e; --p2-fg: #9db8ec;
-    --p3-bg: #2e2216; --p3-line: #65441f; --p3-fg: #f0a960;
-    --p4-bg: #251d33; --p4-line: #4c3a6b; --p4-fg: #c4a5ef;
-    --p5-bg: #152a2a; --p5-line: #2c5a5a; --p5-fg: #7fd3d3;
-    --p6-bg: #2f1a22; --p6-line: #693245; --p6-fg: #f09ab4;
+    --concept-a: #1f2a40; --concept-b: #1b2538; --concept-line: #3b4d72; --ok: #6cc28f; --danger: #ef8a78;
+    --p1-bg: #17291f; --p1-line: #2f5a3e; --p1-fg: #7fd09c; --p2-bg: #1a2438; --p2-line: #34476e; --p2-fg: #9db8ec;
+    --p3-bg: #2e2216; --p3-line: #65441f; --p3-fg: #f0a960; --p4-bg: #251d33; --p4-line: #4c3a6b; --p4-fg: #c4a5ef;
+    --p5-bg: #152a2a; --p5-line: #2c5a5a; --p5-fg: #7fd3d3; --p6-bg: #2f1a22; --p6-line: #693245; --p6-fg: #f09ab4;
+    --d-ink: #e5e7eb; --d-blue: #7aa7ff; --d-red: #ff7b72; --d-green: #5fd08a; --d-orange: #ffa45c; --d-purple: #b59cff; --d-grey: #6b7280;
+    --grid: #2a3242; --axis: #a2abbd;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #12161f; --surface: #1a202c; --surface-2: #202737; --fg: #e6e9f0; --muted: #a2abbd; --line: #333c4f;
   --navy: #9fb9ea; --navy-soft: #24314b; --gold: #ddb460; --gold-soft: #2a2516; --gold-line: #5a4a24;
-  --concept-a: #1f2a40; --concept-b: #1b2538; --concept-line: #3b4d72;
-  --ok: #6cc28f; --danger: #ef8a78; --danger-soft: #3a211d;
-  --p1-bg: #17291f; --p1-line: #2f5a3e; --p1-fg: #7fd09c;
-  --p2-bg: #1a2438; --p2-line: #34476e; --p2-fg: #9db8ec;
-  --p3-bg: #2e2216; --p3-line: #65441f; --p3-fg: #f0a960;
-  --p4-bg: #251d33; --p4-line: #4c3a6b; --p4-fg: #c4a5ef;
-  --p5-bg: #152a2a; --p5-line: #2c5a5a; --p5-fg: #7fd3d3;
-  --p6-bg: #2f1a22; --p6-line: #693245; --p6-fg: #f09ab4;
+  --concept-a: #1f2a40; --concept-b: #1b2538; --concept-line: #3b4d72; --ok: #6cc28f; --danger: #ef8a78;
+  --p1-bg: #17291f; --p1-line: #2f5a3e; --p1-fg: #7fd09c; --p2-bg: #1a2438; --p2-line: #34476e; --p2-fg: #9db8ec;
+  --p3-bg: #2e2216; --p3-line: #65441f; --p3-fg: #f0a960; --p4-bg: #251d33; --p4-line: #4c3a6b; --p4-fg: #c4a5ef;
+  --p5-bg: #152a2a; --p5-line: #2c5a5a; --p5-fg: #7fd3d3; --p6-bg: #2f1a22; --p6-line: #693245; --p6-fg: #f09ab4;
+  --d-ink: #e5e7eb; --d-blue: #7aa7ff; --d-red: #ff7b72; --d-green: #5fd08a; --d-orange: #ffa45c; --d-purple: #b59cff; --d-grey: #6b7280;
+  --grid: #2a3242; --axis: #a2abbd;
   color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
-body {
-  background: var(--bg);
-  color: var(--fg);
-  font-family: var(--font-body);
-  font-size: 15px;
-  line-height: 1.7;
-}
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.7; }
 .wrap {
-  max-width: 920px;
-  margin: 0 auto;
-  padding-block: 28px 56px;
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
-  display: grid;
-  gap: 22px;
+  max-width: 940px; margin: 0 auto; padding-block: 24px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 20px;
 }
 h1, h2, h3, h4 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
 button, input, select, textarea { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 svg.i { width: 1em; height: 1em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
 
-/* ---------- App header ---------- */
+/* header */
 .app-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.brand { display: flex; align-items: center; gap: 12px; }
-.brand-mark {
-  width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center;
-  background: var(--navy); color: var(--surface); font-size: 22px;
-}
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.brand-mark { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--navy); color: var(--surface); font-size: 22px; flex: none; }
 .brand h1 { font-size: 22px; color: var(--navy); line-height: 1.3; }
 .brand p { margin: 0; color: var(--muted); font-size: 13.5px; }
-.backend-pill {
-  font-size: 12.5px; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--line);
-  background: var(--surface); color: var(--muted); display: inline-flex; align-items: center; gap: 6px;
-}
+.head-side { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; background: var(--surface); }
+.seg button { border: 0; background: transparent; padding: 3px 11px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--muted); }
+.seg button + button { border-inline-start: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--navy); color: var(--surface); }
+.seg button:disabled { opacity: .5; cursor: wait; }
+.backend-pill { font-size: 12.5px; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
 .backend-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
 .backend-pill[data-state="ok"] .dot { background: var(--ok); }
 .backend-pill[data-state="off"] .dot { background: var(--danger); }
 
-/* ---------- Input desk ---------- */
-.desk {
-  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
-  padding: 18px; display: grid; gap: 14px;
-}
-.tabs { display: flex; gap: 6px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 4px; width: fit-content; max-width: 100%; }
-.tab {
-  border: 0; background: transparent; padding: 6px 16px; border-radius: 7px; cursor: pointer;
-  display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-weight: 500;
-}
-.tab[aria-selected="true"] { background: var(--surface); color: var(--navy); box-shadow: 0 1px 2px rgb(0 0 0 / .08); }
-.tab .count { font-size: 11.5px; background: var(--navy); color: var(--surface); border-radius: 999px; padding: 0 7px; line-height: 1.6; }
-textarea#lessonText {
-  width: 100%; min-height: 190px; resize: vertical; border: 1px solid var(--line); border-radius: 10px;
-  background: var(--surface-2); padding: 12px 14px; line-height: 1.8;
-}
-.drop {
-  border: 2px dashed var(--line); border-radius: 12px; background: var(--surface-2);
-  padding: 22px 16px; text-align: center; color: var(--muted); cursor: pointer; display: grid; gap: 6px; justify-items: center;
-}
+/* desk */
+.desk { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: grid; gap: 14px; }
+textarea#lessonText { width: 100%; min-height: 130px; resize: vertical; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); padding: 12px 14px; line-height: 1.8; }
+.drop { border: 2px dashed var(--line); border-radius: 12px; background: var(--surface-2); padding: 18px 16px; text-align: center; color: var(--muted); display: grid; gap: 8px; justify-items: center; }
 .drop.over { border-color: var(--gold); background: var(--gold-soft); }
-.drop .big { font-size: 28px; color: var(--navy); }
-.drop strong { color: var(--fg); font-weight: 600; }
-.thumbs { display: flex; flex-wrap: wrap; gap: 10px; }
-.thumb { position: relative; width: 92px; height: 116px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); background: var(--surface-2); }
-.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.thumb .n { position: absolute; inset-block-start: 4px; inset-inline-start: 4px; background: var(--navy); color: var(--surface); font-size: 11px; border-radius: 999px; padding: 0 7px; }
-.thumb button {
-  position: absolute; inset-block-start: 4px; inset-inline-end: 4px; width: 24px; height: 24px; border-radius: 50%;
-  border: 0; background: rgb(0 0 0 / .6); color: #fff; cursor: pointer; display: grid; place-items: center; font-size: 13px;
-}
-.hint { font-size: 12.5px; color: var(--muted); margin: 0; }
+.drop strong { color: var(--fg); font-weight: 600; font-size: 15.5px; }
+.drop .types { font-size: 12.5px; }
+.drop .btns { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.files { display: grid; gap: 8px; }
+.files:empty { display: none; }
+.file { display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; background: var(--surface); }
+.file .fic { width: 40px; height: 40px; border-radius: 8px; display: grid; place-items: center; background: var(--navy-soft); color: var(--navy); font-size: 18px; flex: none; overflow: hidden; }
+.file .fic img { width: 100%; height: 100%; object-fit: cover; }
+.file .meta { min-width: 0; flex: 1; display: grid; }
+.file .name { font-weight: 600; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file .info { font-size: 12.5px; color: var(--muted); }
+.file .info.err { color: var(--danger); }
+.file .x { border: 0; background: transparent; cursor: pointer; color: var(--muted); width: 30px; height: 30px; border-radius: 8px; font-size: 15px; }
+.file .x:hover { background: var(--surface-2); color: var(--danger); }
+.keybox { display: grid; gap: 8px; padding: 12px; border-radius: 10px; border: 1px solid var(--gold-line); background: var(--gold-soft); font-size: 13px; }
+.keyrow { display: flex; gap: 8px; }
+.keyrow input { flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; background: var(--surface); direction: ltr; }
 .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
-.opts { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.opts { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
 .opts label { font-size: 13px; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
 .opts select { border: 1px solid var(--line); background: var(--surface-2); border-radius: 8px; padding: 4px 8px; }
-.btn {
-  border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 16px; cursor: pointer;
-  display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px;
-}
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 7px 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; }
 .btn:hover:not(:disabled) { border-color: var(--navy); }
 .btn:disabled { opacity: .55; cursor: not-allowed; }
 .btn.primary { background: var(--navy); border-color: var(--navy); color: var(--surface); padding: 10px 22px; font-size: 15px; }
 .btn.ghost { background: transparent; }
-.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .status { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--muted); min-height: 22px; }
 .status.err { color: var(--danger); }
-.spinner { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line); border-top-color: var(--navy); animation: spin .8s linear infinite; }
+.spinner { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line); border-top-color: var(--navy); animation: spin .8s linear infinite; flex: none; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.keybox { display: grid; gap: 8px; padding: 12px; border-radius: 10px; border: 1px solid var(--gold-line); background: var(--gold-soft); font-size: 13px; }
-.keybox input { border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; background: var(--surface); width: 100%; direction: ltr; }
-.keyrow { display: flex; gap: 8px; }
-.keyrow input { flex: 1; min-width: 0; }
-
 .history { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 13px; color: var(--muted); }
 .history button { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 2px 12px; cursor: pointer; font-size: 12.5px; max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.history button[aria-current="true"] { border-color: var(--navy); color: var(--navy); }
+.history button[aria-current="true"] { border-color: var(--navy); color: var(--navy); font-weight: 600; }
 
-/* ---------- Result toolbar ---------- */
+/* result bar */
 .result-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 .result-bar .tag { font-size: 12.5px; padding: 2px 10px; border-radius: 999px; background: var(--gold-soft); color: var(--gold); border: 1px solid var(--gold-line); }
+.tr-label { font-size: 13px; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
 
-/* ---------- The poster (خطاطة) ---------- */
-.poster {
-  background: var(--surface); border: 1.5px solid var(--navy); border-radius: 18px; padding: 8px;
-}
-.poster-inner {
-  border: 1.5px solid var(--gold); border-radius: 13px; padding: 26px clamp(14px, 4vw, 30px) 18px;
-  display: grid; gap: 0; justify-items: stretch;
-}
+/* poster */
+.poster { background: var(--surface); border: 1.5px solid var(--navy); border-radius: 18px; padding: 8px; }
+.poster-inner { border: 1.5px solid var(--gold); border-radius: 13px; padding: 26px clamp(12px, 4vw, 30px) 18px; display: grid; }
 .p-head { text-align: center; display: grid; gap: 6px; justify-items: center; margin-bottom: 18px; }
 .p-eyebrow { color: var(--gold); font-weight: 700; font-size: 13.5px; display: inline-flex; gap: 8px; align-items: center; font-family: var(--font-display); }
-.p-title { font-size: clamp(24px, 5vw, 34px); color: var(--navy); font-weight: 800; line-height: 1.4; }
+.p-title { font-size: clamp(22px, 5vw, 34px); color: var(--navy); font-weight: 800; line-height: 1.45; }
 .p-title .sep { color: var(--gold); }
 .p-diamond { width: 9px; height: 9px; background: var(--gold); transform: rotate(45deg); margin-top: 2px; }
-
-.concept {
-  background: linear-gradient(180deg, var(--concept-a), var(--concept-b));
-  border: 1px solid var(--concept-line); border-radius: 16px; padding: 18px 20px; text-align: center; display: grid; gap: 6px;
-}
-.concept .term { font-family: var(--font-scripture); font-size: clamp(30px, 6vw, 42px); font-weight: 700; color: var(--navy); line-height: 1.5; }
+.concept { background: linear-gradient(180deg, var(--concept-a), var(--concept-b)); border: 1px solid var(--concept-line); border-radius: 16px; padding: 18px 20px; text-align: center; display: grid; gap: 6px; }
+.concept .term { font-family: var(--font-scripture); font-size: clamp(28px, 6vw, 42px); font-weight: 700; color: var(--navy); line-height: 1.5; }
 .concept .def { color: var(--muted); font-size: 15px; max-width: 62ch; margin: 0 auto; }
-
 .arrow { display: grid; justify-items: center; color: var(--muted); padding: 6px 0; opacity: .8; }
 .arrow svg { width: 18px; height: 26px; }
-
 .sec-head { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 14px; }
 .sec-head h3 { font-size: 18px; color: var(--navy); }
 .badge { width: 26px; height: 26px; border-radius: 50%; background: var(--navy); color: var(--surface); display: grid; place-items: center; font-size: 13px; font-weight: 700; font-family: var(--font-display); flex: none; }
-
-.pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
-.pillar {
-  border-radius: 14px; border: 1px solid var(--pl); background: var(--pb); padding: 18px 14px 16px;
-  text-align: center; display: grid; gap: 8px; justify-items: center; align-content: start; min-width: 0;
-}
+.badge.ic-badge { background: var(--gold); }
+.pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
+.pillar { border-radius: 14px; border: 1px solid var(--pl); background: var(--pb); padding: 18px 14px 16px; text-align: center; display: grid; gap: 8px; justify-items: center; align-content: start; min-width: 0; }
 .pillar .ic { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--pl); background: var(--surface); color: var(--pf); font-size: 22px; }
 .pillar h4 { color: var(--pf); font-size: 17px; }
 .pillar p { margin: 0; color: var(--muted); font-size: 13.5px; line-height: 1.75; }
@@ -216,144 +158,216 @@ textarea#lessonText {
 .c4 { --pb: var(--p4-bg); --pl: var(--p4-line); --pf: var(--p4-fg); }
 .c5 { --pb: var(--p5-bg); --pl: var(--p5-line); --pf: var(--p5-fg); }
 .c6 { --pb: var(--p6-bg); --pl: var(--p6-line); --pf: var(--p6-fg); }
-
 .checklist { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
 .check-row { display: flex; gap: 14px; padding: 14px 18px; align-items: flex-start; }
 .check-row + .check-row { border-top: 1px dashed var(--line); }
 .check-row .tick { width: 28px; height: 28px; border-radius: 50%; background: var(--p1-bg); border: 1px solid var(--p1-line); color: var(--p1-fg); display: grid; place-items: center; flex: none; margin-top: 2px; font-size: 14px; }
-.check-row .body { min-width: 0; }
+.check-row .body, .step .body { min-width: 0; }
 .check-row h4 { font-size: 16px; color: var(--navy); margin-bottom: 2px; }
 .check-row p { margin: 0; font-size: 14px; }
-
-.steps { display: grid; gap: 10px; counter-reset: st; }
+.steps { display: grid; gap: 10px; }
 .step { display: flex; gap: 12px; align-items: flex-start; background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
 .step .num { width: 30px; height: 30px; border-radius: 9px; background: var(--navy-soft); color: var(--navy); display: grid; place-items: center; font-weight: 700; flex: none; font-family: var(--font-display); }
-.step .body { min-width: 0; }
 .step h4 { font-size: 15.5px; color: var(--navy); }
 .step p { margin: 0; font-size: 14px; color: var(--muted); }
-
 .compare { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
 .col { border: 1px solid var(--pl); background: var(--pb); border-radius: 14px; padding: 14px 16px; min-width: 0; }
 .col h4 { color: var(--pf); font-size: 16px; margin-bottom: 6px; text-align: center; }
 .col ul { margin: 0; padding-inline-start: 18px; font-size: 14px; display: grid; gap: 4px; }
 
-.evidence {
-  background: var(--gold-soft); border: 1px solid var(--gold-line); border-radius: 16px; padding: 18px 18px 16px;
-  text-align: center; display: grid; gap: 6px; justify-items: center;
-}
+/* visuals */
+.visuals { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.vis { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); padding: 14px; min-width: 0; display: grid; gap: 10px; align-content: start; }
+.vis.wide { grid-column: 1 / -1; }
+.vis h4 { font-size: 15px; color: var(--navy); text-align: center; }
+.vis .cap { margin: 0; font-size: 13.5px; color: var(--muted); text-align: center; }
+.formula { text-align: center; font-size: 19px; color: var(--navy); overflow-x: auto; padding: 6px 0; direction: ltr; }
+.legend { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; font-size: 13.5px; }
+.legend li { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; justify-content: center; }
+.legend .sym { font-weight: 700; color: var(--navy); }
+.legend .unit { color: var(--muted); font-size: 12.5px; direction: ltr; unicode-bidi: isolate; }
+.plot, .diagram { overflow-x: auto; display: grid; justify-items: center; }
+.plot svg, .diagram svg { width: 100%; max-width: 620px; height: auto; direction: ltr; display: block; }
+.diagram svg text { font-family: var(--font-body); }
+.plot text { font-family: var(--font-body); font-size: 12px; fill: var(--muted); font-variant-numeric: tabular-nums; }
+.plot .grid { stroke: var(--grid); stroke-width: 1; }
+.plot .axis { stroke: var(--axis); stroke-width: 1.4; }
+.plot .curve { fill: none; stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+.plot .guide { stroke-width: 1.4; stroke-dasharray: 5 4; fill: none; }
+.plot .alabel { fill: var(--fg); font-size: 13px; font-weight: 600; }
+.k1 { stroke: var(--d-blue); fill: var(--d-blue); color: var(--d-blue); }
+.k2 { stroke: var(--d-red); fill: var(--d-red); color: var(--d-red); }
+.k3 { stroke: var(--d-green); fill: var(--d-green); color: var(--d-green); }
+.k4 { stroke: var(--d-orange); fill: var(--d-orange); color: var(--d-orange); }
+.k5 { stroke: var(--d-purple); fill: var(--d-purple); color: var(--d-purple); }
+.kg { stroke: var(--d-grey); fill: var(--d-grey); color: var(--d-grey); }
+.plot .curve.k1, .plot .curve.k2, .plot .curve.k3, .plot .curve.k4, .plot .curve.k5, .plot .guide.kg { fill: none; }
+.plot text.k1, .plot text.k2, .plot text.k3, .plot text.k4, .plot text.k5, .plot text.kg { stroke: none; font-weight: 600; }
+.keys { display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: center; font-size: 13.5px; }
+.keys span { display: inline-flex; align-items: center; gap: 6px; }
+.keys i { width: 18px; height: 3px; border-radius: 2px; background: currentColor; display: inline-block; }
+.tbl { overflow-x: auto; }
+.tbl table { border-collapse: collapse; width: 100%; font-size: 14px; }
+.tbl th, .tbl td { border: 1px solid var(--line); padding: 6px 10px; text-align: center; }
+.tbl th { background: var(--navy-soft); color: var(--navy); font-family: var(--font-display); font-weight: 700; }
+.fig img { display: block; max-width: 100%; margin: 0 auto; border-radius: 8px; border: 1px solid var(--line); background: #fff; }
+.fig .src { font-size: 12px; color: var(--muted); text-align: center; }
+
+/* evidence */
+.evidence { background: var(--gold-soft); border: 1px solid var(--gold-line); border-radius: 16px; padding: 18px 18px 16px; text-align: center; display: grid; gap: 6px; justify-items: center; }
 .evidence + .evidence { margin-top: 12px; }
 .evidence .label { color: var(--gold); font-weight: 700; font-family: var(--font-display); font-size: 14.5px; display: inline-flex; gap: 8px; align-items: center; }
 .evidence .text { font-family: var(--font-scripture); font-size: clamp(22px, 4.6vw, 32px); color: var(--navy); line-height: 1.8; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
 .evidence .text.long { font-size: clamp(18px, 3.4vw, 23px); font-weight: 400; }
+.evidence .text[lang="ar"] { direction: rtl; }
 .evidence .orn { color: var(--gold); font-size: 1.1em; font-weight: 400; }
 .evidence .src { color: var(--muted); font-size: 13px; }
+.evidence .trans { margin: 0; font-size: 14px; font-style: italic; max-width: 60ch; }
 .evidence .sig { margin: 6px 0 0; font-size: 14px; }
-.evidence .sig b { color: var(--gold); font-family: var(--font-display); font-weight: 700; }
-
-.p-foot { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.evidence .sig b, .evidence .trans b { color: var(--gold); font-family: var(--font-display); font-weight: 700; font-style: normal; }
+.p-foot { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: center; gap: 10px 12px; flex-wrap: wrap; }
 .p-foot .k { font-weight: 700; color: var(--navy); font-family: var(--font-display); font-size: 14px; }
 .chip { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 3px 12px; font-size: 13px; font-weight: 600; background: var(--pb); color: var(--pf); border: 1px solid var(--pl); }
 .p-foot .bar { color: var(--line); }
 
-/* ---------- Explanation ---------- */
-.explain { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px clamp(16px, 4vw, 26px); display: grid; gap: 16px; }
+/* explanation */
+.explain { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px clamp(16px, 4vw, 26px); display: grid; gap: 18px; }
+.ex-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
 .explain h2 { font-size: 19px; color: var(--navy); display: flex; align-items: center; gap: 10px; }
-.explain h3 { font-size: 15.5px; color: var(--navy); margin-bottom: 6px; }
+.explain h3 { font-size: 15.5px; color: var(--navy); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
 .explain p { margin: 0; max-width: 68ch; }
-.explain ul { margin: 0; padding-inline-start: 20px; display: grid; gap: 6px; max-width: 68ch; }
-.example { background: var(--navy-soft); border-radius: 12px; padding: 12px 16px; }
+.explain ul, .explain ol { margin: 0; padding-inline-start: 22px; display: grid; gap: 6px; max-width: 68ch; }
+.simple { font-size: 17px; line-height: 2; }
+.analogy { background: var(--p1-bg); border: 1px solid var(--p1-line); border-radius: 12px; padding: 12px 16px; }
+.analogy h3 { color: var(--p1-fg); }
+.worked { background: var(--navy-soft); border-radius: 12px; padding: 14px 16px; display: grid; gap: 8px; }
+.worked .ans { font-weight: 700; color: var(--navy); }
+.mistakes { background: var(--p6-bg); border: 1px solid var(--p6-line); border-radius: 12px; padding: 12px 16px; }
+.mistakes h3 { color: var(--p6-fg); }
+.example { background: var(--p2-bg); border: 1px solid var(--p2-line); border-radius: 12px; padding: 12px 16px; }
 .qa { display: grid; gap: 8px; }
 .qa details { border: 1px solid var(--line); border-radius: 10px; padding: 8px 14px; background: var(--surface-2); }
 .qa summary { cursor: pointer; font-weight: 600; }
 .qa details p { margin-top: 6px; color: var(--muted); }
 .note { font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; }
 
-.ltr { direction: ltr; }
+/* ask */
+.ask { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px clamp(16px, 4vw, 26px); display: grid; gap: 12px; }
+.ask h2 { font-size: 17px; color: var(--navy); display: flex; gap: 8px; align-items: center; }
+.ask-log { display: grid; gap: 10px; }
+.ask-log:empty { display: none; }
+.msg { border-radius: 12px; padding: 10px 14px; max-width: 92%; }
+.msg.me { background: var(--navy-soft); justify-self: start; }
+.msg.ai { background: var(--surface-2); border: 1px solid var(--line); justify-self: end; }
+.msg p { margin: 0 0 6px; } .msg p:last-child { margin: 0; }
+.msg ul { margin: 0; padding-inline-start: 20px; }
+.ask-row { display: flex; gap: 8px; }
+.ask-row input { flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; background: var(--surface-2); }
+
+.wrap, #result, .desk, .poster-inner, .explain, .ask, .vis, .worked { grid-template-columns: minmax(0, 1fr); }
+.wrap > *, #result > *, .poster-inner > *, .visuals > *, .explain > *, .worked > *, .vis > *, .keybox > *, .explain li, .col li, .legend li { min-width: 0; }
+mjx-container { color: inherit; }
+mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+mjx-container:not([display="true"]) { display: inline-block; max-width: 100%; overflow-x: auto; overflow-y: hidden; vertical-align: middle; }
+.keybox { grid-template-columns: minmax(0, 1fr); }
+.explain li, .msg, .vis .cap, .legend li { overflow-wrap: anywhere; }
+mjx-container[display="true"] { margin: .3em 0 !important; }
 @media (max-width: 520px) {
   .check-row { padding: 12px; }
   .btn.primary { width: 100%; justify-content: center; }
-  .controls { align-items: stretch; }
 }
 @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
 </style>
 
-<div class="wrap" dir="rtl" lang="ar">
+<div class="wrap" id="app" dir="rtl" lang="ar">
   <header class="app-head">
     <div class="brand">
       <div class="brand-mark"><svg class="i" viewBox="0 0 24 24"><path d="M3 3h7v7H3z"/><path d="M14 3h7v4h-7z"/><path d="M14 11h7v10h-7z"/><path d="M3 14h7v7H3z"/></svg></div>
       <div>
-        <h1>صانع الخطاطات</h1>
-        <p>الصق نص الدرس أو صوّره، فتحصل على خطاطة تلخيصية وشرح مبسّط.</p>
+        <h1 data-t="title"></h1>
+        <p data-t="sub"></p>
       </div>
     </div>
-    <span class="backend-pill" id="backendPill" data-state="wait"><span class="dot"></span><span id="backendText">جارٍ الاتصال بـ Claude…</span></span>
+    <div class="head-side">
+      <div class="seg" id="uiLang" role="group" aria-label="Interface language">
+        <button type="button" data-l="ar">ع</button><button type="button" data-l="fr">FR</button><button type="button" data-l="en">EN</button>
+      </div>
+      <span class="backend-pill" id="backendPill" data-state="wait"><span class="dot"></span><span id="backendText"></span></span>
+    </div>
   </header>
 
-  <section class="desk" aria-label="إدخال الدرس">
-    <div class="tabs" role="tablist">
-      <button class="tab" role="tab" id="tabText" aria-selected="true" aria-controls="paneText">
-        <svg class="i" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg> نص الدرس
-      </button>
-      <button class="tab" role="tab" id="tabImg" aria-selected="false" aria-controls="paneImg">
-        <svg class="i" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg> صور الدرس <span class="count" id="imgCount" hidden>0</span>
-      </button>
-    </div>
-
-    <div id="paneText" role="tabpanel">
-      <textarea id="lessonText" placeholder="الصق هنا نص الدرس كاملًا (تربية إسلامية، اجتماعيات، علوم، لغة عربية…)"></textarea>
-    </div>
-
-    <div id="paneImg" role="tabpanel" hidden>
-      <div class="drop" id="drop" tabindex="0" role="button" aria-label="اختر صور الدرس">
-        <span class="big"><svg class="i" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg></span>
-        <strong>اسحب صور صفحات الدرس إلى هنا أو اضغط للاختيار</strong>
-        <span>يمكنك أيضًا لصق صورة مباشرة (Ctrl+V). رتّب الصور بترتيب الصفحات.</span>
+  <section class="desk" aria-label="lesson">
+    <textarea id="lessonText" data-tp="textPh"></textarea>
+    <div class="drop" id="drop">
+      <strong data-t="dropTitle"></strong>
+      <span class="types" data-t="dropSub"></span>
+      <div class="btns">
+        <button class="btn" type="button" id="pickBtn"><svg class="i" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 12v6"/><path d="m15 15-3-3-3 3"/></svg><span data-t="choose"></span></button>
+        <button class="btn" type="button" id="camBtn"><svg class="i" viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg><span data-t="photo"></span></button>
       </div>
-      <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden>
-      <div class="thumbs" id="thumbs"></div>
-      <p class="hint" id="imgHint"></p>
+      <input type="file" id="fileInput" multiple hidden accept=".pdf,.docx,.pptx,.odt,.odp,.txt,.md,.markdown,.html,.htm,.rtf,.csv,.json,.tex,.doc,.ppt,image/*">
+      <input type="file" id="camInput" hidden accept="image/*" capture="environment">
     </div>
+    <div class="files" id="files"></div>
 
     <div class="keybox" id="keyBox" hidden>
-      <span>هذه النسخة تعمل خارج Claude. أدخل مفتاح Anthropic API ليُحفظ في متصفحك فقط ويُرسل مباشرة إلى api.anthropic.com.</span>
+      <span data-t="keyNote"></span>
       <div class="keyrow">
         <input type="password" id="apiKey" placeholder="sk-ant-..." autocomplete="off">
-        <button class="btn" id="saveKey" type="button">حفظ</button>
+        <button class="btn" id="saveKey" type="button" data-t="save"></button>
       </div>
     </div>
 
     <div class="controls">
       <div class="opts">
-        <label for="level">مستوى الشرح
+        <label for="level"><span data-t="level"></span>
           <select id="level">
-            <option value="simple">مبسّط جدًا (إعدادي)</option>
-            <option value="standard" selected>عادي (ثانوي)</option>
-            <option value="deep">معمّق (باكالوريا)</option>
+            <option value="simple" data-t="lvSimple" selected></option>
+            <option value="standard" data-t="lvStd"></option>
+            <option value="exam" data-t="lvExam"></option>
+          </select>
+        </label>
+        <label for="outLang"><span data-t="outLang"></span>
+          <select id="outLang">
+            <option value="auto" data-t="olAuto" selected></option>
+            <option value="ar">العربية</option>
+            <option value="fr">Français</option>
+            <option value="en">English</option>
           </select>
         </label>
       </div>
       <div class="actions">
-        <button class="btn ghost" id="stopBtn" type="button" hidden>إيقاف</button>
+        <button class="btn ghost" id="stopBtn" type="button" hidden data-t="stop"></button>
         <button class="btn primary" id="goBtn" type="button">
           <svg class="i" viewBox="0 0 24 24"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
-          أنشئ الخطاطة
+          <span data-t="go"></span>
         </button>
       </div>
     </div>
     <div class="status" id="status" aria-live="polite"></div>
-    <div class="history" id="history" hidden></div>
+    <div class="history" id="history"></div>
   </section>
 
-  <section id="result" aria-label="الخطاطة" style="display:grid; gap:14px;">
+  <section id="result" aria-label="result" style="display:grid; gap:14px;">
     <div class="result-bar">
-      <span class="tag" id="resultTag">مثال: درس «شكر الله»</span>
+      <span class="tag" id="resultTag"></span>
       <div class="actions">
-        <button class="btn" id="copyBtn" type="button"><svg class="i" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> نسخ كنص</button>
-        <button class="btn" id="pngBtn" type="button"><svg class="i" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg> حفظ كصورة</button>
+        <span class="tr-label"><svg class="i" viewBox="0 0 24 24"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg><span data-t="translate"></span></span>
+        <div class="seg" id="trSeg" role="group"><button type="button" data-l="ar">ع</button><button type="button" data-l="fr">FR</button><button type="button" data-l="en">EN</button></div>
+        <button class="btn" id="copyBtn" type="button"><svg class="i" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-t="copy"></span></button>
+        <button class="btn" id="pngBtn" type="button"><svg class="i" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span data-t="png"></span></button>
       </div>
     </div>
     <article class="poster" id="poster"></article>
     <section class="explain" id="explain"></section>
+    <section class="ask" id="ask">
+      <h2><svg class="i" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg><span data-t="askTitle"></span></h2>
+      <div class="ask-log" id="askLog"></div>
+      <form class="ask-row" id="askForm">
+        <input id="askInput" data-tp="askPh" autocomplete="off">
+        <button class="btn primary" type="submit" id="askBtn" data-t="send"></button>
+      </form>
+    </section>
   </section>
 </div>
 
@@ -361,7 +375,100 @@ textarea#lessonText {
 (() => {
   "use strict";
 
-  /* ---------------- Icons ---------------- */
+  /* ================= i18n (interface) ================= */
+  const UI = {
+    title: ["صانع الخطاطات", "Schématiseur de leçons", "Lesson Schematizer"],
+    sub: ["حوّل أي درس (نص، صور، PDF، Word، PowerPoint) إلى خطاطة واضحة مع رسوم وشرح بسيط.", "Transformez n'importe quelle leçon (texte, photos, PDF, Word, PowerPoint) en schéma clair, avec graphiques et explication simple.", "Turn any lesson (text, photos, PDF, Word, PowerPoint) into a clear schematic with visuals and a simple explanation."],
+    pillWait: ["جارٍ الاتصال بـ Claude…", "Connexion à Claude…", "Connecting to Claude…"],
+    pillOk: ["متصل بـ Claude", "Connecté à Claude", "Connected to Claude"],
+    pillOff: ["Claude غير متاح هنا", "Claude indisponible ici", "Claude unavailable here"],
+    pillNeedKey: ["يلزم مفتاح API", "Clé API requise", "API key needed"],
+    pillKey: ["مفتاح API محفوظ", "Clé API enregistrée", "API key saved"],
+    textPh: ["الصق هنا نص الدرس (اختياري إذا أضفت ملفات أو صورًا)…", "Collez ici le texte de la leçon (facultatif si vous ajoutez des fichiers ou des photos)…", "Paste the lesson text here (optional if you add files or photos)…"],
+    dropTitle: ["أضف ملفات الدرس أو صوره", "Ajoutez les fichiers ou les photos de la leçon", "Add the lesson's files or photos"],
+    dropSub: ["PDF · Word · PowerPoint · ODT · صور · نصوص — اسحبها هنا، أو الصق صورة بـ Ctrl+V", "PDF · Word · PowerPoint · ODT · images · textes — glissez-les ici ou collez une image (Ctrl+V)", "PDF · Word · PowerPoint · ODT · images · text — drop them here or paste an image (Ctrl+V)"],
+    choose: ["اختر ملفات", "Choisir des fichiers", "Choose files"],
+    photo: ["صوّر الدرس", "Prendre en photo", "Take a photo"],
+    keyNote: ["هذه النسخة تعمل خارج Claude. أدخل مفتاح Anthropic API؛ يُحفظ في متصفحك فقط ويُرسل مباشرة إلى api.anthropic.com.", "Cette version fonctionne hors de Claude. Saisissez une clé Anthropic API : elle reste dans votre navigateur et n'est envoyée qu'à api.anthropic.com.", "This copy runs outside Claude. Enter an Anthropic API key; it stays in your browser and is sent only to api.anthropic.com."],
+    save: ["حفظ", "Enregistrer", "Save"],
+    level: ["مستوى الشرح", "Niveau d'explication", "Explanation level"],
+    lvSimple: ["سهل جدًا", "Très simple", "Very simple"],
+    lvStd: ["عادي", "Normal", "Normal"],
+    lvExam: ["للتحضير للامتحان", "Préparation d'examen", "Exam prep"],
+    outLang: ["لغة الخطاطة", "Langue du schéma", "Schematic language"],
+    olAuto: ["لغة الدرس", "Langue de la leçon", "Lesson's language"],
+    go: ["أنشئ الخطاطة", "Créer le schéma", "Create schematic"],
+    stop: ["إيقاف", "Arrêter", "Stop"],
+    translate: ["ترجمة:", "Traduire :", "Translate:"],
+    copy: ["نسخ كنص", "Copier en texte", "Copy as text"],
+    png: ["حفظ كصورة", "Enregistrer l'image", "Save as image"],
+    listen: ["استمع", "Écouter", "Listen"],
+    stopListen: ["أوقف القراءة", "Arrêter la lecture", "Stop reading"],
+    history: ["خطاطاتك:", "Vos schémas :", "Your schematics:"],
+    examples: ["أمثلة:", "Exemples :", "Examples:"],
+    exShukr: ["شكر الله", "Gratitude envers Dieu", "Gratitude to God"],
+    exMotion: ["الحركة (فيزياء)", "Mouvement (physique)", "Motion (physics)"],
+    tagExample: ["مثال", "Exemple", "Example"],
+    tagYours: ["خطاطتك", "Votre schéma", "Your schematic"],
+    askTitle: ["اسأل عن الدرس", "Posez une question sur la leçon", "Ask about the lesson"],
+    askPh: ["مثال: لم أفهم الفقرة الثانية، اشرحها بمثال", "Ex. : je n'ai pas compris la 2e partie, explique avec un exemple", "e.g. I didn't get part 2, explain it with an example"],
+    send: ["اسأل", "Demander", "Ask"],
+    needInput: ["الصق نص الدرس أو أضف ملفًا أو صورة أولًا.", "Collez le texte ou ajoutez un fichier ou une photo d'abord.", "Paste the text or add a file or photo first."],
+    waitFiles: ["جارٍ تجهيز الملفات…", "Préparation des fichiers…", "Preparing files…"],
+    working: ["يقرأ Claude الدرس ويبني الخطاطة والرسوم… (قد يستغرق دقيقة أو دقيقتين)", "Claude lit la leçon et construit le schéma et les graphiques… (1 à 2 minutes)", "Claude is reading the lesson and building the schematic and visuals… (1–2 minutes)"],
+    writing: ["يكتب الخطاطة… ({n} حرف)", "Rédaction du schéma… ({n} caractères)", "Writing the schematic… ({n} characters)"],
+    done: ["اكتملت الخطاطة.", "Schéma terminé.", "Schematic ready."],
+    doneNote: ["اكتملت الخطاطة. راجع الملاحظة أسفل الشرح.", "Schéma terminé. Voir la remarque sous l'explication.", "Schematic ready. See the note under the explanation."],
+    stopped: ["أُوقف التوليد.", "Génération arrêtée.", "Generation stopped."],
+    translating: ["تجري الترجمة…", "Traduction en cours…", "Translating…"],
+    translated: ["تمت الترجمة.", "Traduction terminée.", "Translation done."],
+    copied: ["نُسخت الخطاطة كنص.", "Schéma copié en texte.", "Schematic copied as text."],
+    copyFail: ["تعذر النسخ التلقائي في هذا العرض.", "Copie automatique impossible ici.", "Automatic copy isn't available here."],
+    pngBusy: ["يجهّز الصورة…", "Préparation de l'image…", "Preparing the image…"],
+    pngDone: ["حُفظت الصورة.", "Image enregistrée.", "Image saved."],
+    pngFail: ["تعذر حفظ الصورة في هذا العرض. يمكنك أخذ لقطة شاشة.", "Impossible d'enregistrer l'image ici. Faites une capture d'écran.", "Couldn't save the image here. Take a screenshot instead."],
+    pngCancel: ["أُلغي الحفظ.", "Enregistrement annulé.", "Save cancelled."],
+    keySaved: ["حُفظ المفتاح في هذا المتصفح.", "Clé enregistrée dans ce navigateur.", "Key saved in this browser."],
+    keyCleared: ["حُذف المفتاح.", "Clé supprimée.", "Key removed."],
+    noClaude: ["تعذر الوصول إلى Claude من هذا العرض. افتح الصفحة داخل Claude.", "Claude n'est pas accessible depuis cet affichage. Ouvrez la page dans Claude.", "Claude can't be reached from this view. Open the page inside Claude."],
+    noImages: ["قراءة الصور غير متاحة هنا؛ استُعمل النص فقط.", "La lecture d'images n'est pas disponible ici ; seul le texte a été utilisé.", "Image reading isn't available here; only the text was used."],
+    imgCap: ["أُرسلت أول {n} صورة فقط (الحد الأقصى).", "Seules les {n} premières images ont été envoyées (limite).", "Only the first {n} images were sent (limit)."],
+    fBusy: ["جارٍ القراءة…", "Lecture…", "Reading…"],
+    fPhoto: ["صورة", "Photo", "Photo"],
+    fPages: ["{n} صفحة", "{n} page(s)", "{n} page(s)"],
+    fSlides: ["{n} شريحة", "{n} diapositive(s)", "{n} slide(s)"],
+    fImgs: ["{n} صورة مضمّنة", "{n} image(s) intégrée(s)", "{n} embedded image(s)"],
+    fText: ["نص", "Texte", "Text"],
+    fScan: ["صفحات ممسوحة: ستُقرأ كصور", "pages scannées : lues comme images", "scanned pages: read as images"],
+    fOld: ["صيغة قديمة غير مدعومة. احفظ الملف بصيغة docx أو pptx أو PDF.", "Ancien format non pris en charge. Enregistrez en docx, pptx ou PDF.", "Old format not supported. Save it as docx, pptx or PDF."],
+    fUnsupported: ["نوع ملف غير مدعوم.", "Type de fichier non pris en charge.", "Unsupported file type."],
+    fFail: ["تعذرت قراءة الملف.", "Lecture du fichier impossible.", "Couldn't read this file."],
+    fLib: ["تعذر تحميل قارئ هذا النوع من الملفات.", "Le lecteur de ce type de fichier n'a pas pu être chargé.", "Couldn't load the reader for this file type."],
+    remove: ["حذف", "Supprimer", "Remove"],
+    e_not_granted: ["لم يُسمح للصفحة باستعمال Claude. غيّر ذلك من قائمة الأذونات ثم أعد المحاولة.", "La page n'est pas autorisée à utiliser Claude. Modifiez-le dans les autorisations puis réessayez.", "This page isn't allowed to use Claude. Change it in the permissions menu, then try again."],
+    e_sampling_disabled: ["Claude غير متاح لهذا الحساب.", "Claude n'est pas disponible pour ce compte.", "Claude isn't available for this account."],
+    e_rate_limited: ["طلبات كثيرة في وقت قصير. انتظر قليلًا ثم أعد المحاولة.", "Trop de demandes. Patientez un peu puis réessayez.", "Too many requests. Wait a little, then try again."],
+    e_session_expired: ["انتهت الجلسة. سجّل الدخول من جديد.", "Session expirée. Reconnectez-vous.", "Session expired. Sign in again."],
+    e_image_rejected: ["تعذرت قراءة إحدى الصور. جرّب صورة أوضح بصيغة JPG أو PNG.", "Une image n'a pas pu être lue. Essayez une image plus nette en JPG ou PNG.", "One image couldn't be read. Try a clearer JPG or PNG."],
+    e_images_unavailable: ["قراءة الصور غير متاحة هنا. الصق نص الدرس بدلًا منها.", "La lecture d'images n'est pas disponible ici. Collez le texte à la place.", "Image reading isn't available here. Paste the text instead."],
+    e_refused: ["رفض Claude معالجة هذا المحتوى. تأكد أن المادة درس مدرسي.", "Claude a refusé ce contenu. Vérifiez qu'il s'agit d'une leçon.", "Claude declined this content. Make sure it is a school lesson."],
+    e_empty_completion: ["لم يصل أي جواب. جرّب درسًا أقصر.", "Aucune réponse. Essayez une leçon plus courte.", "No answer came back. Try a shorter lesson."],
+    e_invalid_json: ["وصل جواب غير مكتمل. أعد المحاولة أو قسّم الدرس إلى جزأين.", "Réponse incomplète. Réessayez ou découpez la leçon en deux.", "The answer was incomplete. Try again or split the lesson in two."],
+    e_prompt_too_large: ["الدرس طويل جدًا لمرة واحدة. قسّمه إلى جزأين.", "Leçon trop longue en une fois. Découpez-la en deux.", "The lesson is too long for one go. Split it in two."],
+    e_bad_shape: ["لم يُستخرج هيكل واضح. تأكد أن الملفات تحتوي درسًا مقروءًا.", "Aucune structure claire. Vérifiez que les fichiers contiennent une leçon lisible.", "No clear structure came out. Check that the files contain a readable lesson."],
+    e_no_key: ["أدخل مفتاح Anthropic API أولًا ثم اضغط «حفظ».", "Saisissez d'abord une clé Anthropic API puis « Enregistrer ».", "Enter an Anthropic API key first, then press Save."],
+    e_bad_key: ["مفتاح API غير صالح. تحقق منه ثم أعد الحفظ.", "Clé API invalide. Vérifiez-la puis enregistrez de nouveau.", "Invalid API key. Check it and save again."],
+    e_upstream_error: ["انقطع الاتصال. أعد المحاولة.", "Connexion interrompue. Réessayez.", "The connection dropped. Try again."],
+  };
+  const LANGS = ["ar", "fr", "en"];
+  let uiLang = "ar";
+  const t = (k, vars) => {
+    const row = UI[k]; let s = row ? row[LANGS.indexOf(uiLang)] || row[0] : k;
+    if (vars) for (const [a, b] of Object.entries(vars)) s = s.replace(`{${a}}`, b);
+    return s;
+  };
+
+  /* ================= Icons ================= */
   const ICONS = {
     heart: '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
     chat: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
@@ -387,147 +494,407 @@ textarea#lessonText {
     brain: '<path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M12 5v13"/>',
     gift: '<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/>',
     link: '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+    chart: '<path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/>',
+    ruler: '<path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/>',
+    calc: '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8"/><path d="M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/>',
+    atom: '<circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.54-4.52-9.87-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.54 4.52 9.87 6.54 11.9 4.5Z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5Z"/>',
+    flask: '<path d="M10 2v7.31"/><path d="M14 9.3V2"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/>',
+    zap: '<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
+    sigma: '<path d="M18 7V4H6l6 8-6 8h12v-3"/>',
+    file: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/>',
+    slides: '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>',
+    speaker: '<path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>',
+    warn: '<circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/>',
+    list: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
   };
-  const ICON_NAMES = Object.keys(ICONS);
+  const ICON_NAMES = ["heart","chat","hand","book","check","star","scale","bulb","users","shield","leaf","globe","clock","flag","target","eye","key","home","sun","alert","forbid","brain","gift","link","chart","ruler","calc","atom","flask","zap","sigma"];
   const icon = (name) => {
     const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    s.setAttribute("viewBox", "0 0 24 24");
-    s.setAttribute("class", "i");
-    s.setAttribute("aria-hidden", "true");
-    s.innerHTML = ICONS[name] || ICONS.star;
-    return s;
+    s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("class", "i"); s.setAttribute("aria-hidden", "true");
+    s.innerHTML = ICONS[name] || ICONS.star; return s;
   };
 
-  /* ---------------- Example (transcribed from the reference sheet) ---------------- */
-  const EXAMPLE = {
-    lang: "ar",
-    subject: "التربية الإسلامية",
-    title: "حق الله — شكر الله",
+  /* ================= Examples ================= */
+  const EX_SHUKR = {
+    lang: "ar", subject: "التربية الإسلامية", title: "حق الله — شكر الله",
     concept: { term: "شُكْرُ اللهِ تعالى", definition: "الاعتراف بنعم الله باطنًا، والتحدث بها ظاهرًا، وصرفها في طاعته" },
     sections: [
       { heading: "أركان الشكر الثلاثة", type: "pillars", items: [
         { title: "شكر القلب", text: "الإقرار بأن كل نعمة من الله وحده، ومحبته عليها", icon: "heart" },
         { title: "شكر اللسان", text: "حمد الله والثناء عليه والتحدث بنعمه", icon: "chat" },
-        { title: "شكر الجوارح", text: "استعمال النعم في طاعة الله وما يرضيه", icon: "hand" },
-      ]},
+        { title: "شكر الجوارح", text: "استعمال النعم في طاعة الله وما يرضيه", icon: "hand" } ] },
       { heading: "التحقيق والأهمية", type: "checklist", items: [
         { title: "كيفية تحقيق الشكر", text: "حمد الله وذكره، وطاعته، وصون نعمه، واستعمال الصحة والعلم والمال في الخير." },
-        { title: "أهمية الشكر", text: "نيل رضوان الله، وزيادة فضله، وتطهير النفس من الجحود والغفلة، وتربيتها على التواضع والقناعة." },
-      ]},
+        { title: "أهمية الشكر", text: "نيل رضوان الله، وزيادة فضله، وتطهير النفس من الجحود والغفلة، وتربيتها على التواضع والقناعة." } ] },
     ],
-    evidence: [
-      { kind: "quran", label: "الشاهد القرآني", text: "لَئِن شَكَرْتُمْ لَأَزِيدَنَّكُمْ", source: "سورة إبراهيم — الآية 7", significance: "الشكر سببٌ لمزيد فضل الله وعطائه." },
-    ],
-    memoryKey: { label: "مفتاح الحفظ والفهم", chips: [
-      { text: "القلب يشعر", icon: "heart" }, { text: "اللسان يحمد", icon: "chat" }, { text: "الجوارح تعمل", icon: "hand" },
-    ]},
+    visuals: [],
+    evidence: [ { kind: "quran", label: "الشاهد القرآني", text: "لَئِن شَكَرْتُمْ لَأَزِيدَنَّكُمْ", source: "سورة إبراهيم — الآية 7", translation: "", significance: "الشكر سببٌ لمزيد فضل الله وعطائه." } ],
+    memoryKey: { label: "مفتاح الحفظ والفهم", chips: [ { text: "القلب يشعر", icon: "heart" }, { text: "اللسان يحمد", icon: "chat" }, { text: "الجوارح تعمل", icon: "hand" } ] },
     explanation: {
-      summary: "شكر الله يعني أن تعترف في قلبك بأن كل نعمة عندك هي من الله، ثم تعبّر عن ذلك بلسانك بالحمد، ثم تثبته بأفعالك حين تستعمل نعمه فيما يرضيه. فالشكر ليس كلمة تقال فقط، بل شعور وقول وعمل.",
-      points: [
-        "القلب: يقرّ بأن النعمة من الله وحده ويحبه عليها.",
-        "اللسان: يحمد الله ويثني عليه ويتحدث بنعمه.",
-        "الجوارح: تستعمل الصحة والعلم والمال في الطاعة والخير.",
-        "ثمرة الشكر: رضوان الله وزيادة فضله، وتطهير النفس من الجحود والغفلة.",
-      ],
-      example: "تلميذ رزقه الله ذكاءً وصحة: يحمد الله عليهما (لسان)، ويستعملهما في الدراسة ومساعدة زملائه (جوارح)، ولا يتكبر بهما لأنه يعلم أنهما من الله (قلب).",
+      simple: "كل شيء جميل عندك هو هدية من الله. شكر الله يعني أن تعرف من أعطاك هذه الهدايا. ثم تقول: الحمد لله. ثم تستعمل الهدية في الخير.",
+      analogy: "مثل صديق أهداك قلمًا: تفرح به، وتقول له شكرًا، وتكتب به أشياء جميلة ولا تكسره.",
+      points: [ "القلب: يعرف أن النعمة من الله ويحبه.", "اللسان: يقول الحمد لله.", "الجوارح (اليدان والرجلان والعينان…): تعمل الخير بالنعمة.", "من يشكر الله يزيده الله من فضله." ],
+      worked: null,
+      example: "عندك صحة جيدة: تحمد الله عليها، وتستعملها في الدراسة ومساعدة أمك، ولا تؤذي بها أحدًا.",
+      mistakes: [ "الظن أن الشكر كلمة فقط، وهو قلب ولسان وعمل.", "استعمال النعمة في المعصية، وهذا عكس الشكر." ],
       questions: [
         { q: "ما تعريف شكر الله تعالى؟", a: "الاعتراف بنعم الله باطنًا، والتحدث بها ظاهرًا، وصرفها في طاعته." },
         { q: "اذكر أركان الشكر الثلاثة.", a: "شكر القلب، وشكر اللسان، وشكر الجوارح." },
-        { q: "ما دلالة قوله تعالى: «لَئِن شَكَرْتُمْ لَأَزِيدَنَّكُمْ»؟", a: "أن الشكر سبب لمزيد فضل الله وعطائه." },
-      ],
+        { q: "ما دلالة قوله تعالى: «لَئِن شَكَرْتُمْ لَأَزِيدَنَّكُمْ»؟", a: "أن الشكر سبب لمزيد فضل الله وعطائه." } ],
     },
     notes: "",
   };
 
-  /* ---------------- DOM refs ---------------- */
+  const MOTION_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 200">' +
+    '<defs><marker id="mi" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#1f2937"/></marker>' +
+    '<marker id="mb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#2563eb"/></marker>' +
+    '<marker id="mr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker></defs>' +
+    '<line x1="40" y1="150" x2="505" y2="150" stroke="#1f2937" stroke-width="2" marker-end="url(#mi)"/>' +
+    '<text x="497" y="174" font-size="15" fill="#1f2937">x</text>' +
+    '<line x1="70" y1="143" x2="70" y2="157" stroke="#1f2937" stroke-width="2"/><text x="64" y="176" font-size="15" fill="#1f2937">O</text>' +
+    '<circle cx="90" cy="150" r="4" fill="#9ca3af"/><circle cx="108" cy="150" r="4" fill="#9ca3af"/><circle cx="144" cy="150" r="4" fill="#9ca3af"/><circle cx="198" cy="150" r="4" fill="#9ca3af"/><circle cx="270" cy="150" r="4" fill="#9ca3af"/>' +
+    '<text x="180" y="132" font-size="12.5" text-anchor="middle" fill="#9ca3af">مواضع G خلال مدد زمنية متساوية</text>' +
+    '<rect x="300" y="106" width="80" height="34" rx="8" fill="#2563eb" fill-opacity="0.15" stroke="#2563eb" stroke-width="2"/>' +
+    '<circle cx="320" cy="144" r="6" fill="#1f2937"/><circle cx="360" cy="144" r="6" fill="#1f2937"/>' +
+    '<text x="340" y="128" text-anchor="middle" font-size="14" font-weight="700" fill="#2563eb">G</text>' +
+    '<line x1="340" y1="88" x2="440" y2="88" stroke="#2563eb" stroke-width="3" marker-end="url(#mb)"/>' +
+    '<text x="448" y="93" font-size="16" font-weight="700" fill="#2563eb">v</text><text x="466" y="93" font-size="12.5" fill="#2563eb">السرعة</text>' +
+    '<line x1="340" y1="56" x2="400" y2="56" stroke="#dc2626" stroke-width="3" marker-end="url(#mr)"/>' +
+    '<text x="408" y="61" font-size="16" font-weight="700" fill="#dc2626">a</text><text x="424" y="61" font-size="12.5" fill="#dc2626">التسارع</text>' +
+    '</svg>';
+
+  const EX_MOTION = {
+    lang: "ar", subject: "الفيزياء", title: "الميكانيك — الحركة المستقيمة المتغيرة بانتظام",
+    concept: { term: "الحركة المستقيمة المتغيرة بانتظام", definition: "حركة مسارها مستقيم وتسارعها ثابت: تتغير السرعة بالمقدار نفسه في مدد زمنية متساوية." },
+    sections: [
+      { heading: "مميزات الحركة", type: "pillars", items: [
+        { title: "المسار", text: "مستقيم", icon: "ruler" },
+        { title: "التسارع", text: "ثابت: $a = \\text{Cte}$", icon: "zap" },
+        { title: "السرعة", text: "دالة تآلفية للزمن: $v = at + v_0$", icon: "chart" } ] },
+      { heading: "طبيعة الحركة", type: "compare", columns: [
+        { title: "متسارعة", points: [ "$a \\cdot v > 0$", "السرعة تزداد" ] },
+        { title: "متباطئة", points: [ "$a \\cdot v < 0$", "السرعة تتناقص" ] } ] },
+    ],
+    visuals: [
+      { type: "formula", title: "المعادلة الزمنية للسرعة", latex: "v(t) = a\\,t + v_0", legend: [
+        { symbol: "$v$", meaning: "السرعة", unit: "m/s" }, { symbol: "$a$", meaning: "التسارع", unit: "m/s²" },
+        { symbol: "$t$", meaning: "الزمن", unit: "s" }, { symbol: "$v_0$", meaning: "السرعة البدئية", unit: "m/s" } ], caption: "" },
+      { type: "formula", title: "المعادلة الزمنية للحركة", latex: "x(t) = \\tfrac{1}{2}\\,a\\,t^2 + v_0\\,t + x_0", legend: [
+        { symbol: "$x$", meaning: "الأفصول", unit: "m" }, { symbol: "$x_0$", meaning: "الأفصول البدئي", unit: "m" } ], caption: "" },
+      { type: "formula", title: "علاقة مستقلة عن الزمن", latex: "v^2 - v_0^2 = 2\\,a\\,(x - x_0)", legend: [], caption: "مفيدة عندما لا يُعطى الزمن." },
+      { type: "graph", title: "منحنى السرعة v(t)", functions: [ { expr: "2*x+1", label: "$v(t) = 2t + 1$" } ], series: [],
+        points: [ { x: 3, y: 7, label: "(3 s ; 7 m/s)" } ], vlines: [], hlines: [], xRange: [0, 5], yRange: [0, 12], xLabel: "t (s)", yLabel: "v (m/s)",
+        caption: "المنحنى مستقيم، وميله يساوي التسارع: $a = 2\\ \\text{m/s}^2$." },
+      { type: "graph", title: "منحنى الأفصول x(t)", functions: [ { expr: "x^2+x", label: "$x(t) = t^2 + t$" } ], series: [],
+        points: [ { x: 3, y: 12, label: "(3 s ; 12 m)" } ], vlines: [], hlines: [], xRange: [0, 5], yRange: [0, 32], xLabel: "t (s)", yLabel: "x (m)",
+        caption: "المنحنى جزء من شلجم لأن $x$ دالة من الدرجة الثانية للزمن." },
+      { type: "diagram", title: "حركة متسارعة على محور", svg: MOTION_SVG, caption: "$\\vec a$ و $\\vec v$ لهما المنحى نفسه، والمسافات بين المواضع تكبر: الحركة متسارعة." },
+    ],
+    evidence: [],
+    memoryKey: { label: "مفتاح الحفظ والفهم", chips: [ { text: "مسار مستقيم", icon: "ruler" }, { text: "a ثابت", icon: "zap" }, { text: "v تآلفية", icon: "chart" }, { text: "x من الدرجة 2", icon: "sigma" } ] },
+    explanation: {
+      simple: "تخيّل دراجة في طريق مستقيم. في كل ثانية تزيد سرعتها بنفس المقدار. هذه هي الحركة المستقيمة المتغيرة بانتظام. التسارع هو كم تزيد السرعة في كل ثانية، وهو هنا ثابت.",
+      analogy: "مثل حصّالة تضع فيها درهمين كل يوم: المبلغ يزيد دائمًا بنفس المقدار. السرعة كذلك تزيد بـ $a$ كل ثانية.",
+      points: [ "المسار مستقيم.", "التسارع $a$ ثابت.", "السرعة تتغير بانتظام: $v = at + v_0$.", "إذا كان $a \\cdot v > 0$ فالحركة متسارعة، وإذا كان $a \\cdot v < 0$ فهي متباطئة." ],
+      worked: {
+        problem: "جسم ينطلق بسرعة بدئية $v_0 = 1\\ \\text{m/s}$ وتسارع ثابت $a = 2\\ \\text{m/s}^2$. ما سرعته عند $t = 3\\ \\text{s}$؟ وما المسافة التي قطعها؟",
+        steps: [ "نكتب معادلة السرعة: $v = a\\,t + v_0$", "نعوّض بالقيم: $v = 2 \\times 3 + 1$", "إذن: $v = 7\\ \\text{m/s}$", "المسافة: $d = \\tfrac{1}{2}\\,a\\,t^2 + v_0\\,t = \\tfrac{1}{2} \\times 2 \\times 9 + 1 \\times 3 = 12\\ \\text{m}$", "تحقق: $v^2 - v_0^2 = 49 - 1 = 48 = 2 \\times 2 \\times 12$ ✓" ],
+        answer: "$v = 7\\ \\text{m/s}$ و $d = 12\\ \\text{m}$",
+      },
+      example: "",
+      mistakes: [ "التعويض بقيم بوحدات مختلفة (km/h بدل m/s). حوّل الوحدات أولًا.", "الخلط بين السرعة والتسارع: التسارع ثابت، والسرعة هي التي تتغير.", "الظن أن الحركة متسارعة دائمًا: انظر إلى إشارة $a \\cdot v$." ],
+      questions: [
+        { q: "متى نقول إن الحركة مستقيمة متغيرة بانتظام؟", a: "عندما يكون المسار مستقيمًا والتسارع ثابتًا." },
+        { q: "ما شكل منحنى السرعة $v(t)$؟", a: "خط مستقيم ميله يساوي التسارع $a$." },
+        { q: "كيف نعرف أن الحركة متباطئة؟", a: "إذا كان $a \\cdot v < 0$." } ],
+    },
+    notes: "",
+  };
+
+  /* ================= DOM & state ================= */
   const $ = (id) => document.getElementById(id);
   const els = {
-    tabText: $("tabText"), tabImg: $("tabImg"), paneText: $("paneText"), paneImg: $("paneImg"),
-    text: $("lessonText"), drop: $("drop"), file: $("fileInput"), thumbs: $("thumbs"), imgCount: $("imgCount"), imgHint: $("imgHint"),
-    go: $("goBtn"), stop: $("stopBtn"), status: $("status"), level: $("level"),
+    app: $("app"), text: $("lessonText"), drop: $("drop"), pick: $("pickBtn"), cam: $("camBtn"), file: $("fileInput"), camInput: $("camInput"), files: $("files"),
+    go: $("goBtn"), stop: $("stopBtn"), status: $("status"), level: $("level"), outLang: $("outLang"),
     pill: $("backendPill"), pillText: $("backendText"), keyBox: $("keyBox"), apiKey: $("apiKey"), saveKey: $("saveKey"),
     poster: $("poster"), explain: $("explain"), tag: $("resultTag"), copy: $("copyBtn"), png: $("pngBtn"), history: $("history"),
+    uiSeg: $("uiLang"), trSeg: $("trSeg"), askLog: $("askLog"), askForm: $("askForm"), askInput: $("askInput"), askBtn: $("askBtn"), ask: $("ask"),
   };
-
-  /* ---------------- Storage helpers ---------------- */
   const store = {
     get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
-    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } },
   };
+  const state = { files: [], backend: "wait", sample: null, maxImages: 20, imagesOk: true, ctl: null, history: [], cur: null, curLang: "ar", chat: [] };
+  const EXAMPLES = [
+    { id: "ex-shukr", example: true, nameKey: "exShukr", base: EX_SHUKR, tr: {} },
+    { id: "ex-motion", example: true, nameKey: "exMotion", base: EX_MOTION, tr: {} },
+  ];
 
-  /* ---------------- State ---------------- */
-  const state = {
-    images: [],          // {blob, url}
-    data: EXAMPLE,
-    isExample: true,
-    backend: "wait",     // wait | claude | api | none
-    sample: null,
-    maxImages: 10,
-    imagesOk: true,
-    ctl: null,
-    history: store.get("khutata.history", []),
-    currentId: null,
-  };
-
-  /* ---------------- Tabs ---------------- */
-  function selectTab(which) {
-    const isText = which === "text";
-    els.tabText.setAttribute("aria-selected", String(isText));
-    els.tabImg.setAttribute("aria-selected", String(!isText));
-    els.paneText.hidden = !isText;
-    els.paneImg.hidden = isText;
+  /* ================= Interface language ================= */
+  function applyUi() {
+    els.app.setAttribute("dir", uiLang === "ar" ? "rtl" : "ltr");
+    els.app.setAttribute("lang", uiLang);
+    document.title = t("title");
+    document.querySelectorAll("[data-t]").forEach((n) => { n.textContent = t(n.dataset.t); });
+    document.querySelectorAll("[data-tp]").forEach((n) => { n.placeholder = t(n.dataset.tp); });
+    els.uiSeg.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.l === uiLang)));
+    updatePill(); renderFiles(); renderHistory(); updateTag();
+    const lb = document.getElementById("listenBtn"); if (lb) lb.lastChild.textContent = listenLabel();
   }
-  els.tabText.onclick = () => selectTab("text");
-  els.tabImg.onclick = () => selectTab("img");
-
-  /* ---------------- Images ---------------- */
-  const OK_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-  function addFiles(list) {
-    const files = Array.from(list || []).filter((f) => OK_TYPES.includes(f.type));
-    if (!files.length) return;
-    for (const f of files) {
-      if (state.images.length >= state.maxImages) { setStatus(`الحد الأقصى ${state.maxImages} صور في المرة الواحدة.`, "err"); break; }
-      state.images.push({ blob: f, url: URL.createObjectURL(f) });
-    }
-    renderThumbs();
-    selectTab("img");
-  }
-  function renderThumbs() {
-    els.thumbs.replaceChildren();
-    state.images.forEach((im, i) => {
-      const d = document.createElement("div"); d.className = "thumb";
-      const img = document.createElement("img"); img.src = im.url; img.alt = `صفحة ${i + 1}`;
-      const n = document.createElement("span"); n.className = "n"; n.textContent = String(i + 1);
-      const x = document.createElement("button"); x.type = "button"; x.textContent = "✕"; x.setAttribute("aria-label", `حذف الصورة ${i + 1}`);
-      x.onclick = () => { URL.revokeObjectURL(im.url); state.images.splice(i, 1); renderThumbs(); };
-      d.append(img, n, x); els.thumbs.append(d);
-    });
-    els.imgCount.hidden = state.images.length === 0;
-    els.imgCount.textContent = String(state.images.length);
-  }
-  els.drop.onclick = () => els.file.click();
-  els.drop.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); els.file.click(); } };
-  els.file.onchange = () => { addFiles(els.file.files); els.file.value = ""; };
-  ["dragenter", "dragover"].forEach((t) => els.drop.addEventListener(t, (e) => { e.preventDefault(); els.drop.classList.add("over"); }));
-  ["dragleave", "drop"].forEach((t) => els.drop.addEventListener(t, (e) => { e.preventDefault(); els.drop.classList.remove("over"); }));
-  els.drop.addEventListener("drop", (e) => addFiles(e.dataTransfer && e.dataTransfer.files));
-  document.addEventListener("paste", (e) => {
-    const items = Array.from((e.clipboardData && e.clipboardData.items) || []);
-    const files = items.filter((it) => it.kind === "file").map((it) => it.getAsFile()).filter(Boolean);
-    if (files.length) { e.preventDefault(); addFiles(files); }
+  els.uiSeg.addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-l]"); if (!b) return;
+    uiLang = b.dataset.l; store.set("khutata.ui", uiLang); applyUi();
   });
 
-  /* ---------------- Status ---------------- */
+  /* ================= Status ================= */
   function setStatus(msg, kind) {
     els.status.replaceChildren();
     els.status.className = "status" + (kind === "err" ? " err" : "");
     if (kind === "busy") { const s = document.createElement("span"); s.className = "spinner"; els.status.append(s); }
     if (msg) els.status.append(document.createTextNode(msg));
   }
+  const errMsg = (code) => (UI["e_" + code] ? t("e_" + code) : t("e_upstream_error"));
 
-  /* ---------------- Backend detection ---------------- */
+  /* ================= Script loader ================= */
+  const LIB = {
+    pdf: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js",
+    pdfWorker: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js",
+    mammoth: "https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js",
+    jszip: "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js",
+    mathjax: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js",
+    h2c: "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js",
+  };
+  const loaded = {};
+  function loadScript(url) {
+    if (!loaded[url]) loaded[url] = new Promise((res, rej) => {
+      const s = document.createElement("script"); s.src = url; s.async = true;
+      s.onload = () => res(); s.onerror = () => { delete loaded[url]; rej({ code: "lib" }); };
+      document.head.append(s);
+    });
+    return loaded[url];
+  }
+
+  /* ================= Math (MathJax, loaded on demand) ================= */
+  let mjReady = null;
+  function loadMath() {
+    if (!mjReady) {
+      window.MathJax = {
+        tex: { inlineMath: [["$", "$"]], displayMath: [["$$", "$$"]], processEscapes: true },
+        svg: { fontCache: "local" },
+        options: { ignoreHtmlClass: "no-tex" },
+        startup: { typeset: false },
+      };
+      mjReady = loadScript(LIB.mathjax).then(() => window.MathJax.startup.promise).catch((e) => { mjReady = null; throw e; });
+    }
+    return mjReady;
+  }
+  async function typeset(nodes) {
+    const list = nodes.filter((n) => n && n.textContent.includes("$"));
+    if (!list.length) return;
+    try {
+      await loadMath();
+      if (window.MathJax.typesetClear) window.MathJax.typesetClear(list);
+      await window.MathJax.typesetPromise(list);
+    } catch { /* leave the raw $…$ text readable */ }
+  }
+
+  /* ================= Files ================= */
+  let fileSeq = 0;
+  const OK_IMG = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+  function addFiles(list) {
+    for (const f of Array.from(list || [])) {
+      const item = { id: ++fileSeq, name: f.name || "image.png", kind: "file", status: "busy", text: "", images: [], infoParts: [], thumb: "" };
+      state.files.push(item);
+      item.promise = processFile(item, f).then(() => { item.status = "ready"; }, (e) => {
+        item.status = "error"; item.errKey = (e && e.key) || (e && e.code === "lib" ? "fLib" : "fFail");
+      }).finally(renderFiles);
+    }
+    renderFiles();
+  }
+  const extOf = (n) => ((n || "").split(".").pop() || "").toLowerCase();
+  async function processFile(item, f) {
+    const ext = extOf(f.name), type = f.type || "";
+    if (type.startsWith("image/") || ["jpg", "jpeg", "png", "webp", "gif", "bmp", "heic", "avif"].includes(ext)) {
+      item.kind = "image";
+      const blob = OK_IMG.includes(type) ? f : await reencode(f);
+      item.images = [{ blob, label: item.name }];
+      item.thumb = URL.createObjectURL(blob);
+      item.infoParts = [["fPhoto"]];
+      return;
+    }
+    if (ext === "pdf" || type === "application/pdf") return readPdf(item, f);
+    if (ext === "docx") return readDocx(item, f);
+    if (ext === "pptx") return readPptx(item, f);
+    if (ext === "odt" || ext === "odp") return readOdf(item, f);
+    if (["doc", "ppt", "xls", "xlsx"].includes(ext)) throw { key: "fOld" };
+    if (["txt", "md", "markdown", "csv", "json", "tex", "html", "htm", "rtf"].includes(ext) || type.startsWith("text/")) {
+      item.kind = "text";
+      let s = await f.text();
+      if (ext === "html" || ext === "htm" || type === "text/html") s = htmlToText(new DOMParser().parseFromString(s, "text/html").body);
+      if (ext === "rtf") s = rtfToText(s);
+      item.text = s.trim();
+      item.infoParts = [["fText"]];
+      return;
+    }
+    throw { key: "fUnsupported" };
+  }
+  async function reencode(blob) {
+    const bmp = await createImageBitmap(blob);
+    const c = document.createElement("canvas"); c.width = bmp.width; c.height = bmp.height;
+    c.getContext("2d").drawImage(bmp, 0, 0);
+    return await new Promise((r, j) => c.toBlob((b) => (b ? r(b) : j({ key: "fFail" })), "image/jpeg", 0.9));
+  }
+  function htmlToText(root) {
+    root.querySelectorAll("script,style").forEach((n) => n.remove());
+    root.querySelectorAll("li").forEach((n) => n.prepend("• "));
+    root.querySelectorAll("p,li,h1,h2,h3,h4,h5,h6,tr,br,div,table").forEach((n) => n.append("\n"));
+    root.querySelectorAll("td,th").forEach((n) => n.append(" | "));
+    return (root.textContent || "").replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+  }
+  function rtfToText(s) {
+    return s.replace(/\\u(-?\d+)\??/g, (_, n) => String.fromCharCode((+n + 65536) % 65536))
+      .replace(/\\'([0-9a-f]{2})/gi, (_, h) => String.fromCharCode(parseInt(h, 16)))
+      .replace(/\\par[d]?/g, "\n").replace(/\{\\\*[^{}]*\}/g, "").replace(/\\[a-z]+-?\d* ?/gi, "").replace(/[{}]/g, "")
+      .replace(/\n{3,}/g, "\n\n").trim();
+  }
+  function dataUrlToBlob(u) {
+    const [head, b64] = u.split(","); const mime = (head.match(/data:([^;]+)/) || [])[1] || "image/png";
+    const bin = atob(b64); const a = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i);
+    return new Blob([a], { type: mime });
+  }
+  async function bigEnough(blob) {
+    try { const b = await createImageBitmap(blob); return b.width >= 120 && b.height >= 90; } catch { return false; }
+  }
+  async function readPdf(item, f) {
+    item.kind = "pdf";
+    await loadScript(LIB.pdf);
+    await loadScript(LIB.pdfWorker);   // runs the PDF worker on the page itself (no cross-origin Worker needed)
+    const lib = window.pdfjsLib;
+    lib.GlobalWorkerOptions.workerSrc = LIB.pdfWorker;
+    const pdf = await lib.getDocument({ data: new Uint8Array(await f.arrayBuffer()), isEvalSupported: false, useSystemFonts: true }).promise;
+    const n = pdf.numPages; const parts = []; const maxText = Math.min(n, 150);
+    for (let i = 1; i <= maxText; i++) {
+      const page = await pdf.getPage(i);
+      const tc = await page.getTextContent();
+      let s = ""; for (const it of tc.items) { s += it.str; s += it.hasEOL ? "\n" : " "; }
+      parts.push(`--- p.${i} ---\n${s.trim()}`);
+    }
+    const text = parts.join("\n\n");
+    const letters = text.replace(/---\s*p\.\d+\s*---/g, "").replace(/[\s\d.,;:()\-]/g, "").length;
+    const sparse = letters < maxText * 30;
+    item.text = letters > 20 ? text : "";
+    const renderN = Math.min(n, 12);
+    for (let i = 1; i <= renderN; i++) {
+      const page = await pdf.getPage(i);
+      const vp1 = page.getViewport({ scale: 1 });
+      const vp = page.getViewport({ scale: Math.min(2.5, 1400 / vp1.width) });
+      const c = document.createElement("canvas"); c.width = Math.round(vp.width); c.height = Math.round(vp.height);
+      const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
+      await page.render({ canvasContext: g, viewport: vp }).promise;
+      const blob = await new Promise((r) => c.toBlob(r, "image/jpeg", 0.85));
+      if (blob) item.images.push({ blob, label: `${item.name} — p.${i}` });
+      if (i === 1 && blob) item.thumb = URL.createObjectURL(blob);
+    }
+    item.infoParts = [["fPages", { n }]];
+    if (sparse) item.infoParts.push(["fScan"]);
+  }
+  async function readDocx(item, f) {
+    item.kind = "docx";
+    await loadScript(LIB.mammoth);
+    const r = await window.mammoth.convertToHtml({ arrayBuffer: await f.arrayBuffer() });
+    const doc = new DOMParser().parseFromString(r.value, "text/html");
+    const srcs = Array.from(doc.images).map((im) => im.getAttribute("src") || "").filter((s) => /^data:image\/(png|jpe?g|gif|webp);base64,/i.test(s));
+    Array.from(doc.querySelectorAll("img")).forEach((im, i) => im.replaceWith(` [image ${i + 1}] `));
+    item.text = htmlToText(doc.body);
+    let k = 0;
+    for (const s of srcs.slice(0, 15)) {
+      const blob = dataUrlToBlob(s);
+      if (await bigEnough(blob)) item.images.push({ blob, label: `${item.name} — image ${++k}` });
+    }
+    item.infoParts = [["fText"]];
+    if (k) item.infoParts.push(["fImgs", { n: k }]);
+  }
+  async function zipImages(zip, re, item, max) {
+    const paths = Object.keys(zip.files).filter((p) => re.test(p)).slice(0, 25);
+    let k = 0;
+    for (const p of paths) {
+      if (k >= max) break;
+      const ext = extOf(p); const mime = ext === "png" ? "image/png" : ext === "gif" ? "image/gif" : "image/jpeg";
+      const blob = new Blob([await zip.file(p).async("arraybuffer")], { type: mime });
+      if (await bigEnough(blob)) item.images.push({ blob, label: `${item.name} — image ${++k}` });
+    }
+    return k;
+  }
+  async function readPptx(item, f) {
+    item.kind = "pptx";
+    await loadScript(LIB.jszip);
+    const zip = await window.JSZip.loadAsync(await f.arrayBuffer());
+    const num = (p) => +(p.match(/(\d+)\.xml$/) || [0, 0])[1];
+    const slides = Object.keys(zip.files).filter((p) => /^ppt\/slides\/slide\d+\.xml$/.test(p)).sort((a, b) => num(a) - num(b));
+    const out = [];
+    for (const p of slides) {
+      const xml = new DOMParser().parseFromString(await zip.file(p).async("string"), "application/xml");
+      const paras = Array.from(xml.getElementsByTagNameNS("*", "p")).map((pp) => Array.from(pp.getElementsByTagNameNS("*", "t")).map((x) => x.textContent).join("")).filter((s) => s.trim());
+      out.push(`--- slide ${num(p)} ---\n${paras.join("\n")}`);
+    }
+    item.text = out.join("\n\n");
+    const k = await zipImages(zip, /^ppt\/media\/.*\.(png|jpe?g|gif)$/i, item, 12);
+    item.infoParts = [["fSlides", { n: slides.length }]];
+    if (k) item.infoParts.push(["fImgs", { n: k }]);
+  }
+  async function readOdf(item, f) {
+    item.kind = "docx";
+    await loadScript(LIB.jszip);
+    const zip = await window.JSZip.loadAsync(await f.arrayBuffer());
+    const xml = new DOMParser().parseFromString(await zip.file("content.xml").async("string"), "application/xml");
+    const nodes = Array.from(xml.getElementsByTagNameNS("*", "*")).filter((n) => n.localName === "p" || n.localName === "h");
+    item.text = nodes.map((n) => n.textContent).filter((s) => s.trim()).join("\n");
+    const k = await zipImages(zip, /^Pictures\/.*\.(png|jpe?g|gif)$/i, item, 12);
+    item.infoParts = [["fText"]];
+    if (k) item.infoParts.push(["fImgs", { n: k }]);
+  }
+  function renderFiles() {
+    els.files.replaceChildren(...state.files.map((it) => {
+      const row = document.createElement("div"); row.className = "file";
+      const fic = document.createElement("div"); fic.className = "fic";
+      if (it.thumb) { const im = document.createElement("img"); im.src = it.thumb; im.alt = ""; fic.append(im); }
+      else fic.append(icon(it.kind === "pptx" ? "slides" : "file"));
+      const meta = document.createElement("div"); meta.className = "meta";
+      const nm = document.createElement("span"); nm.className = "name"; nm.textContent = it.name; nm.dir = "auto";
+      const info = document.createElement("span"); info.className = "info";
+      if (it.status === "busy") info.textContent = t("fBusy");
+      else if (it.status === "error") { info.className = "info err"; info.textContent = t(it.errKey); }
+      else info.textContent = it.infoParts.map(([k, v]) => t(k, v)).join(" · ");
+      meta.append(nm, info);
+      const x = document.createElement("button"); x.className = "x"; x.type = "button"; x.textContent = "✕"; x.setAttribute("aria-label", `${t("remove")} ${it.name}`);
+      x.onclick = () => { if (it.thumb) URL.revokeObjectURL(it.thumb); state.files = state.files.filter((f) => f !== it); renderFiles(); };
+      row.append(fic, meta, x);
+      return row;
+    }));
+  }
+  els.pick.onclick = () => els.file.click();
+  els.cam.onclick = () => els.camInput.click();
+  els.file.onchange = () => { addFiles(els.file.files); els.file.value = ""; };
+  els.camInput.onchange = () => { addFiles(els.camInput.files); els.camInput.value = ""; };
+  ["dragenter", "dragover"].forEach((ev) => els.drop.addEventListener(ev, (e) => { e.preventDefault(); els.drop.classList.add("over"); }));
+  ["dragleave", "drop"].forEach((ev) => els.drop.addEventListener(ev, (e) => { e.preventDefault(); els.drop.classList.remove("over"); }));
+  els.drop.addEventListener("drop", (e) => addFiles(e.dataTransfer && e.dataTransfer.files));
+  document.addEventListener("paste", (e) => {
+    if (e.target === els.askInput) return;
+    const files = Array.from((e.clipboardData && e.clipboardData.items) || []).filter((it) => it.kind === "file").map((it) => it.getAsFile()).filter(Boolean);
+    if (files.length) { e.preventDefault(); addFiles(files); }
+  });
+
+  /* ================= Backend ================= */
   let backendReady;
-  function setPill(stateName, text) { els.pill.dataset.state = stateName; els.pillText.textContent = text; }
+  function updatePill() {
+    const b = state.backend;
+    if (b === "wait") { els.pill.dataset.state = "wait"; els.pillText.textContent = t("pillWait"); }
+    else if (b === "claude") { els.pill.dataset.state = "ok"; els.pillText.textContent = t("pillOk"); }
+    else if (b === "none") { els.pill.dataset.state = "off"; els.pillText.textContent = t("pillOff"); }
+    else { const has = !!store.get("khutata.apikey", ""); els.pill.dataset.state = has ? "ok" : "off"; els.pillText.textContent = t(has ? "pillKey" : "pillNeedKey"); }
+  }
   async function detectBackend() {
     if (window.claude && typeof window.claude.use === "function") {
       let sample = null;
@@ -539,122 +906,266 @@ textarea#lessonText {
           state.imagesOk = !!(lim && lim.images);
           if (lim && lim.images) state.maxImages = Math.max(1, lim.images.maxCount || 10);
         } catch { state.imagesOk = false; }
-        setPill("ok", "متصل بـ Claude");
-        if (!state.imagesOk) els.imgHint.textContent = "قراءة الصور غير متاحة في هذا العرض؛ استعمل النص.";
-        else els.imgHint.textContent = `حتى ${state.maxImages} صور في المرة الواحدة.`;
-      } else {
-        state.backend = "none";
-        setPill("off", "Claude غير متاح هنا");
-        setStatus("تعذر الوصول إلى Claude من هذا العرض. افتح الصفحة داخل Claude لاستعمال التوليد.", "err");
-      }
+      } else state.backend = "none";
     } else {
-      state.backend = "api";
-      els.keyBox.hidden = false;
+      state.backend = "api"; els.keyBox.hidden = false;
       els.apiKey.value = store.get("khutata.apikey", "");
-      setPill(els.apiKey.value ? "ok" : "off", els.apiKey.value ? "مفتاح API محفوظ" : "يلزم مفتاح API");
-      els.imgHint.textContent = "حتى 10 صور في المرة الواحدة.";
     }
+    updatePill();
+    if (state.backend === "none") { setStatus(t("noClaude"), "err"); els.ask.hidden = true; }
   }
   els.saveKey.onclick = () => {
-    const v = els.apiKey.value.trim();
-    store.set("khutata.apikey", v);
-    setPill(v ? "ok" : "off", v ? "مفتاح API محفوظ" : "يلزم مفتاح API");
-    setStatus(v ? "حُفظ المفتاح في هذا المتصفح." : "حُذف المفتاح.");
+    const v = els.apiKey.value.trim(); store.set("khutata.apikey", v); updatePill();
+    setStatus(t(v ? "keySaved" : "keyCleared"));
   };
 
-  /* ---------------- Prompt ---------------- */
+  async function toJpegBase64(blob) {
+    const bmp = await createImageBitmap(blob);
+    const scale = Math.min(1, 1568 / Math.max(bmp.width, bmp.height));
+    const c = document.createElement("canvas"); c.width = Math.round(bmp.width * scale); c.height = Math.round(bmp.height * scale);
+    const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); g.drawImage(bmp, 0, 0, c.width, c.height);
+    const u = c.toDataURL("image/jpeg", 0.88); return u.slice(u.indexOf(",") + 1);
+  }
+  async function callApi(turns, images, signal) {
+    const key = store.get("khutata.apikey", "");
+    if (!key) throw { code: "no_key" };
+    const messages = [];
+    for (let i = 0; i < turns.length; i++) {
+      const m = turns[i];
+      if (i === turns.length - 1 && images.length) {
+        const content = [];
+        for (const im of images) content.push({ type: "image", source: { type: "base64", media_type: "image/jpeg", data: await toJpegBase64(im.blob) } });
+        content.push({ type: "text", text: m.content });
+        messages.push({ role: m.role, content });
+      } else messages.push({ role: m.role, content: m.content });
+    }
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST", signal,
+      headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2026-10-21", "anthropic-beta": "server-side-fallback-2026-07-01", "anthropic-dangerous-direct-browser-access": "true" },
+      body: JSON.stringify({ model: "claude-opus-5-5", max_tokens: 32000, output_config: { effort: "medium" }, fallbacks: "default", messages }),
+    });
+    const body = await res.json().catch(() => null);
+    if (!res.ok) throw { code: res.status === 401 ? "bad_key" : res.status === 429 ? "rate_limited" : res.status === 413 ? "prompt_too_large" : "upstream_error" };
+    if (body.stop_reason === "refusal") throw { code: "refused" };
+    const text = (body.content || []).filter((b) => b.type === "text").map((b) => b.text).join("");
+    if (!text.trim()) throw { code: "empty_completion" };
+    return text;
+  }
+  // One entry point for both backends. `input` is a prompt string or chat turns.
+  async function ask(input, { images = [], signal, onText, cache } = {}) {
+    const turns = typeof input === "string" ? [{ role: "user", content: input }] : input;
+    if (state.backend === "claude") {
+      const opts = { modelTier: "default" };
+      if (signal) opts.signal = signal;
+      if (onText) opts.onText = onText;
+      if (images.length) opts.images = images.map((i) => i.blob);
+      if (cache !== undefined) opts.cache = cache;
+      const r = await state.sample(typeof input === "string" ? input : turns, opts);
+      return r.text;
+    }
+    if (state.backend === "api") return callApi(turns, images, signal);
+    throw { code: "upstream_error" };
+  }
+
+  /* ================= JSON repair & parsing ================= */
+  // Claude sometimes writes LaTeX with single backslashes inside JSON strings; repair before parsing.
+  function repairJson(s) {
+    let out = "", inStr = false;
+    for (let i = 0; i < s.length; i++) {
+      const c = s[i];
+      if (!inStr) { if (c === '"') inStr = true; out += c; continue; }
+      if (c === '"') { inStr = false; out += c; continue; }
+      if (c === "\n") { out += "\\n"; continue; }
+      if (c === "\r") continue;
+      if (c === "\t") { out += "\\t"; continue; }
+      if (c === "\\") {
+        const n = s[i + 1] || "";
+        if (n === '"' || n === "\\" || n === "/") { out += c + n; i++; continue; }
+        if (n === "u" && /^[0-9a-fA-F]{4}$/.test(s.substr(i + 2, 4))) { out += c + n; i++; continue; }
+        if (n && "bfnrt".includes(n)) {
+          const word = (s.slice(i + 1).match(/^[a-zA-Z]+/) || [""])[0];
+          // \f, \t, \n… followed by more letters is a LaTeX command (\frac, \theta, \nu, \right), not a control character
+          const latex = word.length > 1 && !(n === "n" && /^n[A-Z]/.test(word));
+          out += latex ? "\\\\" : "\\"; continue;
+        }
+        out += "\\\\"; continue;   // invalid JSON escape such as \alpha or \( : keep the backslash literally
+      }
+      out += c;
+    }
+    return out;
+  }
+  function parseJsonLoose(text) {
+    const tries = [];
+    const trimmed = text.trim(); tries.push(trimmed);
+    const fence = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/); if (fence) tries.push(fence[1]);
+    const a = trimmed.indexOf("{"), b = trimmed.lastIndexOf("}"); if (a >= 0 && b > a) tries.push(trimmed.slice(a, b + 1));
+    for (const c of tries) { try { return JSON.parse(repairJson(c)); } catch {} }
+    for (const c of tries) { try { return JSON.parse(c); } catch {} }
+    throw { code: "invalid_json" };
+  }
+
+  /* ================= Prompts ================= */
+  const LANG_NAME = { ar: "Arabic", fr: "French", en: "English" };
   const LEVELS = {
-    simple: "Explain for a middle-school student (age 12–14): very short sentences, everyday words, one idea per sentence.",
-    standard: "Explain for a secondary-school student (age 15–17): clear and concise, keep the lesson's key terms.",
-    deep: "Explain for a baccalaureate student preparing for an exam: precise terms, links between ideas, what examiners usually ask.",
+    simple: "VERY SIMPLE. Talk to a 12-year-old. Sentences of 6–12 words. Everyday words only. If a lesson term is needed, explain it right after it in brackets. One idea per sentence. No long paragraphs.",
+    standard: "Simple and clear, for a 15–17 year-old. Short sentences; keep the lesson's key terms and explain each one simply.",
+    exam: "Clear and exam-oriented, for a baccalaureate student. Keep precise terms, show how ideas link, and point out what exam questions usually ask — still in short, easy sentences.",
   };
-  function buildPrompt(text, nImages, level) {
+  function buildPrompt(text, imageLabels, level, outLang) {
     const src = [];
-    if (nImages) src.push(`${nImages} attached image(s) — photos/scans of the lesson pages, in page order. Read them carefully, including headings, boxes, verses and footnotes.`);
-    if (text) src.push("The lesson text pasted by the student, between <lesson> tags.");
-    return `You turn a school lesson into a one-page study schematic (Arabic: خطاطة تلخيصية) plus a short simplified explanation. The student is usually Moroccan (Islamic education, social studies, Arabic, sciences, philosophy, etc.).
+    if (imageLabels.length) src.push(`${imageLabels.length} attached image(s), in this order:\n${imageLabels.map((l, i) => `  [${i + 1}] ${l}`).join("\n")}\nRead them carefully: headings, boxes, formulas, figures, tables, verses and footnotes.`);
+    if (text) src.push("Lesson text extracted from the student's files or pasted, between <lesson> tags (PDF text may have broken line order; trust the page images when they disagree).");
+    const langRule = outLang === "auto"
+      ? 'Write everything in the language of the lesson ("ar", "fr" or "en").'
+      : `Write everything in ${LANG_NAME[outLang]} ("lang": "${outLang}"), translating the lesson faithfully if it is in another language.`;
+    return `You turn a school lesson into a one-page study schematic (Arabic: خطاطة تلخيصية), with visuals, plus a very simple explanation. Students are usually Moroccan (all subjects: Islamic education, Arabic, French, history-geography, philosophy, maths, physics-chemistry, life & earth sciences, economics…).
 
-SOURCE: ${src.join(" + ")}
+SOURCE: ${src.join("\n")}
 
-FAITHFULNESS RULES (strict):
-- Use ONLY information present in the lesson. Do not add facts, verses, hadiths, dates, names or references that are not in the source.
-- Quote Qur'anic verses, hadiths and quotations EXACTLY as written in the source (keep the diacritics that appear). Never complete a partial verse from memory. If a reference (surah/ayah, narrator, book) is not in the source, leave "source" empty.
-- If part of an image is unreadable, skip it and mention it in "notes" — never guess the words.
-- Keep the lesson's own key terms and definitions; you may shorten wording, but not change meaning.
-- The schematic must cover the whole lesson, not only the first part.
+FAITHFULNESS (strict):
+- Use ONLY information present in the lesson. Do not add facts, verses, hadiths, dates, names, definitions or references that are not in the source. Explanations, analogies and worked examples may be your own, but must agree with the lesson.
+- Quote Qur'anic verses, hadiths and quotations EXACTLY as written in the source (keep visible diacritics). Never complete a partial verse from memory. If a reference is not in the source, leave "source" empty. Keep their "text" in the original Arabic even when writing in another language, and put a faithful translation of the meaning in "translation" (empty if the output is Arabic).
+- If part of an image is unreadable, skip it and say so in "notes"; never guess.
+- Cover the WHOLE lesson, not only the beginning.
 
-OUTPUT LANGUAGE: the language of the lesson ("ar" for Arabic, "fr" for French, "en" for English). All fields in that language.
+LANGUAGE: ${langRule}
 
-STRUCTURE — reply with ONLY one JSON object, no prose, of this shape:
+MATH: write any formula, variable, unit with exponent or equation in LaTeX between $…$ inside any text field (e.g. "$v = at + v_0$", "$9{,}8\\ \\text{m/s}^2$"). In the JSON, every LaTeX backslash MUST be doubled ("\\\\frac", "\\\\vec"). "latex" fields contain LaTeX without $.
+
+REPLY with ONLY one JSON object, no prose before or after:
 {
   "lang": "ar" | "fr" | "en",
-  "subject": "school subject, e.g. التربية الإسلامية",
-  "title": "lesson title as in the source; for a unit/lesson pair use 'Unit — Lesson', e.g. 'حق الله — شكر الله'",
-  "concept": { "term": "the central concept (short, 1–5 words)", "definition": "its definition in one sentence" },
+  "subject": "school subject",
+  "title": "lesson title as in the source; 'Unit — Lesson' when both exist",
+  "concept": { "term": "central concept, 1–6 words", "definition": "one sentence" },
   "sections": [
-    { "heading": "short heading", "type": "pillars", "items": [ { "title": "2–4 words", "text": "one short sentence", "icon": "<icon>" } ] },
-    { "heading": "...", "type": "checklist", "items": [ { "title": "...", "text": "one or two sentences" } ] },
+    { "heading": "...", "type": "pillars", "items": [ { "title": "2–4 words", "text": "one short sentence", "icon": "<icon>" } ] },
+    { "heading": "...", "type": "checklist", "items": [ { "title": "...", "text": "1–2 short sentences" } ] },
     { "heading": "...", "type": "steps", "items": [ { "title": "...", "text": "..." } ] },
     { "heading": "...", "type": "compare", "columns": [ { "title": "...", "points": ["...", "..."] } ] }
   ],
-  "evidence": [ { "kind": "quran" | "hadith" | "quote" | "text", "label": "e.g. الشاهد القرآني / الشاهد الحديثي", "text": "exact text", "source": "reference if in the source, else empty", "significance": "what it proves, one sentence" } ],
+  "visuals": [
+    { "type": "formula", "title": "...", "latex": "v(t) = a\\\\,t + v_0", "legend": [ { "symbol": "$v$", "meaning": "speed", "unit": "m/s" } ], "caption": "when to use it" },
+    { "type": "graph", "title": "...", "functions": [ { "expr": "2*x+1", "label": "$v(t)=2t+1$" } ], "series": [ { "label": "measures", "style": "scatter", "points": [[0,1],[1,3]] } ], "points": [ { "x": 3, "y": 7, "label": "A" } ], "vlines": [ { "x": 2, "label": "x = 2" } ], "hlines": [], "xRange": [0, 5], "yRange": [0, 12], "xLabel": "t (s)", "yLabel": "v (m/s)", "caption": "what to notice" },
+    { "type": "diagram", "title": "...", "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 260'>…</svg>", "caption": "what to notice" },
+    { "type": "table", "title": "...", "headers": ["...", "..."], "rows": [["...", "..."]], "caption": "" },
+    { "type": "figure", "title": "...", "image": 1, "box": [80, 120, 620, 540], "caption": "..." }
+  ],
+  "evidence": [ { "kind": "quran" | "hadith" | "quote" | "text", "label": "e.g. الشاهد القرآني", "text": "exact text", "source": "", "translation": "", "significance": "what it shows, one sentence" } ],
   "memoryKey": { "label": "e.g. مفتاح الحفظ والفهم", "chips": [ { "text": "2–3 words", "icon": "<icon>" } ] },
   "explanation": {
-    "summary": "the lesson explained simply in one paragraph (4–6 sentences)",
-    "points": ["key idea 1", "key idea 2", "..."],
-    "example": "one concrete everyday example that illustrates the main idea",
-    "questions": [ { "q": "review question", "a": "short answer taken from the lesson" } ]
+    "simple": "the whole lesson explained super simply in 3–6 short sentences, starting from something familiar",
+    "analogy": "one comparison with everyday life that makes the main idea obvious",
+    "points": ["key idea in one short sentence", "..."],
+    "worked": { "problem": "a short exercise", "steps": ["one action per step", "..."], "answer": "..." },
+    "example": "one concrete everyday example (for non-math lessons)",
+    "mistakes": ["a common student mistake and the fix", "..."],
+    "questions": [ { "q": "review question", "a": "short answer from the lesson" } ]
   },
-  "notes": "anything unreadable or uncertain; empty string if none"
+  "notes": "unreadable or uncertain parts; empty string if none"
 }
 
-SECTION GUIDANCE:
-- 2 to 4 sections, in the order the ideas appear in the lesson.
-- "pillars": parallel components / types / pillars / conditions (2–6 items) — shown as coloured cards.
-- "checklist": explanations such as how-to, importance, effects, rulings (2–5 rows).
-- "steps": an ordered process or a chronology (3–7 items).
-- "compare": two or three things contrasted (e.g. before/after, X vs Y).
-- Keep every text SHORT: the schematic must be easier than the lesson.
-- "evidence": 0 to 3 items, only if the lesson contains such texts. Empty array otherwise.
-- "memoryKey": 2–4 chips that compress the lesson into a memorable formula (like "القلب يشعر | اللسان يحمد | الجوارح تعمل").
-- "questions": 3 to 5.
-- <icon> must be one of: ${ICON_NAMES.join(", ")}.
+SECTIONS: 2–4, in the lesson's order. "pillars" = parallel parts/types/conditions (2–6, coloured cards). "checklist" = explanations, effects, rules (2–5 rows). "steps" = a process, a method or a chronology (dates as titles). "compare" = 2–3 things contrasted. Keep every text SHORT: the schematic must be much easier than the lesson.
 
-EXPLANATION LEVEL: ${LEVELS[level] || LEVELS.standard}
+VISUALS (very important):
+- Maths, physics, chemistry, sciences, economics: ALWAYS include visuals. Every key formula/law → "formula" with every symbol in "legend" (meaning + SI unit). Every function, curve or relationship studied → "graph". Every physical situation, experiment, circuit, force diagram, optics ray diagram, geometric figure, molecule, cycle or cell → "diagram". 3–7 visuals.
+- Other subjects: add visuals only when they truly help (a "table" of comparisons, a "diagram" of a process, a "figure" from the photos). 0–3 visuals.
+- "graph": "expr" uses x as the only variable (write time as x and set xLabel "t (s)"); operators + - * / ^ with explicit * between factors; functions sin cos tan asin acos atan sqrt abs ln log exp; constants pi and e. Choose xRange/yRange so the interesting part is visible. Use "series" for measured data. Labels may contain $…$.
+- "diagram": a clean, correct SVG drawn like a textbook figure. Rules: viewBox about 520×260 (height 180–400); only elements svg, g, path, line, polyline, polygon, rect, circle, ellipse, text, tspan, defs, marker; NO style, script, image, foreignObject, CSS classes or external links; colours ONLY #1f2937 (main lines and text), #2563eb (blue), #dc2626 (red), #16a34a (green), #ea580c (orange), #7c3aed (purple), #9ca3af (grey guides) or "none"; light fills with fill-opacity; arrowheads with <marker> in <defs>; font-size 12–16; short labels in the output language; nothing outside the viewBox; physically and geometrically correct (force directions, circuit symbols, angles, ray paths). Use single quotes for SVG attributes so the JSON stays valid.
+- "figure": only when an attached image contains an important figure (diagram, map, chart, experiment photo, table). "image" = its number in the list above; "box" = the figure's bounding box in that image in thousandths of width/height (0–1000), [left, top, right, bottom], with a small margin.
+
+EVIDENCE: 0–3 items, only texts that are in the lesson. MEMORY KEY: 2–4 chips that compress the lesson into a memorable formula (like "القلب يشعر | اللسان يحمد | الجوارح تعمل").
+EXPLANATION: ${LEVELS[level] || LEVELS.simple} "worked" is REQUIRED for maths/physics/chemistry (a short exercise solved step by step, one calculation per step, with units) and null for other subjects. "mistakes": 2–3. "questions": 3–5.
+<icon> is one of: ${ICON_NAMES.join(", ")}.
 ${text ? `\n<lesson>\n${text}\n</lesson>` : ""}`;
   }
+  function stripForModel(d) {
+    const c = JSON.parse(JSON.stringify(d));
+    (c.visuals || []).forEach((v) => { if (v.dataUrl) v.dataUrl = "KEEP"; });
+    return c;
+  }
+  function translatePrompt(d, lang) {
+    return `Translate this study schematic (JSON) into ${LANG_NAME[lang]}.
+Rules:
+- Translate every human-readable string value. Keep the same keys, structure, array order and lengths.
+- Do NOT change: "type", "kind", "icon", "expr", numbers, ranges, "image", "box", "dataUrl", and math between $…$ (you may translate words inside \\\\text{}).
+- In "latex" fields change nothing.
+- For evidence of kind "quran" or "hadith": keep "text" exactly as it is (original Arabic) and write a faithful translation of its meaning in "translation" (empty string if translating into Arabic).
+- In "svg" strings translate only the words between <text…> and </text> (or <tspan>) tags; leave every other character identical.
+- Set "lang" to "${lang}". Keep the meaning faithful; do not add information.
+- Keep every LaTeX backslash doubled in the JSON.
+Reply with ONLY the JSON object.
 
-  /* ---------------- Normalisation ---------------- */
-  const str = (v, max = 600) => (typeof v === "string" ? v.trim().slice(0, max) : v == null ? "" : String(v).trim().slice(0, max));
+${JSON.stringify(stripForModel(d))}`;
+  }
+
+  /* ================= Normalisation ================= */
+  const str = (v, max = 600) => (typeof v === "string" ? v.trim().slice(0, max) : v == null || typeof v === "object" ? "" : String(v).trim().slice(0, max));
   const arr = (v, max) => (Array.isArray(v) ? v.slice(0, max) : []);
+  const num = (v) => (typeof v === "number" && isFinite(v) ? v : typeof v === "string" && v.trim() !== "" && isFinite(+v) ? +v : null);
+  const range = (v) => { if (!Array.isArray(v) || v.length < 2) return null; const a = num(v[0]), b = num(v[1]); return a != null && b != null && b > a ? [a, b] : null; };
   const ic = (v) => (ICON_NAMES.includes(v) ? v : "star");
+  function normVisual(v) {
+    if (!v || typeof v !== "object") return null;
+    const type = ["formula", "graph", "diagram", "table", "figure"].includes(v.type) ? v.type : null;
+    if (!type) return null;
+    const o = { type, title: str(v.title, 160), caption: str(v.caption, 500) };
+    if (type === "formula") {
+      o.latex = str(v.latex, 600).replace(/^\$+|\$+$/g, "");
+      o.legend = arr(v.legend, 10).map((l) => ({ symbol: str(l && l.symbol, 60), meaning: str(l && l.meaning, 160), unit: str(l && l.unit, 40) })).filter((l) => l.symbol || l.meaning);
+      return o.latex ? o : null;
+    }
+    if (type === "graph") {
+      o.functions = arr(v.functions, 5).map((f) => ({ expr: str(f && f.expr, 200), label: str(f && f.label, 120) })).filter((f) => f.expr);
+      o.series = arr(v.series, 4).map((s) => ({ label: str(s && s.label, 120), style: s && s.style === "line" ? "line" : "scatter",
+        points: arr(s && s.points, 200).map((p) => (Array.isArray(p) ? [num(p[0]), num(p[1])] : [num(p && p.x), num(p && p.y)])).filter((p) => p[0] != null && p[1] != null) })).filter((s) => s.points.length);
+      o.points = arr(v.points, 12).map((p) => ({ x: num(p && p.x), y: num(p && p.y), label: str(p && p.label, 60) })).filter((p) => p.x != null && p.y != null);
+      o.vlines = arr(v.vlines, 6).map((p) => ({ x: num(p && p.x), label: str(p && p.label, 60) })).filter((p) => p.x != null);
+      o.hlines = arr(v.hlines, 6).map((p) => ({ y: num(p && p.y), label: str(p && p.label, 60) })).filter((p) => p.y != null);
+      o.xRange = range(v.xRange); o.yRange = range(v.yRange);
+      o.xLabel = str(v.xLabel, 40); o.yLabel = str(v.yLabel, 40);
+      return o.functions.length || o.series.length || o.points.length ? o : null;
+    }
+    if (type === "diagram") { o.svg = str(v.svg, 40000); return o.svg.includes("<svg") ? o : null; }
+    if (type === "table") {
+      o.headers = arr(v.headers, 8).map((h) => str(h, 120));
+      o.rows = arr(v.rows, 30).map((r) => arr(r, 8).map((c) => str(c, 300)));
+      return o.rows.length ? o : null;
+    }
+    o.image = num(v.image); o.box = Array.isArray(v.box) ? v.box.slice(0, 4).map(num) : null;
+    o.source = str(v.source, 160);
+    o.dataUrl = typeof v.dataUrl === "string" && v.dataUrl.startsWith("data:image/") ? v.dataUrl : "";
+    return o.dataUrl || (o.image != null && o.box && o.box.length === 4 && o.box.every((n) => n != null)) ? o : null;
+  }
   function normalize(d) {
     if (!d || typeof d !== "object" || Array.isArray(d)) throw { code: "bad_shape" };
+    const x = d.explanation || {};
+    const w = x.worked && typeof x.worked === "object" ? x.worked : null;
     const out = {
-      lang: ["ar", "fr", "en"].includes(d.lang) ? d.lang : "ar",
-      subject: str(d.subject, 80),
-      title: str(d.title, 160),
-      concept: { term: str(d.concept && d.concept.term, 120), definition: str(d.concept && d.concept.definition, 500) },
+      lang: LANGS.includes(d.lang) ? d.lang : "ar",
+      subject: str(d.subject, 80), title: str(d.title, 180),
+      concept: { term: str(d.concept && d.concept.term, 140), definition: str(d.concept && d.concept.definition, 500) },
       sections: arr(d.sections, 6).map((s) => {
         const type = ["pillars", "checklist", "steps", "compare"].includes(s && s.type) ? s.type : "checklist";
         const sec = { heading: str(s && s.heading, 120), type };
         if (type === "compare") sec.columns = arr(s.columns, 4).map((c) => ({ title: str(c && c.title, 80), points: arr(c && c.points, 10).map((p) => str(p, 300)).filter(Boolean) }));
-        else sec.items = arr(s.items, 8).map((it) => ({ title: str(it && it.title, 120), text: str(it && it.text, 500), icon: ic(it && it.icon) })).filter((it) => it.title || it.text);
+        else sec.items = arr(s && s.items, 8).map((it) => ({ title: str(it && it.title, 120), text: str(it && it.text, 500), icon: ic(it && it.icon) })).filter((it) => it.title || it.text);
         return sec;
       }).filter((s) => (s.items && s.items.length) || (s.columns && s.columns.length)),
+      visuals: arr(d.visuals, 10).map(normVisual).filter(Boolean),
       evidence: arr(d.evidence, 4).map((e) => ({
         kind: ["quran", "hadith", "quote", "text"].includes(e && e.kind) ? e.kind : "text",
-        label: str(e && e.label, 80), text: str(e && e.text, 900), source: str(e && e.source, 160), significance: str(e && e.significance, 400),
+        label: str(e && e.label, 80), text: str(e && e.text, 900), source: str(e && e.source, 160),
+        translation: str(e && e.translation, 900), significance: str(e && e.significance, 400),
       })).filter((e) => e.text),
-      memoryKey: {
-        label: str(d.memoryKey && d.memoryKey.label, 80),
-        chips: arr(d.memoryKey && d.memoryKey.chips, 5).map((c) => ({ text: str(c && c.text, 60), icon: ic(c && c.icon) })).filter((c) => c.text),
-      },
+      memoryKey: { label: str(d.memoryKey && d.memoryKey.label, 80), chips: arr(d.memoryKey && d.memoryKey.chips, 5).map((c) => ({ text: str(c && c.text, 60), icon: ic(c && c.icon) })).filter((c) => c.text) },
       explanation: {
-        summary: str(d.explanation && d.explanation.summary, 2000),
-        points: arr(d.explanation && d.explanation.points, 10).map((p) => str(p, 400)).filter(Boolean),
-        example: str(d.explanation && d.explanation.example, 800),
-        questions: arr(d.explanation && d.explanation.questions, 8).map((q) => ({ q: str(q && q.q, 300), a: str(q && q.a, 600) })).filter((q) => q.q),
+        simple: str(x.simple || x.summary, 2000), analogy: str(x.analogy, 800),
+        points: arr(x.points, 10).map((p) => str(p, 400)).filter(Boolean),
+        worked: w && (w.problem || (Array.isArray(w.steps) && w.steps.length)) ? { problem: str(w.problem, 800), steps: arr(w.steps, 12).map((s) => str(s, 500)).filter(Boolean), answer: str(w.answer, 400) } : null,
+        example: str(x.example, 800),
+        mistakes: arr(x.mistakes, 5).map((p) => str(p, 400)).filter(Boolean),
+        questions: arr(x.questions, 8).map((q) => ({ q: str(q && q.q, 300), a: str(q && q.a, 600) })).filter((q) => q.q),
       },
       notes: str(d.notes, 600),
     };
@@ -662,307 +1173,518 @@ ${text ? `\n<lesson>\n${text}\n</lesson>` : ""}`;
     return out;
   }
 
-  /* ---------------- Rendering ---------------- */
+  /* ================= Expression compiler (safe, no eval) ================= */
+  const FUN = { sin: Math.sin, cos: Math.cos, tan: Math.tan, asin: Math.asin, acos: Math.acos, atan: Math.atan, arcsin: Math.asin, arccos: Math.acos, arctan: Math.atan,
+    sinh: Math.sinh, cosh: Math.cosh, tanh: Math.tanh, sqrt: Math.sqrt, cbrt: Math.cbrt, abs: Math.abs, ln: Math.log, log: Math.log10, exp: Math.exp, floor: Math.floor, ceil: Math.ceil, sign: Math.sign };
+  const NAMES = Object.keys(FUN).concat(["pi", "x", "e"]).sort((a, b) => b.length - a.length);
+  function compileExpr(src) {
+    let s = String(src).toLowerCase().replace(/\*\*/g, "^").replace(/π/g, "pi").replace(/√/g, "sqrt").replace(/×|·/g, "*").replace(/÷/g, "/").replace(/−/g, "-").replace(/,/g, ".");
+    s = s.replace(/^\s*(?:[a-z]\w*\s*\(\s*[a-z]\s*\)|y)\s*=\s*/, "").replace(/(?<![a-z])t(?![a-z])/g, "x");
+    const toks = []; let i = 0;
+    while (i < s.length) {
+      const c = s[i];
+      if (/\s/.test(c)) { i++; continue; }
+      const m = s.slice(i).match(/^(\d+\.?\d*|\.\d+)(e[+-]?\d+)?/);
+      if (m) { toks.push({ k: "n", v: parseFloat(m[0]) }); i += m[0].length; continue; }
+      const w = s.slice(i).match(/^[a-z]+/);
+      if (w) {
+        let word = w[0]; i += word.length;
+        while (word) { // split glued names such as "xsin" or "pix"
+          const f = NAMES.find((n) => word.startsWith(n));
+          if (!f) throw new Error("name");
+          toks.push(FUN[f] ? { k: "f", v: f } : { k: "v", v: f }); word = word.slice(f.length);
+        }
+        continue;
+      }
+      if ("+-*/^()".includes(c)) { toks.push({ k: c }); i++; continue; }
+      throw new Error("char");
+    }
+    const tk = [];
+    for (const x of toks) {
+      const p = tk[tk.length - 1];
+      if (p && (p.k === "n" || p.k === "v" || p.k === ")") && (x.k === "n" || x.k === "v" || x.k === "f" || x.k === "(")) tk.push({ k: "*" });
+      tk.push(x);
+    }
+    let pos = 0;
+    const peek = () => tk[pos], eat = (k) => { if (!tk[pos] || tk[pos].k !== k) throw new Error("syntax"); pos++; };
+    function expr() { let a = term(); while (peek() && (peek().k === "+" || peek().k === "-")) { const op = tk[pos++].k; const l = a, r = term(); a = op === "+" ? (x) => l(x) + r(x) : (x) => l(x) - r(x); } return a; }
+    function term() { let a = unary(); while (peek() && (peek().k === "*" || peek().k === "/")) { const op = tk[pos++].k; const l = a, r = unary(); a = op === "*" ? (x) => l(x) * r(x) : (x) => l(x) / r(x); } return a; }
+    function unary() { if (peek() && peek().k === "-") { pos++; const u = unary(); return (x) => -u(x); } if (peek() && peek().k === "+") { pos++; return unary(); } return power(); }
+    function power() {
+      const b = primary();
+      if (peek() && peek().k === "^") {
+        pos++; const e = unary();
+        return (x) => { const bb = b(x), ee = e(x); if (bb < 0 && !Number.isInteger(ee)) { const inv = Math.round(1 / ee); if (Math.abs(1 / ee - inv) < 1e-9 && inv % 2) return -Math.pow(-bb, ee); } return Math.pow(bb, ee); };
+      }
+      return b;
+    }
+    function primary() {
+      const x = tk[pos++]; if (!x) throw new Error("end");
+      if (x.k === "n") return () => x.v;
+      if (x.k === "v") return x.v === "x" ? (v) => v : x.v === "pi" ? () => Math.PI : () => Math.E;
+      if (x.k === "f") { const fn = FUN[x.v]; let arg; if (peek() && peek().k === "(") { pos++; arg = expr(); eat(")"); } else arg = power(); return (v) => fn(arg(v)); }
+      if (x.k === "(") { const e = expr(); eat(")"); return e; }
+      throw new Error("syntax");
+    }
+    const f = expr(); if (pos !== tk.length) throw new Error("trailing");
+    return f;
+  }
+
+  /* ================= Graph renderer ================= */
+  const SVGNS = "http://www.w3.org/2000/svg";
+  const sv = (tag, attrs, parent) => { const e = document.createElementNS(SVGNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.append(e); return e; };
+  const niceStep = (span, n) => { const raw = span / n, p = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / p; return (f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10) * p; };
+  const fmt = (v, step) => { const dec = Math.max(0, -Math.floor(Math.log10(step) + 1e-9)); return (Math.abs(v) < step / 1e6 ? 0 : v).toFixed(dec).replace("-", "−"); };
+  let gid = 0;
+  function renderGraph(v, host) {
+    const W = 560, H = 340, m = { l: 52, r: 18, t: 18, b: 40 };
+    const pw = W - m.l - m.r, ph = H - m.t - m.b;
+    const fns = v.functions.map((f) => { try { return { ...f, fn: compileExpr(f.expr) }; } catch { return null; } }).filter(Boolean);
+    let [x0, x1] = v.xRange || [-5, 5];
+    if (!v.xRange) {
+      const xs = v.series.flatMap((s) => s.points.map((p) => p[0])).concat(v.points.map((p) => p.x));
+      if (xs.length && !fns.length) { x0 = Math.min(...xs); x1 = Math.max(...xs); const pad = (x1 - x0 || 1) * 0.08; x0 -= pad; x1 += pad; }
+    }
+    const N = 600;
+    const samples = fns.map((f) => { const pts = []; for (let i = 0; i <= N; i++) { const x = x0 + (x1 - x0) * i / N; let y; try { y = f.fn(x); } catch { y = NaN; } pts.push([x, y]); } return pts; });
+    let y0, y1;
+    if (v.yRange) [y0, y1] = v.yRange;
+    else {
+      const ys = samples.flat().map((p) => p[1]).filter((y) => isFinite(y)).concat(v.series.flatMap((s) => s.points.map((p) => p[1])), v.points.map((p) => p.y), v.hlines.map((h) => h.y)).sort((a, b) => a - b);
+      if (ys.length) { y0 = ys[Math.floor(ys.length * 0.02)]; y1 = ys[Math.max(0, Math.ceil(ys.length * 0.98) - 1)]; } else { y0 = -5; y1 = 5; }
+      if (y1 - y0 < 1e-9) { y0 -= 1; y1 += 1; }
+      const pad = (y1 - y0) * 0.08; y0 -= pad; y1 += pad;
+      if (y0 > 0 && y0 < (y1 - y0) * 0.25) y0 = 0;
+      if (y1 < 0 && -y1 < (y1 - y0) * 0.25) y1 = 0;
+    }
+    const sx = (x) => m.l + (x - x0) / (x1 - x0) * pw, sy = (y) => m.t + (y1 - y) / (y1 - y0) * ph;
+    const svg = sv("svg", { viewBox: `0 0 ${W} ${H}`, role: "img" });
+    if (v.title) sv("title", {}, svg).textContent = v.title;
+    const id = `clip${++gid}`;
+    const defs = sv("defs", {}, svg); const cp = sv("clipPath", { id }, defs); sv("rect", { x: m.l, y: m.t, width: pw, height: ph }, cp);
+    const xs = niceStep(x1 - x0, 8), ys = niceStep(y1 - y0, 6);
+    for (let x = Math.ceil(x0 / xs - 1e-9) * xs; x <= x1 + 1e-9; x += xs) {
+      sv("line", { x1: sx(x), x2: sx(x), y1: m.t, y2: m.t + ph, class: "grid" }, svg);
+      sv("text", { x: sx(x), y: m.t + ph + 16, "text-anchor": "middle" }, svg).textContent = fmt(x, xs);
+    }
+    for (let y = Math.ceil(y0 / ys - 1e-9) * ys; y <= y1 + 1e-9; y += ys) {
+      sv("line", { x1: m.l, x2: m.l + pw, y1: sy(y), y2: sy(y), class: "grid" }, svg);
+      sv("text", { x: m.l - 6, y: sy(y) + 4, "text-anchor": "end" }, svg).textContent = fmt(y, ys);
+    }
+    const ax = y0 <= 0 && y1 >= 0 ? sy(0) : m.t + ph, ay = x0 <= 0 && x1 >= 0 ? sx(0) : m.l;
+    sv("line", { x1: m.l, x2: m.l + pw, y1: ax, y2: ax, class: "axis" }, svg);
+    sv("line", { x1: ay, x2: ay, y1: m.t, y2: m.t + ph, class: "axis" }, svg);
+    if (v.xLabel) sv("text", { x: m.l + pw, y: H - 6, "text-anchor": "end", class: "alabel" }, svg).textContent = v.xLabel;
+    if (v.yLabel) sv("text", { x: m.l + 6, y: m.t + 13, class: "alabel" }, svg).textContent = v.yLabel;
+    const plot = sv("g", { "clip-path": `url(#${id})` }, svg);
+    v.vlines.forEach((l) => { sv("line", { x1: sx(l.x), x2: sx(l.x), y1: m.t, y2: m.t + ph, class: "guide kg" }, plot); if (l.label) sv("text", { x: sx(l.x) + 4, y: m.t + 28, class: "kg" }, svg).textContent = l.label; });
+    v.hlines.forEach((l) => { sv("line", { x1: m.l, x2: m.l + pw, y1: sy(l.y), y2: sy(l.y), class: "guide kg" }, plot); if (l.label) sv("text", { x: m.l + pw - 4, y: sy(l.y) - 5, "text-anchor": "end", class: "kg" }, svg).textContent = l.label; });
+    const span = y1 - y0;
+    samples.forEach((pts, i) => {
+      let d = "", pen = false, prev = null;
+      for (const [x, y] of pts) {
+        if (!isFinite(y) || Math.abs(y) > 1e9) { pen = false; prev = null; continue; }
+        if (prev != null && Math.abs(y - prev) > span * 3) pen = false;
+        const yy = Math.max(m.t - ph, Math.min(m.t + 2 * ph, sy(y)));
+        d += (pen ? "L" : "M") + sx(x).toFixed(1) + " " + yy.toFixed(1); pen = true; prev = y;
+      }
+      if (d) sv("path", { d, class: `curve k${(i % 5) + 1}` }, plot);
+    });
+    v.series.forEach((s, j) => {
+      const k = `k${((fns.length + j) % 5) + 1}`;
+      if (s.style === "line") sv("polyline", { points: s.points.map((p) => `${sx(p[0])},${sy(p[1])}`).join(" "), class: `curve ${k}` }, plot);
+      s.points.forEach((p) => sv("circle", { cx: sx(p[0]), cy: sy(p[1]), r: 3.6, class: k }, plot));
+    });
+    v.points.forEach((p) => {
+      sv("line", { x1: sx(p.x), x2: sx(p.x), y1: sy(p.y), y2: ax, class: "guide kg" }, plot);
+      sv("line", { x1: ay, x2: sx(p.x), y1: sy(p.y), y2: sy(p.y), class: "guide kg" }, plot);
+      sv("circle", { cx: sx(p.x), cy: sy(p.y), r: 5, class: "k2" }, plot);
+      if (p.label) { const right = sx(p.x) < m.l + pw * 0.7; sv("text", { x: sx(p.x) + (right ? 8 : -8), y: sy(p.y) - 9, "text-anchor": right ? "start" : "end", class: "k2" }, svg).textContent = p.label; }
+    });
+    const box = document.createElement("div"); box.className = "plot no-tex"; box.append(fixBidi(svg)); host.append(box);
+    const labels = fns.map((f, i) => [f.label || f.expr, `k${(i % 5) + 1}`]).concat(v.series.map((s, j) => [s.label, `k${((fns.length + j) % 5) + 1}`])).filter((l) => l[0]);
+    if (labels.length) {
+      const keys = document.createElement("div"); keys.className = "keys";
+      labels.forEach(([l, k]) => { const sp = document.createElement("span"); sp.className = k; const ii = document.createElement("i"); const tx = document.createElement("span"); tx.textContent = l; tx.style.color = "var(--fg)"; sp.append(ii, tx); keys.append(sp); });
+      host.append(keys);
+    }
+  }
+
+  /* Arabic labels inside an LTR SVG: render them right-to-left but keep them where they were drawn. */
+  const RTL_RE = /[\u0590-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFF]/;
+  function fixBidi(svg) {
+    svg.querySelectorAll("text").forEach((tx) => {
+      if (!RTL_RE.test(tx.textContent) || tx.getAttribute("direction")) return;
+      const a = tx.getAttribute("text-anchor") || "start";
+      tx.setAttribute("direction", "rtl");
+      tx.setAttribute("text-anchor", a === "start" ? "end" : a === "end" ? "start" : a);
+    });
+    return svg;
+  }
+
+  /* ================= SVG sanitizer for Claude's diagrams ================= */
+  const SVG_TAGS = new Set(["svg", "g", "path", "line", "polyline", "polygon", "rect", "circle", "ellipse", "text", "tspan", "defs", "marker", "title", "desc"]);
+  const SVG_ATTRS = new Set(["viewBox", "width", "height", "x", "y", "x1", "y1", "x2", "y2", "cx", "cy", "r", "rx", "ry", "d", "points", "transform", "fill", "stroke", "stroke-width", "stroke-dasharray",
+    "stroke-linecap", "stroke-linejoin", "fill-opacity", "stroke-opacity", "opacity", "font-size", "font-weight", "font-style", "text-anchor", "dominant-baseline", "id", "marker-end",
+    "marker-start", "marker-mid", "refX", "refY", "markerWidth", "markerHeight", "orient", "markerUnits", "dx", "dy", "preserveAspectRatio", "letter-spacing", "fill-rule", "xmlns"]);
+  const STYLE_PROPS = ["fill", "stroke", "stroke-width", "stroke-dasharray", "fill-opacity", "stroke-opacity", "opacity", "font-size", "font-weight", "text-anchor", "dominant-baseline"];
+  const PALETTE = { "#1f2937": "ink", "#000": "ink", "#000000": "ink", black: "ink", "#111": "ink", "#111111": "ink", "#222": "ink", "#333": "ink", "#333333": "ink", "#374151": "ink",
+    "#2563eb": "blue", blue: "blue", "#1d4ed8": "blue", "#3b82f6": "blue", "#dc2626": "red", red: "red", "#ef4444": "red", "#16a34a": "green", green: "green", "#22c55e": "green",
+    "#ea580c": "orange", orange: "orange", "#f97316": "orange", "#7c3aed": "purple", purple: "purple", "#8b5cf6": "purple", "#9ca3af": "grey", gray: "grey", grey: "grey", "#6b7280": "grey", "#d1d5db": "grey",
+    "#ffffff": "paper", "#fff": "paper", white: "paper" };
+  let dg = 0;
+  function sanitizeSvg(src) {
+    const start = src.indexOf("<svg"); if (start < 0) return null;
+    let code = src.slice(start);
+    if (!/^<svg[^>]*\sxmlns=/.test(code)) code = code.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+    const doc = new DOMParser().parseFromString(code, "image/svg+xml");
+    const root = doc.documentElement;
+    if (!root || root.localName !== "svg" || doc.getElementsByTagName("parsererror").length) return null;
+    const prefix = `d${++dg}-`; const ids = new Set();
+    const walk = (el) => {
+      for (const ch of Array.from(el.children)) { if (!SVG_TAGS.has(ch.localName)) { ch.remove(); continue; } walk(ch); }
+      const style = el.getAttribute("style");
+      if (style) style.split(";").forEach((decl) => { const [k, ...rest] = decl.split(":"); const key = (k || "").trim(), val = rest.join(":").trim(); if (STYLE_PROPS.includes(key) && val && !el.hasAttribute(key)) el.setAttribute(key, val); });
+      for (const a of Array.from(el.attributes)) {
+        const name = a.name, val = a.value;
+        if (!SVG_ATTRS.has(name) || /javascript:|expression\(/i.test(val) || (/url\(/i.test(val) && !/^url\(#[\w-]+\)$/.test(val.trim()))) el.removeAttribute(name);
+      }
+      if (el.id) { ids.add(el.id); el.id = prefix + el.id; }
+      const css = [];
+      for (const prop of ["fill", "stroke"]) {
+        const v = (el.getAttribute(prop) || "").trim().toLowerCase();
+        if (PALETTE[v]) { el.removeAttribute(prop); css.push(`${prop}:${PALETTE[v] === "paper" ? "var(--surface)" : `var(--d-${PALETTE[v]})`}`); }
+      }
+      if (css.length) el.setAttribute("style", css.join(";"));
+    };
+    walk(root);
+    root.querySelectorAll("*").forEach((el) => {
+      for (const a of ["marker-end", "marker-start", "marker-mid", "fill", "stroke"]) {
+        const v = el.getAttribute(a); const mm = v && v.match(/^url\(#([\w-]+)\)$/);
+        if (mm && ids.has(mm[1])) el.setAttribute(a, `url(#${prefix}${mm[1]})`);
+      }
+    });
+    if (!root.getAttribute("viewBox")) { const w = parseFloat(root.getAttribute("width")) || 520, h = parseFloat(root.getAttribute("height")) || 260; root.setAttribute("viewBox", `0 0 ${w} ${h}`); }
+    root.removeAttribute("width"); root.removeAttribute("height");
+    root.setAttribute("role", "img");
+    if (!root.hasAttribute("fill") && !/fill:/.test(root.getAttribute("style") || "")) root.setAttribute("style", ((root.getAttribute("style") || "") + ";fill:var(--d-ink)").replace(/^;/, ""));
+    return fixBidi(document.importNode(root, true));
+  }
+
+  /* ================= Figures cropped from the student's photos ================= */
+  async function cropFigure(blob, box) {
+    const bmp = await createImageBitmap(blob);
+    let [l, tp, r, b] = box.map((n) => Math.max(0, Math.min(1000, n)) / 1000);
+    if (r < l) [l, r] = [r, l];
+    if (b < tp) [tp, b] = [b, tp];
+    const sx = Math.floor(l * bmp.width), sy = Math.floor(tp * bmp.height), sw = Math.ceil((r - l) * bmp.width), sh = Math.ceil((b - tp) * bmp.height);
+    if (sw < 40 || sh < 40) return "";
+    const scale = Math.min(1, 900 / sw);
+    const c = document.createElement("canvas"); c.width = Math.round(sw * scale); c.height = Math.round(sh * scale);
+    c.getContext("2d").drawImage(bmp, sx, sy, sw, sh, 0, 0, c.width, c.height);
+    return c.toDataURL("image/jpeg", 0.82);
+  }
+  async function resolveFigures(d, images) {
+    for (const v of d.visuals) {
+      if (v.type !== "figure" || v.dataUrl) continue;
+      const im = images[(v.image || 0) - 1];
+      if (im) { try { v.dataUrl = await cropFigure(im.blob, v.box); v.source = im.label; } catch { v.dataUrl = ""; } }
+    }
+    d.visuals = d.visuals.filter((v) => v.type !== "figure" || v.dataUrl);
+  }
+
+  /* ================= Rendering ================= */
   const T = {
-    ar: { eyebrow: "خطاطة تلخيصية", key: "مفتاح الحفظ والفهم", sig: "الدلالة:", explain: "الشرح المبسّط", points: "الأفكار الأساسية", example: "مثال من الحياة", qs: "أسئلة للمراجعة", ans: "الجواب", notes: "ملاحظة:" },
-    fr: { eyebrow: "Schéma de synthèse", key: "Clé de mémorisation", sig: "Portée :", explain: "Explication simplifiée", points: "Idées essentielles", example: "Exemple concret", qs: "Questions de révision", ans: "Réponse", notes: "Remarque :" },
-    en: { eyebrow: "Summary schematic", key: "Memory key", sig: "Meaning:", explain: "Simple explanation", points: "Key ideas", example: "Everyday example", qs: "Review questions", ans: "Answer", notes: "Note:" },
+    ar: { eyebrow: "خطاطة تلخيصية", key: "مفتاح الحفظ والفهم", sig: "الدلالة:", visuals: "تمثيلات مرئية", explain: "اشرح لي ببساطة", analogy: "تخيّل معي", points: "الأفكار الأساسية", worked: "مثال محلول خطوة بخطوة", answer: "النتيجة:", example: "مثال من الحياة", mistakes: "انتبه من هذه الأخطاء", qs: "أسئلة للمراجعة", ans: "الجواب", notes: "ملاحظة:", fromPhoto: "من صور الدرس", meaning: "المعنى:" },
+    fr: { eyebrow: "Schéma de synthèse", key: "Clé de mémorisation", sig: "Portée :", visuals: "Représentations visuelles", explain: "Explique-moi simplement", analogy: "Imagine…", points: "Idées essentielles", worked: "Exemple résolu pas à pas", answer: "Résultat :", example: "Exemple concret", mistakes: "Attention à ces erreurs", qs: "Questions de révision", ans: "Réponse", notes: "Remarque :", fromPhoto: "Tiré des photos de la leçon", meaning: "Sens :" },
+    en: { eyebrow: "Summary schematic", key: "Memory key", sig: "Meaning:", visuals: "Visuals", explain: "Explain it simply", analogy: "Imagine this", points: "Key ideas", worked: "Worked example, step by step", answer: "Result:", example: "Everyday example", mistakes: "Watch out for these mistakes", qs: "Review questions", ans: "Answer", notes: "Note:", fromPhoto: "From the lesson photos", meaning: "Meaning:" },
   };
   function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null && text !== "") e.textContent = text; return e; }
-  function arrow() {
-    const d = el("div", "arrow");
-    d.innerHTML = '<svg viewBox="0 0 18 26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v20"/><path d="m4 17 5 5 5-5"/></svg>';
-    return d;
-  }
+  function arrowEl() { const d = el("div", "arrow"); d.innerHTML = '<svg viewBox="0 0 18 26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v20"/><path d="m4 17 5 5 5-5"/></svg>'; return d; }
   function titleNode(title) {
-    const h = el("h2", "p-title");
-    const parts = title.split(/\s+[—–-]\s+/);
-    if (parts.length === 2) {
-      h.append(document.createTextNode(parts[0] + " "));
-      h.append(el("span", "sep", "—"));
-      h.append(document.createTextNode(" " + parts[1]));
-    } else h.textContent = title;
+    const h = el("h2", "p-title"); const parts = title.split(/\s+[—–-]\s+/);
+    if (parts.length === 2) h.append(document.createTextNode(parts[0] + " "), el("span", "sep", "—"), document.createTextNode(" " + parts[1]));
+    else h.textContent = title;
     return h;
   }
-
+  const h3 = (ic2, text) => { const h = el("h3"); h.append(icon(ic2), document.createTextNode(text)); return h; };
+  function renderVisual(v, t, lone) {
+    const card = el("div", "vis" + (v.type === "formula" && !lone ? "" : " wide"));
+    if (v.title) card.append(el("h4", null, v.title));
+    if (v.type === "formula") {
+      card.append(el("div", "formula", `$$${v.latex}$$`));
+      if (v.legend.length) {
+        const ul = el("ul", "legend");
+        v.legend.forEach((l) => { const li = el("li"); li.append(el("span", "sym", l.symbol), el("span", null, l.meaning)); if (l.unit) li.append(el("span", "unit", `(${l.unit})`)); ul.append(li); });
+        card.append(ul);
+      }
+    } else if (v.type === "graph") {
+      renderGraph(v, card);
+    } else if (v.type === "diagram") {
+      const node = sanitizeSvg(v.svg); if (!node) return null;
+      const box = el("div", "diagram no-tex"); box.append(node); card.append(box);
+    } else if (v.type === "table") {
+      const wrap = el("div", "tbl"); const tb = el("table");
+      if (v.headers.some(Boolean)) { const tr = el("tr"); v.headers.forEach((h) => tr.append(el("th", null, h))); const th = el("thead"); th.append(tr); tb.append(th); }
+      const body = el("tbody"); v.rows.forEach((r) => { const tr = el("tr"); r.forEach((c) => tr.append(el("td", null, c))); body.append(tr); }); tb.append(body);
+      wrap.append(tb); card.append(wrap);
+    } else if (v.type === "figure") {
+      const f = el("div", "fig"); const im = el("img"); im.src = v.dataUrl; im.alt = v.title || t.fromPhoto;
+      f.append(im, el("div", "src", v.source ? `${t.fromPhoto} — ${v.source}` : t.fromPhoto)); card.append(f);
+    }
+    if (v.caption) card.append(el("p", "cap", v.caption));
+    return card;
+  }
   function renderPoster(d) {
     const t = T[d.lang] || T.ar;
-    const dir = d.lang === "ar" ? "rtl" : "ltr";
-    els.poster.setAttribute("dir", dir);
-    els.poster.setAttribute("lang", d.lang);
+    els.poster.setAttribute("dir", d.lang === "ar" ? "rtl" : "ltr"); els.poster.setAttribute("lang", d.lang);
     const inner = el("div", "poster-inner");
-
     const head = el("header", "p-head");
     const eb = el("div", "p-eyebrow"); eb.append(icon("book"), document.createTextNode(d.subject ? `${t.eyebrow} — ${d.subject}` : t.eyebrow));
-    head.append(eb);
-    if (d.title) head.append(titleNode(d.title));
-    head.append(el("div", "p-diamond"));
+    head.append(eb); if (d.title) head.append(titleNode(d.title)); head.append(el("div", "p-diamond"));
     inner.append(head);
-
-    let first = true;
-    const join = () => { if (!first) inner.append(arrow()); first = false; };
-
+    let first = true; const join = () => { if (!first) inner.append(arrowEl()); first = false; };
     if (d.concept.term || d.concept.definition) {
-      join();
-      const c = el("div", "concept");
+      join(); const c = el("div", "concept");
       if (d.concept.term) c.append(el("div", "term", d.concept.term));
       if (d.concept.definition) c.append(el("p", "def", d.concept.definition));
       inner.append(c);
     }
-
     d.sections.forEach((s, idx) => {
-      join();
-      const wrap = el("section");
-      const sh = el("div", "sec-head");
-      sh.append(el("span", "badge", String(idx + 1)), el("h3", null, s.heading));
-      wrap.append(sh);
+      join(); const wrap = el("section"); const sh = el("div", "sec-head");
+      sh.append(el("span", "badge", String(idx + 1)), el("h3", null, s.heading)); wrap.append(sh);
       if (s.type === "pillars") {
         const g = el("div", "pillars");
-        s.items.forEach((it, i) => {
-          const card = el("div", `pillar c${(i % 6) + 1}`);
-          const icw = el("div", "ic"); icw.append(icon(it.icon));
-          card.append(icw, el("h4", null, it.title));
-          if (it.text) card.append(el("p", null, it.text));
-          g.append(card);
-        });
+        s.items.forEach((it, i) => { const card = el("div", `pillar c${(i % 6) + 1}`); const w = el("div", "ic"); w.append(icon(it.icon)); card.append(w, el("h4", null, it.title)); if (it.text) card.append(el("p", null, it.text)); g.append(card); });
         wrap.append(g);
       } else if (s.type === "steps") {
         const g = el("div", "steps");
-        s.items.forEach((it, i) => {
-          const row = el("div", "step");
-          const b = el("div", "body"); b.append(el("h4", null, it.title)); if (it.text) b.append(el("p", null, it.text));
-          row.append(el("span", "num", String(i + 1)), b);
-          g.append(row);
-        });
+        s.items.forEach((it, i) => { const row = el("div", "step"); const b = el("div", "body"); b.append(el("h4", null, it.title)); if (it.text) b.append(el("p", null, it.text)); row.append(el("span", "num", String(i + 1)), b); g.append(row); });
         wrap.append(g);
       } else if (s.type === "compare") {
         const g = el("div", "compare");
-        s.columns.forEach((c, i) => {
-          const col = el("div", `col c${(i % 6) + 1}`);
-          col.append(el("h4", null, c.title));
-          const ul = el("ul"); c.points.forEach((p) => ul.append(el("li", null, p)));
-          col.append(ul); g.append(col);
-        });
+        s.columns.forEach((c, i) => { const col = el("div", `col c${(i % 6) + 1}`); col.append(el("h4", null, c.title)); const ul = el("ul"); c.points.forEach((p) => ul.append(el("li", null, p))); col.append(ul); g.append(col); });
         wrap.append(g);
       } else {
         const g = el("div", "checklist");
-        s.items.forEach((it) => {
-          const row = el("div", "check-row");
-          const tk = el("span", "tick"); tk.append(icon("check"));
-          const b = el("div", "body"); if (it.title) b.append(el("h4", null, it.title)); if (it.text) b.append(el("p", null, it.text));
-          row.append(tk, b); g.append(row);
-        });
+        s.items.forEach((it) => { const row = el("div", "check-row"); const tk = el("span", "tick"); tk.append(icon("check")); const b = el("div", "body"); if (it.title) b.append(el("h4", null, it.title)); if (it.text) b.append(el("p", null, it.text)); row.append(tk, b); g.append(row); });
         wrap.append(g);
       }
       inner.append(wrap);
     });
-
+    const nForm = d.visuals.filter((v) => v.type === "formula").length;
+    const vis = d.visuals.map((v) => { try { return renderVisual(v, t, nForm === 1); } catch { return null; } }).filter(Boolean);
+    if (vis.length) {
+      join(); const wrap = el("section"); const sh = el("div", "sec-head");
+      const b = el("span", "badge ic-badge"); b.append(icon("chart")); sh.append(b, el("h3", null, t.visuals)); wrap.append(sh);
+      const g = el("div", "visuals"); vis.forEach((n) => g.append(n)); wrap.append(g); inner.append(wrap);
+    }
     if (d.evidence.length) {
-      join();
-      const box = el("div");
+      join(); const box = el("div");
       d.evidence.forEach((e) => {
         const ev = el("div", "evidence");
-        const lb = el("div", "label"); lb.append(icon("book"), document.createTextNode(e.label || ""));
-        if (e.label) ev.append(lb);
+        if (e.label) { const lb = el("div", "label"); lb.append(icon("book"), document.createTextNode(e.label)); ev.append(lb); }
         const tx = el("div", "text" + (e.text.length > 90 ? " long" : ""));
-        if (e.kind === "quran") {
-          // In RTL the opening ornament ﴿ sits on the right.
-          tx.append(el("span", "orn", "﴿"), el("span", null, e.text), el("span", "orn", "﴾"));
-        } else if (e.kind === "hadith" || e.kind === "quote") {
-          const [o, c] = d.lang === "en" ? ["“", "”"] : ["«", "»"];
-          tx.append(el("span", "orn", o), el("span", null, e.text), el("span", "orn", c));
-        } else tx.append(el("span", null, e.text));
+        if (e.kind === "quran" || e.kind === "hadith") tx.setAttribute("lang", "ar");
+        if (e.kind === "quran") tx.append(el("span", "orn", "﴿"), el("span", null, e.text), el("span", "orn", "﴾"));
+        else if (e.kind === "hadith" || e.kind === "quote") { const [o, c] = d.lang === "en" ? ["“", "”"] : ["«", "»"]; tx.append(el("span", "orn", o), el("span", null, e.text), el("span", "orn", c)); }
+        else tx.append(el("span", null, e.text));
         ev.append(tx);
         if (e.source) ev.append(el("div", "src", e.source));
+        if (e.translation) { const p = el("p", "trans"); p.append(el("b", null, t.meaning + " "), document.createTextNode(e.translation)); ev.append(p); }
         if (e.significance) { const p = el("p", "sig"); p.append(el("b", null, t.sig + " "), document.createTextNode(e.significance)); ev.append(p); }
         box.append(ev);
       });
       inner.append(box);
     }
-
     if (d.memoryKey.chips.length) {
       const f = el("footer", "p-foot");
       f.append(el("span", "k", (d.memoryKey.label || t.key) + (d.lang === "fr" ? " :" : ":")));
-      d.memoryKey.chips.forEach((c, i) => {
-        if (i) f.append(el("span", "bar", "|"));
-        const ch = el("span", `chip c${(i % 6) + 1}`); ch.append(icon(c.icon), document.createTextNode(c.text));
-        f.append(ch);
-      });
+      d.memoryKey.chips.forEach((c, i) => { if (i) f.append(el("span", "bar", "|")); const ch = el("span", `chip c${(i % 6) + 1}`); ch.append(icon(c.icon), document.createTextNode(c.text)); f.append(ch); });
       inner.append(f);
     }
     els.poster.replaceChildren(inner);
   }
-
+  let speaking = false;
+  const listenLabel = () => (speaking ? t("stopListen") : t("listen"));
   function renderExplain(d) {
-    const t = T[d.lang] || T.ar;
-    const x = d.explanation;
-    els.explain.setAttribute("dir", d.lang === "ar" ? "rtl" : "ltr");
-    els.explain.setAttribute("lang", d.lang);
+    const t = T[d.lang] || T.ar; const x = d.explanation;
+    els.explain.setAttribute("dir", d.lang === "ar" ? "rtl" : "ltr"); els.explain.setAttribute("lang", d.lang);
     const nodes = [];
-    const h = el("h2"); h.append(icon("bulb"), document.createTextNode(t.explain)); nodes.push(h);
-    if (x.summary) nodes.push(el("p", null, x.summary));
-    if (x.points.length) {
-      const s = el("div"); s.append(el("h3", null, t.points));
-      const ul = el("ul"); x.points.forEach((p) => ul.append(el("li", null, p))); s.append(ul); nodes.push(s);
+    const head = el("div", "ex-head");
+    const h = el("h2"); h.append(icon("bulb"), document.createTextNode(t.explain)); head.append(h);
+    if ("speechSynthesis" in window) {
+      const b = el("button", "btn"); b.type = "button"; b.id = "listenBtn";
+      b.append(icon("speaker"), el("span", null, listenLabel())); b.onclick = () => toggleSpeak(d, b); head.append(b);
     }
-    if (x.example) { const s = el("div", "example"); s.append(el("h3", null, t.example), el("p", null, x.example)); nodes.push(s); }
+    nodes.push(head);
+    if (x.simple) nodes.push(el("p", "simple", x.simple));
+    if (x.analogy) { const s = el("div", "analogy"); s.append(h3("sun", t.analogy), el("p", null, x.analogy)); nodes.push(s); }
+    if (x.points.length) { const s = el("div"); const ul = el("ul"); x.points.forEach((p) => ul.append(el("li", null, p))); s.append(h3("list", t.points), ul); nodes.push(s); }
+    if (x.worked) {
+      const s = el("div", "worked"); s.append(h3("calc", t.worked));
+      if (x.worked.problem) s.append(el("p", null, x.worked.problem));
+      if (x.worked.steps.length) { const ol = el("ol"); x.worked.steps.forEach((p) => ol.append(el("li", null, p))); s.append(ol); }
+      if (x.worked.answer) s.append(el("p", "ans", `${t.answer} ${x.worked.answer}`));
+      nodes.push(s);
+    }
+    if (x.example) { const s = el("div", "example"); s.append(h3("users", t.example), el("p", null, x.example)); nodes.push(s); }
+    if (x.mistakes.length) { const s = el("div", "mistakes"); const ul = el("ul"); x.mistakes.forEach((p) => ul.append(el("li", null, p))); s.append(h3("warn", t.mistakes), ul); nodes.push(s); }
     if (x.questions.length) {
-      const s = el("div", "qa"); s.append(el("h3", null, t.qs));
-      x.questions.forEach((q) => {
-        const det = el("details"); det.append(el("summary", null, q.q));
-        if (q.a) { const p = el("p"); p.append(el("b", null, t.ans + ": "), document.createTextNode(q.a)); det.append(p); }
-        s.append(det);
-      });
+      const s = el("div", "qa"); s.append(h3("key", t.qs));
+      x.questions.forEach((q) => { const det = el("details"); det.append(el("summary", null, q.q)); if (q.a) { const p = el("p"); p.append(el("b", null, t.ans + ": "), document.createTextNode(q.a)); det.append(p); } s.append(det); });
       nodes.push(s);
     }
     if (d.notes) nodes.push(el("p", "note", `${t.notes} ${d.notes}`));
     els.explain.replaceChildren(...nodes);
   }
-
-  function render(d, tag) {
-    state.data = d;
-    renderPoster(d);
-    renderExplain(d);
-    els.tag.textContent = tag;
+  function toggleSpeak(d, btn) {
+    const synth = window.speechSynthesis;
+    if (speaking) { synth.cancel(); speaking = false; btn.lastChild.textContent = listenLabel(); return; }
+    const x = d.explanation;
+    const clean = (s) => s.replace(/\$[^$]*\$/g, " ").replace(/\s+/g, " ").trim();
+    const text = [x.simple, x.analogy, ...x.points].filter(Boolean).map(clean).join(". ");
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = { ar: "ar-SA", fr: "fr-FR", en: "en-US" }[d.lang];
+    const voice = synth.getVoices().find((vv) => vv.lang && vv.lang.toLowerCase().startsWith(d.lang)); if (voice) u.voice = voice;
+    u.onend = u.onerror = () => { speaking = false; const b = document.getElementById("listenBtn"); if (b) b.lastChild.textContent = listenLabel(); };
+    speaking = true; btn.lastChild.textContent = listenLabel(); synth.speak(u);
+  }
+  function show(item, lang) {
+    if (speaking) { window.speechSynthesis.cancel(); speaking = false; }
+    state.cur = item; state.curLang = lang;
+    const d = lang === item.base.lang ? item.base : item.tr[lang];
+    renderPoster(d); renderExplain(d);
+    els.trSeg.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.l === lang)));
+    state.chat = []; els.askLog.replaceChildren();
+    updateTag(); renderHistory();
+    return typeset([els.poster, els.explain]);
+  }
+  const curData = () => (state.curLang === state.cur.base.lang ? state.cur.base : state.cur.tr[state.curLang]);
+  function updateTag() {
+    if (!state.cur) return;
+    els.tag.textContent = state.cur.example ? `${t("tagExample")}: ${t(state.cur.nameKey)}` : t("tagYours");
   }
 
-  /* ---------------- History (this browser only) ---------------- */
+  /* ================= History (this browser only) ================= */
+  function loadHistory() {
+    let h = store.get("khutata.history2", null);
+    if (!Array.isArray(h)) { const old = store.get("khutata.history", []); h = Array.isArray(old) ? old.map((o) => ({ id: o.id, base: o.data, tr: {} })) : []; }
+    state.history = h.map((it) => { try { return { id: it.id, base: normalize(it.base), tr: Object.fromEntries(Object.entries(it.tr || {}).map(([k, v]) => [k, normalize(v)])) }; } catch { return null; } }).filter(Boolean);
+  }
+  function saveHistory() {
+    let h = state.history.slice(0, 8);
+    while (h.length && !store.set("khutata.history2", h)) h = h.slice(0, -1);
+  }
   function renderHistory() {
-    const h = state.history;
-    els.history.hidden = h.length === 0;
-    if (!h.length) return;
-    const nodes = [el("span", null, "خطاطاتك السابقة:")];
-    h.forEach((item) => {
-      const b = el("button", null, item.data.title || item.data.concept.term || "خطاطة");
-      b.type = "button";
-      b.setAttribute("aria-current", String(item.id === state.currentId));
-      b.onclick = () => { state.currentId = item.id; state.isExample = false; render(item.data, "خطاطة محفوظة"); renderHistory(); };
-      nodes.push(b);
-    });
-    const ex = el("button", null, "المثال"); ex.type = "button";
-    ex.setAttribute("aria-current", String(state.isExample));
-    ex.onclick = () => { state.currentId = null; state.isExample = true; render(EXAMPLE, "مثال: درس «شكر الله»"); renderHistory(); };
-    nodes.push(ex);
+    const nodes = [];
+    if (state.history.length) {
+      nodes.push(el("span", null, t("history")));
+      state.history.forEach((item) => {
+        const b = el("button", null, item.base.title || item.base.concept.term || "—"); b.type = "button"; b.dir = "auto";
+        b.setAttribute("aria-current", String(state.cur === item)); b.onclick = () => show(item, item.base.lang); nodes.push(b);
+      });
+    }
+    nodes.push(el("span", null, t("examples")));
+    EXAMPLES.forEach((item) => { const b = el("button", null, t(item.nameKey)); b.type = "button"; b.setAttribute("aria-current", String(state.cur === item)); b.onclick = () => show(item, item.base.lang); nodes.push(b); });
     els.history.replaceChildren(...nodes);
   }
-  function remember(d) {
-    const id = Date.now().toString(36);
-    state.history = [{ id, data: d }, ...state.history].slice(0, 8);
-    state.currentId = id;
-    store.set("khutata.history", state.history);
-    renderHistory();
-  }
 
-  /* ---------------- Standalone API path ---------------- */
-  async function toJpegBase64(blob) {
-    const bmp = await createImageBitmap(blob);
-    const max = 1600;
-    const scale = Math.min(1, max / Math.max(bmp.width, bmp.height));
-    const c = document.createElement("canvas");
-    c.width = Math.round(bmp.width * scale); c.height = Math.round(bmp.height * scale);
-    const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
-    g.drawImage(bmp, 0, 0, c.width, c.height);
-    const url = c.toDataURL("image/jpeg", 0.88);
-    return url.slice(url.indexOf(",") + 1);
-  }
-  function parseJsonLoose(text) {
-    try { return JSON.parse(text); } catch {}
-    const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/);
-    if (fence) { try { return JSON.parse(fence[1]); } catch {} }
-    const a = text.indexOf("{"), b = text.lastIndexOf("}");
-    if (a >= 0 && b > a) { try { return JSON.parse(text.slice(a, b + 1)); } catch {} }
-    throw { code: "invalid_json" };
-  }
-  async function callApi(prompt, images, signal) {
-    const key = store.get("khutata.apikey", "");
-    if (!key) throw { code: "no_key" };
-    const content = [];
-    for (const im of images) content.push({ type: "image", source: { type: "base64", media_type: "image/jpeg", data: await toJpegBase64(im.blob) } });
-    content.push({ type: "text", text: prompt });
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      signal,
-      headers: {
-        "content-type": "application/json",
-        "x-api-key": key,
-        "anthropic-version": "2026-10-21",
-        "anthropic-beta": "server-side-fallback-2026-07-01",
-        "anthropic-dangerous-direct-browser-access": "true",
-      },
-      body: JSON.stringify({
-        model: "claude-opus-5-5",
-        max_tokens: 16000,
-        output_config: { effort: "medium" },
-        fallbacks: "default",
-        messages: [{ role: "user", content }],
-      }),
-    });
-    const body = await res.json().catch(() => null);
-    if (!res.ok) throw { code: res.status === 401 ? "bad_key" : res.status === 429 ? "rate_limited" : "upstream_error", message: body && body.error && body.error.message };
-    if (body.stop_reason === "refusal") throw { code: "refused" };
-    const text = (body.content || []).filter((b) => b.type === "text").map((b) => b.text).join("");
-    if (body.stop_reason === "max_tokens") throw { code: "invalid_json" };
-    return parseJsonLoose(text);
-  }
-
-  /* ---------------- Generate ---------------- */
-  const ERR = {
-    not_granted: "لم يُسمح للصفحة باستعمال Claude. يمكنك تغيير ذلك من قائمة الأذونات ثم إعادة المحاولة.",
-    sampling_disabled: "Claude غير متاح لهذا الحساب.",
-    rate_limited: "طلبات كثيرة في وقت قصير. انتظر قليلًا ثم أعد المحاولة.",
-    session_expired: "انتهت الجلسة. سجّل الدخول من جديد.",
-    image_rejected: "تعذرت قراءة إحدى الصور. جرّب صورة أوضح بصيغة JPG أو PNG.",
-    images_unavailable: "قراءة الصور غير متاحة في هذا العرض. الصق نص الدرس بدلًا منها.",
-    refused: "رفض Claude معالجة هذا المحتوى. تأكد أن المادة درس مدرسي.",
-    empty_completion: "لم يصل أي جواب. جرّب نصًا أقصر.",
-    invalid_json: "وصل جواب غير مكتمل. أعد المحاولة، أو قسّم الدرس إلى جزأين.",
-    prompt_too_large: "الدرس طويل جدًا لمرة واحدة. قسّمه إلى جزأين.",
-    bad_shape: "لم يُستخرج هيكل واضح من الدرس. تأكد أن النص أو الصور تحتوي درسًا مقروءًا.",
-    no_key: "أدخل مفتاح Anthropic API أولًا ثم اضغط «حفظ».",
-    bad_key: "مفتاح API غير صالح. تحقق منه ثم أعد الحفظ.",
-    upstream_error: "انقطع الاتصال. أعد المحاولة.",
-  };
-
+  /* ================= Generate ================= */
   els.go.onclick = async () => {
     await backendReady;
-    const text = els.text.value.trim();
-    const images = state.backend === "claude" && !state.imagesOk ? [] : state.images.slice();
-    if (!text && !images.length) { setStatus(state.images.length ? ERR.images_unavailable : "الصق نص الدرس أو أضف صورة له أولًا.", "err"); return; }
-    if (state.backend === "none") { setStatus("تعذر الوصول إلى Claude من هذا العرض.", "err"); return; }
+    if (state.backend === "none") { setStatus(t("noClaude"), "err"); return; }
+    if (state.files.some((f) => f.status === "busy")) { setStatus(t("waitFiles"), "busy"); await Promise.all(state.files.map((f) => f.promise)); }
+    const ready = state.files.filter((f) => f.status === "ready");
+    const texts = []; const typed = els.text.value.trim(); if (typed) texts.push(typed);
+    ready.forEach((f) => { if (f.text) texts.push(`=== ${f.name} ===\n${f.text}`); });
+    let text = texts.join("\n\n"); if (text.length > 160000) text = text.slice(0, 160000);
+    const order = { image: 0, pdf: 1, pptx: 2, docx: 3, text: 4 };
+    let images = ready.slice().sort((a, b) => (order[a.kind] ?? 5) - (order[b.kind] ?? 5)).flatMap((f) => f.images);
+    let note = "";
+    if (state.backend === "claude" && !state.imagesOk && images.length) { images = []; note = t("noImages"); }
+    if (images.length > state.maxImages) { images = images.slice(0, state.maxImages); note = t("imgCap", { n: state.maxImages }); }
+    if (!text && !images.length) { setStatus(note || t("needInput"), "err"); return; }
 
-    const prompt = buildPrompt(text, images.length, els.level.value);
+    const prompt = buildPrompt(text, images.map((i) => i.label), els.level.value, els.outLang.value);
     state.ctl = new AbortController();
     els.go.disabled = true; els.stop.hidden = false;
-    setStatus(images.length ? "يقرأ Claude صور الدرس ويبني الخطاطة… (قد يستغرق دقيقة)" : "يحلل Claude الدرس ويبني الخطاطة…", "busy");
+    setStatus(t("working"), "busy");
     try {
-      let raw;
-      if (state.backend === "claude") {
-        const opts = { signal: state.ctl.signal, modelTier: "default", onText: ({ text: t }) => setStatus(`يكتب الخطاطة… (${t.length} حرف)`, "busy") };
-        if (images.length) opts.images = images.map((i) => i.blob);
-        raw = await state.sample.json(prompt, opts);
-      } else {
-        raw = await callApi(prompt, images, state.ctl.signal);
-      }
-      const d = normalize(raw);
-      state.isExample = false;
-      render(d, "خطاطتك");
-      remember(d);
-      setStatus(d.notes ? "اكتملت الخطاطة. راجع الملاحظة أسفل الشرح." : "اكتملت الخطاطة.");
+      const raw = await ask(prompt, { images, signal: state.ctl.signal, onText: ({ text: s }) => setStatus(t("writing", { n: s.length }), "busy") });
+      const d = normalize(parseJsonLoose(raw));
+      await resolveFigures(d, images);
+      const item = { id: Date.now().toString(36), base: d, tr: {} };
+      state.history.unshift(item); saveHistory();
+      show(item, d.lang);
+      setStatus((d.notes ? t("doneNote") : t("done")) + (note ? " " + note : ""));
       document.getElementById("result").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
     } catch (e) {
       const code = (e && e.code) || (e && e.name === "AbortError" ? "cancelled" : "upstream_error");
-      if (code === "cancelled" || (e && e.name === "AbortError")) setStatus("أُوقف التوليد.");
-      else setStatus(ERR[code] || ERR.upstream_error, "err");
+      setStatus(code === "cancelled" ? t("stopped") : errMsg(code), code === "cancelled" ? "" : "err");
     } finally {
       els.go.disabled = false; els.stop.hidden = true; state.ctl = null;
     }
   };
   els.stop.onclick = () => state.ctl && state.ctl.abort();
 
-  /* ---------------- Copy as text ---------------- */
+  /* ================= Translate ================= */
+  els.trSeg.addEventListener("click", async (e) => {
+    const b = e.target.closest("button[data-l]"); if (!b || !state.cur) return;
+    const lang = b.dataset.l, item = state.cur;
+    if (lang === item.base.lang || item.tr[lang]) { show(item, lang); return; }
+    await backendReady;
+    if (state.backend === "none") { setStatus(t("noClaude"), "err"); return; }
+    const btns = els.trSeg.querySelectorAll("button"); btns.forEach((x) => (x.disabled = true));
+    setStatus(t("translating"), "busy");
+    try {
+      const raw = await ask(translatePrompt(item.base, lang), { onText: ({ text: s }) => setStatus(`${t("translating")} (${s.length})`, "busy") });
+      const d = normalize(parseJsonLoose(raw)); d.lang = lang;
+      // put back the cropped photos (they are not sent to the model)
+      const figs = item.base.visuals.filter((v) => v.type === "figure");
+      let fi = 0; d.visuals.forEach((v) => { if (v.type === "figure") { const o = figs[fi++]; v.dataUrl = o ? o.dataUrl : ""; v.source = o ? o.source : ""; } });
+      d.visuals = d.visuals.filter((v) => v.type !== "figure" || v.dataUrl);
+      item.tr[lang] = d; if (!item.example) saveHistory();
+      show(item, lang); setStatus(t("translated"));
+    } catch (er) {
+      setStatus(errMsg((er && er.code) || "upstream_error"), "err");
+    } finally { btns.forEach((x) => (x.disabled = false)); }
+  });
+
+  /* ================= Ask about the lesson ================= */
+  function renderAnswer(box, text) {
+    box.replaceChildren(); let ul = null;
+    text.split(/\n+/).forEach((line) => {
+      const l = line.trim(); if (!l) return;
+      const m = l.match(/^[-•*]\s+(.*)/);
+      if (m) { if (!ul) { ul = el("ul"); box.append(ul); } ul.append(el("li", null, m[1].replace(/\*\*/g, ""))); }
+      else { ul = null; box.append(el("p", null, l.replace(/\*\*/g, "").replace(/^#+\s*/, ""))); }
+    });
+  }
+  els.askForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const q = els.askInput.value.trim(); if (!q || !state.cur) return;
+    await backendReady;
+    if (state.backend === "none") return;
+    els.askInput.value = ""; els.askBtn.disabled = true;
+    const me = el("div", "msg me"); me.dir = "auto"; me.textContent = q; els.askLog.append(me);
+    const ai = el("div", "msg ai"); ai.dir = "auto"; ai.textContent = "…"; els.askLog.append(ai);
+    const d = stripForModel(curData()); d.visuals.forEach((v) => { if (v.svg) v.svg = "(diagram)"; });
+    const rules = `You are a patient tutor helping a school student with this lesson. The lesson schematic as JSON:\n${JSON.stringify(d)}\n\nAnswer the student's questions very simply, in short sentences, with a small example when useful. Stay consistent with the lesson; if the lesson doesn't cover something, say so briefly, then help anyway. Reply in the language of the question. Plain text only: short paragraphs and "- " bullets, no headings or bold. Write math in LaTeX between $…$.`;
+    state.chat.push({ role: "user", content: q });
+    try {
+      const text = await ask([{ role: "user", content: rules }, ...state.chat.slice(-8)], { cache: false, onText: ({ text: s }) => renderAnswer(ai, s) });
+      state.chat.push({ role: "assistant", content: text });
+      renderAnswer(ai, text); typeset([ai]);
+    } catch (er) {
+      state.chat.pop();
+      ai.textContent = errMsg((er && er.code) || "upstream_error");
+    } finally { els.askBtn.disabled = false; }
+  });
+
+  /* ================= Copy as text ================= */
   function asText(d) {
-    const t = T[d.lang] || T.ar;
-    const L = [];
+    const t = T[d.lang] || T.ar; const L = [];
     L.push(`${d.title}${d.subject ? `  (${d.subject})` : ""}`);
     if (d.concept.term) L.push("", `■ ${d.concept.term}: ${d.concept.definition}`);
     d.sections.forEach((s, i) => {
@@ -970,77 +1692,74 @@ ${text ? `\n<lesson>\n${text}\n</lesson>` : ""}`;
       if (s.items) s.items.forEach((it, j) => L.push(`   ${s.type === "steps" ? (j + 1) + ")" : "•"} ${it.title}${it.text ? ": " + it.text : ""}`));
       if (s.columns) s.columns.forEach((c) => { L.push(`   ◆ ${c.title}`); c.points.forEach((p) => L.push(`      - ${p}`)); });
     });
+    if (d.visuals.length) {
+      L.push("", `— ${t.visuals} —`);
+      d.visuals.forEach((v) => {
+        if (v.type === "formula") { L.push(`• ${v.title ? v.title + ": " : ""}${v.latex}`); v.legend.forEach((l) => L.push(`    ${l.symbol}: ${l.meaning}${l.unit ? ` (${l.unit})` : ""}`)); }
+        else if (v.type === "graph") L.push(`• ${v.title || "graph"}: ${v.functions.map((f) => f.label || f.expr).join(" ; ")}`);
+        else if (v.type === "table") { L.push(`• ${v.title}`); if (v.headers.length) L.push(`    ${v.headers.join(" | ")}`); v.rows.forEach((r) => L.push(`    ${r.join(" | ")}`)); }
+        else L.push(`• [${v.title || v.type}]`);
+        if (v.caption) L.push(`    ${v.caption}`);
+      });
+    }
     d.evidence.forEach((e) => {
       const q = e.kind === "quran" ? `﴿${e.text}﴾` : e.kind === "text" ? e.text : `«${e.text}»`;
       L.push("", `${e.label ? e.label + ": " : ""}${q}${e.source ? ` [${e.source}]` : ""}`);
+      if (e.translation) L.push(`   ${t.meaning} ${e.translation}`);
       if (e.significance) L.push(`   ${t.sig} ${e.significance}`);
     });
     if (d.memoryKey.chips.length) L.push("", `${d.memoryKey.label || t.key}: ${d.memoryKey.chips.map((c) => c.text).join(" | ")}`);
     const x = d.explanation;
-    if (x.summary) L.push("", `— ${t.explain} —`, x.summary);
+    if (x.simple) L.push("", `— ${t.explain} —`, x.simple);
+    if (x.analogy) L.push("", `${t.analogy}: ${x.analogy}`);
     if (x.points.length) { L.push("", t.points + ":"); x.points.forEach((p) => L.push(`• ${p}`)); }
+    if (x.worked) { L.push("", t.worked + ":", x.worked.problem); x.worked.steps.forEach((s, i) => L.push(`  ${i + 1}. ${s}`)); if (x.worked.answer) L.push(`  ${t.answer} ${x.worked.answer}`); }
     if (x.example) L.push("", `${t.example}: ${x.example}`);
+    if (x.mistakes.length) { L.push("", t.mistakes + ":"); x.mistakes.forEach((p) => L.push(`⚠ ${p}`)); }
     if (x.questions.length) { L.push("", t.qs + ":"); x.questions.forEach((q, i) => L.push(`${i + 1}. ${q.q}`, `   ${t.ans}: ${q.a}`)); }
     return L.join("\n");
   }
   els.copy.onclick = () => {
-    const text = asText(state.data);
-    const done = () => setStatus("نُسخت الخطاطة كنص.");
+    const text = asText(curData());
+    const done = () => setStatus(t("copied"));
     const fallback = () => {
       const ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
-      document.body.append(ta); ta.select();
-      let ok = false; try { ok = document.execCommand("copy"); } catch {}
-      ta.remove();
-      ok ? done() : setStatus("تعذر النسخ التلقائي في هذا العرض.", "err");
+      document.body.append(ta); ta.select(); let ok = false; try { ok = document.execCommand("copy"); } catch {} ta.remove();
+      ok ? done() : setStatus(t("copyFail"), "err");
     };
     try { navigator.clipboard.writeText(text).then(done, fallback); } catch { fallback(); }
   };
 
-  /* ---------------- Save as PNG ---------------- */
-  let h2cPromise = null;
-  function loadH2C() {
-    if (window.html2canvas) return Promise.resolve();
-    if (!h2cPromise) h2cPromise = new Promise((res, rej) => {
-      const s = document.createElement("script");
-      s.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
-      s.onload = res; s.onerror = () => { h2cPromise = null; rej(new Error("load")); };
-      document.head.append(s);
-    });
-    return h2cPromise;
-  }
+  /* ================= Save as PNG ================= */
   els.png.onclick = async () => {
-    els.png.disabled = true;
-    setStatus("يجهّز الصورة…", "busy");
+    els.png.disabled = true; setStatus(t("pngBusy"), "busy");
     try {
-      await loadH2C();
+      await loadScript(LIB.h2c);
       if (document.fonts && document.fonts.ready) await document.fonts.ready;
       const bg = getComputedStyle(document.body).backgroundColor;
-      const canvas = await window.html2canvas(els.poster, { backgroundColor: bg, scale: 2, useCORS: true, logging: false });
+      const canvas = await window.html2canvas(els.poster, { backgroundColor: bg, scale: 2, logging: false });
       const blob = await new Promise((r) => canvas.toBlob(r, "image/png"));
-      const name = (state.data.title || "khutata").replace(/[\\/:*?"<>|]+/g, " ").trim().slice(0, 80) + ".png";
+      const name = (curData().title || "khutata").replace(/[\\/:*?"<>|]+/g, " ").trim().slice(0, 80) + ".png";
       const dl = window.claude && window.claude.use ? await window.claude.use("downloads") : null;
-      if (dl) {
-        await dl.save({ filename: name, data: blob });
-        setStatus("حُفظت الصورة.");
-      } else if (!window.claude) {
-        const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; a.click();
-        setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-        setStatus("حُفظت الصورة.");
-      } else {
-        setStatus("حفظ الملفات غير متاح في هذا العرض. يمكنك أخذ لقطة شاشة للخطاطة.", "err");
-      }
+      if (dl) { await dl.save({ filename: name, data: blob }); setStatus(t("pngDone")); }
+      else if (!window.claude) { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); setStatus(t("pngDone")); }
+      else setStatus(t("pngFail"), "err");
     } catch (e) {
-      if (e && e.code === "declined") setStatus("أُلغي الحفظ.");
-      else setStatus("تعذر تجهيز الصورة في هذا العرض. يمكنك أخذ لقطة شاشة للخطاطة.", "err");
-    } finally {
-      els.png.disabled = false;
-    }
+      const declined = e && e.code === "declined";
+      setStatus(declined ? t("pngCancel") : t("pngFail"), declined ? "" : "err");
+    } finally { els.png.disabled = false; }
   };
 
-  /* ---------------- Boot ---------------- */
-  render(EXAMPLE, "مثال: درس «شكر الله»");
-  renderHistory();
+  /* ================= Boot ================= */
+  const savedUi = store.get("khutata.ui", "");
+  const nav = (navigator.language || "").slice(0, 2);
+  uiLang = LANGS.includes(savedUi) ? savedUi : nav === "fr" ? "fr" : nav === "en" ? "en" : "ar";
+  loadHistory();
+  state.cur = EXAMPLES[0];
+  applyUi();
+  show(EXAMPLES[0], "ar");
   backendReady = detectBackend();
+  window.__khutata = { compileExpr, repairJson, parseJsonLoose, normalize, sanitizeSvg, show, EXAMPLES, state, buildPrompt, resolveFigures };
 })();
 </script>
 
