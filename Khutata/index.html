@@ -1,0 +1,1048 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>صانع الخطاطات</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@600;700;800&display=swap">
+<style>
+/* Layout: input desk on top, the generated خطاطة as a framed study sheet, the plain explanation beneath it. */
+:root {
+  --bg: #eef1f6;
+  --surface: #ffffff;
+  --surface-2: #f6f8fb;
+  --fg: #1d2638;
+  --muted: #5d6779;
+  --line: #d7dde8;
+  --navy: #1f3a68;
+  --navy-soft: #e7eefa;
+  --gold: #b8892a;
+  --gold-soft: #fbf5e6;
+  --gold-line: #e6d3a3;
+  --concept-a: #eef3fc;
+  --concept-b: #e3ebf8;
+  --concept-line: #b7c7e6;
+  --ok: #2f7d4f;
+  --danger: #b3412f;
+  --danger-soft: #fbece9;
+
+  --p1-bg: #e9f4ec; --p1-line: #a9d3b6; --p1-fg: #2a7046;
+  --p2-bg: #e8eefa; --p2-line: #aebfe3; --p2-fg: #2c4f8c;
+  --p3-bg: #fdeedf; --p3-line: #f0c597; --p3-fg: #b45f17;
+  --p4-bg: #f1eafa; --p4-line: #cbb6e8; --p4-fg: #6a3f9e;
+  --p5-bg: #e5f4f4; --p5-line: #9fd2d2; --p5-fg: #1f6f6f;
+  --p6-bg: #fbe9ee; --p6-line: #eab0c0; --p6-fg: #a2385a;
+
+  --font-display: "Noto Kufi Arabic", "IBM Plex Sans Arabic", Tahoma, sans-serif;
+  --font-body: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+  --font-scripture: "Amiri", "Traditional Arabic", "Times New Roman", serif;
+  --radius: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12161f; --surface: #1a202c; --surface-2: #202737; --fg: #e6e9f0; --muted: #a2abbd; --line: #333c4f;
+    --navy: #9fb9ea; --navy-soft: #24314b; --gold: #ddb460; --gold-soft: #2a2516; --gold-line: #5a4a24;
+    --concept-a: #1f2a40; --concept-b: #1b2538; --concept-line: #3b4d72;
+    --ok: #6cc28f; --danger: #ef8a78; --danger-soft: #3a211d;
+    --p1-bg: #17291f; --p1-line: #2f5a3e; --p1-fg: #7fd09c;
+    --p2-bg: #1a2438; --p2-line: #34476e; --p2-fg: #9db8ec;
+    --p3-bg: #2e2216; --p3-line: #65441f; --p3-fg: #f0a960;
+    --p4-bg: #251d33; --p4-line: #4c3a6b; --p4-fg: #c4a5ef;
+    --p5-bg: #152a2a; --p5-line: #2c5a5a; --p5-fg: #7fd3d3;
+    --p6-bg: #2f1a22; --p6-line: #693245; --p6-fg: #f09ab4;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12161f; --surface: #1a202c; --surface-2: #202737; --fg: #e6e9f0; --muted: #a2abbd; --line: #333c4f;
+  --navy: #9fb9ea; --navy-soft: #24314b; --gold: #ddb460; --gold-soft: #2a2516; --gold-line: #5a4a24;
+  --concept-a: #1f2a40; --concept-b: #1b2538; --concept-line: #3b4d72;
+  --ok: #6cc28f; --danger: #ef8a78; --danger-soft: #3a211d;
+  --p1-bg: #17291f; --p1-line: #2f5a3e; --p1-fg: #7fd09c;
+  --p2-bg: #1a2438; --p2-line: #34476e; --p2-fg: #9db8ec;
+  --p3-bg: #2e2216; --p3-line: #65441f; --p3-fg: #f0a960;
+  --p4-bg: #251d33; --p4-line: #4c3a6b; --p4-fg: #c4a5ef;
+  --p5-bg: #152a2a; --p5-line: #2c5a5a; --p5-fg: #7fd3d3;
+  --p6-bg: #2f1a22; --p6-line: #693245; --p6-fg: #f09ab4;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+}
+.wrap {
+  max-width: 920px;
+  margin: 0 auto;
+  padding-block: 28px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid;
+  gap: 22px;
+}
+h1, h2, h3, h4 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+svg.i { width: 1em; height: 1em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+/* ---------- App header ---------- */
+.app-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-mark {
+  width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center;
+  background: var(--navy); color: var(--surface); font-size: 22px;
+}
+.brand h1 { font-size: 22px; color: var(--navy); line-height: 1.3; }
+.brand p { margin: 0; color: var(--muted); font-size: 13.5px; }
+.backend-pill {
+  font-size: 12.5px; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--muted); display: inline-flex; align-items: center; gap: 6px;
+}
+.backend-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+.backend-pill[data-state="ok"] .dot { background: var(--ok); }
+.backend-pill[data-state="off"] .dot { background: var(--danger); }
+
+/* ---------- Input desk ---------- */
+.desk {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 18px; display: grid; gap: 14px;
+}
+.tabs { display: flex; gap: 6px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 4px; width: fit-content; max-width: 100%; }
+.tab {
+  border: 0; background: transparent; padding: 6px 16px; border-radius: 7px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-weight: 500;
+}
+.tab[aria-selected="true"] { background: var(--surface); color: var(--navy); box-shadow: 0 1px 2px rgb(0 0 0 / .08); }
+.tab .count { font-size: 11.5px; background: var(--navy); color: var(--surface); border-radius: 999px; padding: 0 7px; line-height: 1.6; }
+textarea#lessonText {
+  width: 100%; min-height: 190px; resize: vertical; border: 1px solid var(--line); border-radius: 10px;
+  background: var(--surface-2); padding: 12px 14px; line-height: 1.8;
+}
+.drop {
+  border: 2px dashed var(--line); border-radius: 12px; background: var(--surface-2);
+  padding: 22px 16px; text-align: center; color: var(--muted); cursor: pointer; display: grid; gap: 6px; justify-items: center;
+}
+.drop.over { border-color: var(--gold); background: var(--gold-soft); }
+.drop .big { font-size: 28px; color: var(--navy); }
+.drop strong { color: var(--fg); font-weight: 600; }
+.thumbs { display: flex; flex-wrap: wrap; gap: 10px; }
+.thumb { position: relative; width: 92px; height: 116px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); background: var(--surface-2); }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb .n { position: absolute; inset-block-start: 4px; inset-inline-start: 4px; background: var(--navy); color: var(--surface); font-size: 11px; border-radius: 999px; padding: 0 7px; }
+.thumb button {
+  position: absolute; inset-block-start: 4px; inset-inline-end: 4px; width: 24px; height: 24px; border-radius: 50%;
+  border: 0; background: rgb(0 0 0 / .6); color: #fff; cursor: pointer; display: grid; place-items: center; font-size: 13px;
+}
+.hint { font-size: 12.5px; color: var(--muted); margin: 0; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+.opts { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.opts label { font-size: 13px; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
+.opts select { border: 1px solid var(--line); background: var(--surface-2); border-radius: 8px; padding: 4px 8px; }
+.btn {
+  border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 16px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px;
+}
+.btn:hover:not(:disabled) { border-color: var(--navy); }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+.btn.primary { background: var(--navy); border-color: var(--navy); color: var(--surface); padding: 10px 22px; font-size: 15px; }
+.btn.ghost { background: transparent; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.status { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--muted); min-height: 22px; }
+.status.err { color: var(--danger); }
+.spinner { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line); border-top-color: var(--navy); animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.keybox { display: grid; gap: 8px; padding: 12px; border-radius: 10px; border: 1px solid var(--gold-line); background: var(--gold-soft); font-size: 13px; }
+.keybox input { border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; background: var(--surface); width: 100%; direction: ltr; }
+.keyrow { display: flex; gap: 8px; }
+.keyrow input { flex: 1; min-width: 0; }
+
+.history { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 13px; color: var(--muted); }
+.history button { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 2px 12px; cursor: pointer; font-size: 12.5px; max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.history button[aria-current="true"] { border-color: var(--navy); color: var(--navy); }
+
+/* ---------- Result toolbar ---------- */
+.result-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.result-bar .tag { font-size: 12.5px; padding: 2px 10px; border-radius: 999px; background: var(--gold-soft); color: var(--gold); border: 1px solid var(--gold-line); }
+
+/* ---------- The poster (خطاطة) ---------- */
+.poster {
+  background: var(--surface); border: 1.5px solid var(--navy); border-radius: 18px; padding: 8px;
+}
+.poster-inner {
+  border: 1.5px solid var(--gold); border-radius: 13px; padding: 26px clamp(14px, 4vw, 30px) 18px;
+  display: grid; gap: 0; justify-items: stretch;
+}
+.p-head { text-align: center; display: grid; gap: 6px; justify-items: center; margin-bottom: 18px; }
+.p-eyebrow { color: var(--gold); font-weight: 700; font-size: 13.5px; display: inline-flex; gap: 8px; align-items: center; font-family: var(--font-display); }
+.p-title { font-size: clamp(24px, 5vw, 34px); color: var(--navy); font-weight: 800; line-height: 1.4; }
+.p-title .sep { color: var(--gold); }
+.p-diamond { width: 9px; height: 9px; background: var(--gold); transform: rotate(45deg); margin-top: 2px; }
+
+.concept {
+  background: linear-gradient(180deg, var(--concept-a), var(--concept-b));
+  border: 1px solid var(--concept-line); border-radius: 16px; padding: 18px 20px; text-align: center; display: grid; gap: 6px;
+}
+.concept .term { font-family: var(--font-scripture); font-size: clamp(30px, 6vw, 42px); font-weight: 700; color: var(--navy); line-height: 1.5; }
+.concept .def { color: var(--muted); font-size: 15px; max-width: 62ch; margin: 0 auto; }
+
+.arrow { display: grid; justify-items: center; color: var(--muted); padding: 6px 0; opacity: .8; }
+.arrow svg { width: 18px; height: 26px; }
+
+.sec-head { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 14px; }
+.sec-head h3 { font-size: 18px; color: var(--navy); }
+.badge { width: 26px; height: 26px; border-radius: 50%; background: var(--navy); color: var(--surface); display: grid; place-items: center; font-size: 13px; font-weight: 700; font-family: var(--font-display); flex: none; }
+
+.pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+.pillar {
+  border-radius: 14px; border: 1px solid var(--pl); background: var(--pb); padding: 18px 14px 16px;
+  text-align: center; display: grid; gap: 8px; justify-items: center; align-content: start; min-width: 0;
+}
+.pillar .ic { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--pl); background: var(--surface); color: var(--pf); font-size: 22px; }
+.pillar h4 { color: var(--pf); font-size: 17px; }
+.pillar p { margin: 0; color: var(--muted); font-size: 13.5px; line-height: 1.75; }
+.c1 { --pb: var(--p1-bg); --pl: var(--p1-line); --pf: var(--p1-fg); }
+.c2 { --pb: var(--p2-bg); --pl: var(--p2-line); --pf: var(--p2-fg); }
+.c3 { --pb: var(--p3-bg); --pl: var(--p3-line); --pf: var(--p3-fg); }
+.c4 { --pb: var(--p4-bg); --pl: var(--p4-line); --pf: var(--p4-fg); }
+.c5 { --pb: var(--p5-bg); --pl: var(--p5-line); --pf: var(--p5-fg); }
+.c6 { --pb: var(--p6-bg); --pl: var(--p6-line); --pf: var(--p6-fg); }
+
+.checklist { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.check-row { display: flex; gap: 14px; padding: 14px 18px; align-items: flex-start; }
+.check-row + .check-row { border-top: 1px dashed var(--line); }
+.check-row .tick { width: 28px; height: 28px; border-radius: 50%; background: var(--p1-bg); border: 1px solid var(--p1-line); color: var(--p1-fg); display: grid; place-items: center; flex: none; margin-top: 2px; font-size: 14px; }
+.check-row .body { min-width: 0; }
+.check-row h4 { font-size: 16px; color: var(--navy); margin-bottom: 2px; }
+.check-row p { margin: 0; font-size: 14px; }
+
+.steps { display: grid; gap: 10px; counter-reset: st; }
+.step { display: flex; gap: 12px; align-items: flex-start; background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+.step .num { width: 30px; height: 30px; border-radius: 9px; background: var(--navy-soft); color: var(--navy); display: grid; place-items: center; font-weight: 700; flex: none; font-family: var(--font-display); }
+.step .body { min-width: 0; }
+.step h4 { font-size: 15.5px; color: var(--navy); }
+.step p { margin: 0; font-size: 14px; color: var(--muted); }
+
+.compare { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+.col { border: 1px solid var(--pl); background: var(--pb); border-radius: 14px; padding: 14px 16px; min-width: 0; }
+.col h4 { color: var(--pf); font-size: 16px; margin-bottom: 6px; text-align: center; }
+.col ul { margin: 0; padding-inline-start: 18px; font-size: 14px; display: grid; gap: 4px; }
+
+.evidence {
+  background: var(--gold-soft); border: 1px solid var(--gold-line); border-radius: 16px; padding: 18px 18px 16px;
+  text-align: center; display: grid; gap: 6px; justify-items: center;
+}
+.evidence + .evidence { margin-top: 12px; }
+.evidence .label { color: var(--gold); font-weight: 700; font-family: var(--font-display); font-size: 14.5px; display: inline-flex; gap: 8px; align-items: center; }
+.evidence .text { font-family: var(--font-scripture); font-size: clamp(22px, 4.6vw, 32px); color: var(--navy); line-height: 1.8; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.evidence .text.long { font-size: clamp(18px, 3.4vw, 23px); font-weight: 400; }
+.evidence .orn { color: var(--gold); font-size: 1.1em; font-weight: 400; }
+.evidence .src { color: var(--muted); font-size: 13px; }
+.evidence .sig { margin: 6px 0 0; font-size: 14px; }
+.evidence .sig b { color: var(--gold); font-family: var(--font-display); font-weight: 700; }
+
+.p-foot { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.p-foot .k { font-weight: 700; color: var(--navy); font-family: var(--font-display); font-size: 14px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 3px 12px; font-size: 13px; font-weight: 600; background: var(--pb); color: var(--pf); border: 1px solid var(--pl); }
+.p-foot .bar { color: var(--line); }
+
+/* ---------- Explanation ---------- */
+.explain { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px clamp(16px, 4vw, 26px); display: grid; gap: 16px; }
+.explain h2 { font-size: 19px; color: var(--navy); display: flex; align-items: center; gap: 10px; }
+.explain h3 { font-size: 15.5px; color: var(--navy); margin-bottom: 6px; }
+.explain p { margin: 0; max-width: 68ch; }
+.explain ul { margin: 0; padding-inline-start: 20px; display: grid; gap: 6px; max-width: 68ch; }
+.example { background: var(--navy-soft); border-radius: 12px; padding: 12px 16px; }
+.qa { display: grid; gap: 8px; }
+.qa details { border: 1px solid var(--line); border-radius: 10px; padding: 8px 14px; background: var(--surface-2); }
+.qa summary { cursor: pointer; font-weight: 600; }
+.qa details p { margin-top: 6px; color: var(--muted); }
+.note { font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; }
+
+.ltr { direction: ltr; }
+@media (max-width: 520px) {
+  .check-row { padding: 12px; }
+  .btn.primary { width: 100%; justify-content: center; }
+  .controls { align-items: stretch; }
+}
+@media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
+</style>
+
+<div class="wrap" dir="rtl" lang="ar">
+  <header class="app-head">
+    <div class="brand">
+      <div class="brand-mark"><svg class="i" viewBox="0 0 24 24"><path d="M3 3h7v7H3z"/><path d="M14 3h7v4h-7z"/><path d="M14 11h7v10h-7z"/><path d="M3 14h7v7H3z"/></svg></div>
+      <div>
+        <h1>صانع الخطاطات</h1>
+        <p>الصق نص الدرس أو صوّره، فتحصل على خطاطة تلخيصية وشرح مبسّط.</p>
+      </div>
+    </div>
+    <span class="backend-pill" id="backendPill" data-state="wait"><span class="dot"></span><span id="backendText">جارٍ الاتصال بـ Claude…</span></span>
+  </header>
+
+  <section class="desk" aria-label="إدخال الدرس">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tabText" aria-selected="true" aria-controls="paneText">
+        <svg class="i" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg> نص الدرس
+      </button>
+      <button class="tab" role="tab" id="tabImg" aria-selected="false" aria-controls="paneImg">
+        <svg class="i" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg> صور الدرس <span class="count" id="imgCount" hidden>0</span>
+      </button>
+    </div>
+
+    <div id="paneText" role="tabpanel">
+      <textarea id="lessonText" placeholder="الصق هنا نص الدرس كاملًا (تربية إسلامية، اجتماعيات، علوم، لغة عربية…)"></textarea>
+    </div>
+
+    <div id="paneImg" role="tabpanel" hidden>
+      <div class="drop" id="drop" tabindex="0" role="button" aria-label="اختر صور الدرس">
+        <span class="big"><svg class="i" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg></span>
+        <strong>اسحب صور صفحات الدرس إلى هنا أو اضغط للاختيار</strong>
+        <span>يمكنك أيضًا لصق صورة مباشرة (Ctrl+V). رتّب الصور بترتيب الصفحات.</span>
+      </div>
+      <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden>
+      <div class="thumbs" id="thumbs"></div>
+      <p class="hint" id="imgHint"></p>
+    </div>
+
+    <div class="keybox" id="keyBox" hidden>
+      <span>هذه النسخة تعمل خارج Claude. أدخل مفتاح Anthropic API ليُحفظ في متصفحك فقط ويُرسل مباشرة إلى api.anthropic.com.</span>
+      <div class="keyrow">
+        <input type="password" id="apiKey" placeholder="sk-ant-..." autocomplete="off">
+        <button class="btn" id="saveKey" type="button">حفظ</button>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="opts">
+        <label for="level">مستوى الشرح
+          <select id="level">
+            <option value="simple">مبسّط جدًا (إعدادي)</option>
+            <option value="standard" selected>عادي (ثانوي)</option>
+            <option value="deep">معمّق (باكالوريا)</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn ghost" id="stopBtn" type="button" hidden>إيقاف</button>
+        <button class="btn primary" id="goBtn" type="button">
+          <svg class="i" viewBox="0 0 24 24"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
+          أنشئ الخطاطة
+        </button>
+      </div>
+    </div>
+    <div class="status" id="status" aria-live="polite"></div>
+    <div class="history" id="history" hidden></div>
+  </section>
+
+  <section id="result" aria-label="الخطاطة" style="display:grid; gap:14px;">
+    <div class="result-bar">
+      <span class="tag" id="resultTag">مثال: درس «شكر الله»</span>
+      <div class="actions">
+        <button class="btn" id="copyBtn" type="button"><svg class="i" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> نسخ كنص</button>
+        <button class="btn" id="pngBtn" type="button"><svg class="i" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg> حفظ كصورة</button>
+      </div>
+    </div>
+    <article class="poster" id="poster"></article>
+    <section class="explain" id="explain"></section>
+  </section>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  /* ---------------- Icons ---------------- */
+  const ICONS = {
+    heart: '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
+    chat: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+    hand: '<path d="M18 11V6a2 2 0 0 0-4 0"/><path d="M14 10V4a2 2 0 0 0-4 0v2"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>',
+    book: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+    check: '<path d="M20 6 9 17l-5-5"/>',
+    star: '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/>',
+    scale: '<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>',
+    bulb: '<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>',
+    users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    shield: '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>',
+    leaf: '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>',
+    globe: '<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>',
+    clock: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+    flag: '<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/>',
+    target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+    eye: '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+    key: '<circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/>',
+    home: '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
+    alert: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+    forbid: '<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/>',
+    brain: '<path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M12 5v13"/>',
+    gift: '<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/>',
+    link: '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+  };
+  const ICON_NAMES = Object.keys(ICONS);
+  const icon = (name) => {
+    const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    s.setAttribute("viewBox", "0 0 24 24");
+    s.setAttribute("class", "i");
+    s.setAttribute("aria-hidden", "true");
+    s.innerHTML = ICONS[name] || ICONS.star;
+    return s;
+  };
+
+  /* ---------------- Example (transcribed from the reference sheet) ---------------- */
+  const EXAMPLE = {
+    lang: "ar",
+    subject: "التربية الإسلامية",
+    title: "حق الله — شكر الله",
+    concept: { term: "شُكْرُ اللهِ تعالى", definition: "الاعتراف بنعم الله باطنًا، والتحدث بها ظاهرًا، وصرفها في طاعته" },
+    sections: [
+      { heading: "أركان الشكر الثلاثة", type: "pillars", items: [
+        { title: "شكر القلب", text: "الإقرار بأن كل نعمة من الله وحده، ومحبته عليها", icon: "heart" },
+        { title: "شكر اللسان", text: "حمد الله والثناء عليه والتحدث بنعمه", icon: "chat" },
+        { title: "شكر الجوارح", text: "استعمال النعم في طاعة الله وما يرضيه", icon: "hand" },
+      ]},
+      { heading: "التحقيق والأهمية", type: "checklist", items: [
+        { title: "كيفية تحقيق الشكر", text: "حمد الله وذكره، وطاعته، وصون نعمه، واستعمال الصحة والعلم والمال في الخير." },
+        { title: "أهمية الشكر", text: "نيل رضوان الله، وزيادة فضله، وتطهير النفس من الجحود والغفلة، وتربيتها على التواضع والقناعة." },
+      ]},
+    ],
+    evidence: [
+      { kind: "quran", label: "الشاهد القرآني", text: "لَئِن شَكَرْتُمْ لَأَزِيدَنَّكُمْ", source: "سورة إبراهيم — الآية 7", significance: "الشكر سببٌ لمزيد فضل الله وعطائه." },
+    ],
+    memoryKey: { label: "مفتاح الحفظ والفهم", chips: [
+      { text: "القلب يشعر", icon: "heart" }, { text: "اللسان يحمد", icon: "chat" }, { text: "الجوارح تعمل", icon: "hand" },
+    ]},
+    explanation: {
+      summary: "شكر الله يعني أن تعترف في قلبك بأن كل نعمة عندك هي من الله، ثم تعبّر عن ذلك بلسانك بالحمد، ثم تثبته بأفعالك حين تستعمل نعمه فيما يرضيه. فالشكر ليس كلمة تقال فقط، بل شعور وقول وعمل.",
+      points: [
+        "القلب: يقرّ بأن النعمة من الله وحده ويحبه عليها.",
+        "اللسان: يحمد الله ويثني عليه ويتحدث بنعمه.",
+        "الجوارح: تستعمل الصحة والعلم والمال في الطاعة والخير.",
+        "ثمرة الشكر: رضوان الله وزيادة فضله، وتطهير النفس من الجحود والغفلة.",
+      ],
+      example: "تلميذ رزقه الله ذكاءً وصحة: يحمد الله عليهما (لسان)، ويستعملهما في الدراسة ومساعدة زملائه (جوارح)، ولا يتكبر بهما لأنه يعلم أنهما من الله (قلب).",
+      questions: [
+        { q: "ما تعريف شكر الله تعالى؟", a: "الاعتراف بنعم الله باطنًا، والتحدث بها ظاهرًا، وصرفها في طاعته." },
+        { q: "اذكر أركان الشكر الثلاثة.", a: "شكر القلب، وشكر اللسان، وشكر الجوارح." },
+        { q: "ما دلالة قوله تعالى: «لَئِن شَكَرْتُمْ لَأَزِيدَنَّكُمْ»؟", a: "أن الشكر سبب لمزيد فضل الله وعطائه." },
+      ],
+    },
+    notes: "",
+  };
+
+  /* ---------------- DOM refs ---------------- */
+  const $ = (id) => document.getElementById(id);
+  const els = {
+    tabText: $("tabText"), tabImg: $("tabImg"), paneText: $("paneText"), paneImg: $("paneImg"),
+    text: $("lessonText"), drop: $("drop"), file: $("fileInput"), thumbs: $("thumbs"), imgCount: $("imgCount"), imgHint: $("imgHint"),
+    go: $("goBtn"), stop: $("stopBtn"), status: $("status"), level: $("level"),
+    pill: $("backendPill"), pillText: $("backendText"), keyBox: $("keyBox"), apiKey: $("apiKey"), saveKey: $("saveKey"),
+    poster: $("poster"), explain: $("explain"), tag: $("resultTag"), copy: $("copyBtn"), png: $("pngBtn"), history: $("history"),
+  };
+
+  /* ---------------- Storage helpers ---------------- */
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+  };
+
+  /* ---------------- State ---------------- */
+  const state = {
+    images: [],          // {blob, url}
+    data: EXAMPLE,
+    isExample: true,
+    backend: "wait",     // wait | claude | api | none
+    sample: null,
+    maxImages: 10,
+    imagesOk: true,
+    ctl: null,
+    history: store.get("khutata.history", []),
+    currentId: null,
+  };
+
+  /* ---------------- Tabs ---------------- */
+  function selectTab(which) {
+    const isText = which === "text";
+    els.tabText.setAttribute("aria-selected", String(isText));
+    els.tabImg.setAttribute("aria-selected", String(!isText));
+    els.paneText.hidden = !isText;
+    els.paneImg.hidden = isText;
+  }
+  els.tabText.onclick = () => selectTab("text");
+  els.tabImg.onclick = () => selectTab("img");
+
+  /* ---------------- Images ---------------- */
+  const OK_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+  function addFiles(list) {
+    const files = Array.from(list || []).filter((f) => OK_TYPES.includes(f.type));
+    if (!files.length) return;
+    for (const f of files) {
+      if (state.images.length >= state.maxImages) { setStatus(`الحد الأقصى ${state.maxImages} صور في المرة الواحدة.`, "err"); break; }
+      state.images.push({ blob: f, url: URL.createObjectURL(f) });
+    }
+    renderThumbs();
+    selectTab("img");
+  }
+  function renderThumbs() {
+    els.thumbs.replaceChildren();
+    state.images.forEach((im, i) => {
+      const d = document.createElement("div"); d.className = "thumb";
+      const img = document.createElement("img"); img.src = im.url; img.alt = `صفحة ${i + 1}`;
+      const n = document.createElement("span"); n.className = "n"; n.textContent = String(i + 1);
+      const x = document.createElement("button"); x.type = "button"; x.textContent = "✕"; x.setAttribute("aria-label", `حذف الصورة ${i + 1}`);
+      x.onclick = () => { URL.revokeObjectURL(im.url); state.images.splice(i, 1); renderThumbs(); };
+      d.append(img, n, x); els.thumbs.append(d);
+    });
+    els.imgCount.hidden = state.images.length === 0;
+    els.imgCount.textContent = String(state.images.length);
+  }
+  els.drop.onclick = () => els.file.click();
+  els.drop.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); els.file.click(); } };
+  els.file.onchange = () => { addFiles(els.file.files); els.file.value = ""; };
+  ["dragenter", "dragover"].forEach((t) => els.drop.addEventListener(t, (e) => { e.preventDefault(); els.drop.classList.add("over"); }));
+  ["dragleave", "drop"].forEach((t) => els.drop.addEventListener(t, (e) => { e.preventDefault(); els.drop.classList.remove("over"); }));
+  els.drop.addEventListener("drop", (e) => addFiles(e.dataTransfer && e.dataTransfer.files));
+  document.addEventListener("paste", (e) => {
+    const items = Array.from((e.clipboardData && e.clipboardData.items) || []);
+    const files = items.filter((it) => it.kind === "file").map((it) => it.getAsFile()).filter(Boolean);
+    if (files.length) { e.preventDefault(); addFiles(files); }
+  });
+
+  /* ---------------- Status ---------------- */
+  function setStatus(msg, kind) {
+    els.status.replaceChildren();
+    els.status.className = "status" + (kind === "err" ? " err" : "");
+    if (kind === "busy") { const s = document.createElement("span"); s.className = "spinner"; els.status.append(s); }
+    if (msg) els.status.append(document.createTextNode(msg));
+  }
+
+  /* ---------------- Backend detection ---------------- */
+  let backendReady;
+  function setPill(stateName, text) { els.pill.dataset.state = stateName; els.pillText.textContent = text; }
+  async function detectBackend() {
+    if (window.claude && typeof window.claude.use === "function") {
+      let sample = null;
+      try { sample = await window.claude.use("sample"); } catch { sample = null; }
+      if (sample) {
+        state.backend = "claude"; state.sample = sample;
+        try {
+          const lim = await sample.limits();
+          state.imagesOk = !!(lim && lim.images);
+          if (lim && lim.images) state.maxImages = Math.max(1, lim.images.maxCount || 10);
+        } catch { state.imagesOk = false; }
+        setPill("ok", "متصل بـ Claude");
+        if (!state.imagesOk) els.imgHint.textContent = "قراءة الصور غير متاحة في هذا العرض؛ استعمل النص.";
+        else els.imgHint.textContent = `حتى ${state.maxImages} صور في المرة الواحدة.`;
+      } else {
+        state.backend = "none";
+        setPill("off", "Claude غير متاح هنا");
+        setStatus("تعذر الوصول إلى Claude من هذا العرض. افتح الصفحة داخل Claude لاستعمال التوليد.", "err");
+      }
+    } else {
+      state.backend = "api";
+      els.keyBox.hidden = false;
+      els.apiKey.value = store.get("khutata.apikey", "");
+      setPill(els.apiKey.value ? "ok" : "off", els.apiKey.value ? "مفتاح API محفوظ" : "يلزم مفتاح API");
+      els.imgHint.textContent = "حتى 10 صور في المرة الواحدة.";
+    }
+  }
+  els.saveKey.onclick = () => {
+    const v = els.apiKey.value.trim();
+    store.set("khutata.apikey", v);
+    setPill(v ? "ok" : "off", v ? "مفتاح API محفوظ" : "يلزم مفتاح API");
+    setStatus(v ? "حُفظ المفتاح في هذا المتصفح." : "حُذف المفتاح.");
+  };
+
+  /* ---------------- Prompt ---------------- */
+  const LEVELS = {
+    simple: "Explain for a middle-school student (age 12–14): very short sentences, everyday words, one idea per sentence.",
+    standard: "Explain for a secondary-school student (age 15–17): clear and concise, keep the lesson's key terms.",
+    deep: "Explain for a baccalaureate student preparing for an exam: precise terms, links between ideas, what examiners usually ask.",
+  };
+  function buildPrompt(text, nImages, level) {
+    const src = [];
+    if (nImages) src.push(`${nImages} attached image(s) — photos/scans of the lesson pages, in page order. Read them carefully, including headings, boxes, verses and footnotes.`);
+    if (text) src.push("The lesson text pasted by the student, between <lesson> tags.");
+    return `You turn a school lesson into a one-page study schematic (Arabic: خطاطة تلخيصية) plus a short simplified explanation. The student is usually Moroccan (Islamic education, social studies, Arabic, sciences, philosophy, etc.).
+
+SOURCE: ${src.join(" + ")}
+
+FAITHFULNESS RULES (strict):
+- Use ONLY information present in the lesson. Do not add facts, verses, hadiths, dates, names or references that are not in the source.
+- Quote Qur'anic verses, hadiths and quotations EXACTLY as written in the source (keep the diacritics that appear). Never complete a partial verse from memory. If a reference (surah/ayah, narrator, book) is not in the source, leave "source" empty.
+- If part of an image is unreadable, skip it and mention it in "notes" — never guess the words.
+- Keep the lesson's own key terms and definitions; you may shorten wording, but not change meaning.
+- The schematic must cover the whole lesson, not only the first part.
+
+OUTPUT LANGUAGE: the language of the lesson ("ar" for Arabic, "fr" for French, "en" for English). All fields in that language.
+
+STRUCTURE — reply with ONLY one JSON object, no prose, of this shape:
+{
+  "lang": "ar" | "fr" | "en",
+  "subject": "school subject, e.g. التربية الإسلامية",
+  "title": "lesson title as in the source; for a unit/lesson pair use 'Unit — Lesson', e.g. 'حق الله — شكر الله'",
+  "concept": { "term": "the central concept (short, 1–5 words)", "definition": "its definition in one sentence" },
+  "sections": [
+    { "heading": "short heading", "type": "pillars", "items": [ { "title": "2–4 words", "text": "one short sentence", "icon": "<icon>" } ] },
+    { "heading": "...", "type": "checklist", "items": [ { "title": "...", "text": "one or two sentences" } ] },
+    { "heading": "...", "type": "steps", "items": [ { "title": "...", "text": "..." } ] },
+    { "heading": "...", "type": "compare", "columns": [ { "title": "...", "points": ["...", "..."] } ] }
+  ],
+  "evidence": [ { "kind": "quran" | "hadith" | "quote" | "text", "label": "e.g. الشاهد القرآني / الشاهد الحديثي", "text": "exact text", "source": "reference if in the source, else empty", "significance": "what it proves, one sentence" } ],
+  "memoryKey": { "label": "e.g. مفتاح الحفظ والفهم", "chips": [ { "text": "2–3 words", "icon": "<icon>" } ] },
+  "explanation": {
+    "summary": "the lesson explained simply in one paragraph (4–6 sentences)",
+    "points": ["key idea 1", "key idea 2", "..."],
+    "example": "one concrete everyday example that illustrates the main idea",
+    "questions": [ { "q": "review question", "a": "short answer taken from the lesson" } ]
+  },
+  "notes": "anything unreadable or uncertain; empty string if none"
+}
+
+SECTION GUIDANCE:
+- 2 to 4 sections, in the order the ideas appear in the lesson.
+- "pillars": parallel components / types / pillars / conditions (2–6 items) — shown as coloured cards.
+- "checklist": explanations such as how-to, importance, effects, rulings (2–5 rows).
+- "steps": an ordered process or a chronology (3–7 items).
+- "compare": two or three things contrasted (e.g. before/after, X vs Y).
+- Keep every text SHORT: the schematic must be easier than the lesson.
+- "evidence": 0 to 3 items, only if the lesson contains such texts. Empty array otherwise.
+- "memoryKey": 2–4 chips that compress the lesson into a memorable formula (like "القلب يشعر | اللسان يحمد | الجوارح تعمل").
+- "questions": 3 to 5.
+- <icon> must be one of: ${ICON_NAMES.join(", ")}.
+
+EXPLANATION LEVEL: ${LEVELS[level] || LEVELS.standard}
+${text ? `\n<lesson>\n${text}\n</lesson>` : ""}`;
+  }
+
+  /* ---------------- Normalisation ---------------- */
+  const str = (v, max = 600) => (typeof v === "string" ? v.trim().slice(0, max) : v == null ? "" : String(v).trim().slice(0, max));
+  const arr = (v, max) => (Array.isArray(v) ? v.slice(0, max) : []);
+  const ic = (v) => (ICON_NAMES.includes(v) ? v : "star");
+  function normalize(d) {
+    if (!d || typeof d !== "object" || Array.isArray(d)) throw { code: "bad_shape" };
+    const out = {
+      lang: ["ar", "fr", "en"].includes(d.lang) ? d.lang : "ar",
+      subject: str(d.subject, 80),
+      title: str(d.title, 160),
+      concept: { term: str(d.concept && d.concept.term, 120), definition: str(d.concept && d.concept.definition, 500) },
+      sections: arr(d.sections, 6).map((s) => {
+        const type = ["pillars", "checklist", "steps", "compare"].includes(s && s.type) ? s.type : "checklist";
+        const sec = { heading: str(s && s.heading, 120), type };
+        if (type === "compare") sec.columns = arr(s.columns, 4).map((c) => ({ title: str(c && c.title, 80), points: arr(c && c.points, 10).map((p) => str(p, 300)).filter(Boolean) }));
+        else sec.items = arr(s.items, 8).map((it) => ({ title: str(it && it.title, 120), text: str(it && it.text, 500), icon: ic(it && it.icon) })).filter((it) => it.title || it.text);
+        return sec;
+      }).filter((s) => (s.items && s.items.length) || (s.columns && s.columns.length)),
+      evidence: arr(d.evidence, 4).map((e) => ({
+        kind: ["quran", "hadith", "quote", "text"].includes(e && e.kind) ? e.kind : "text",
+        label: str(e && e.label, 80), text: str(e && e.text, 900), source: str(e && e.source, 160), significance: str(e && e.significance, 400),
+      })).filter((e) => e.text),
+      memoryKey: {
+        label: str(d.memoryKey && d.memoryKey.label, 80),
+        chips: arr(d.memoryKey && d.memoryKey.chips, 5).map((c) => ({ text: str(c && c.text, 60), icon: ic(c && c.icon) })).filter((c) => c.text),
+      },
+      explanation: {
+        summary: str(d.explanation && d.explanation.summary, 2000),
+        points: arr(d.explanation && d.explanation.points, 10).map((p) => str(p, 400)).filter(Boolean),
+        example: str(d.explanation && d.explanation.example, 800),
+        questions: arr(d.explanation && d.explanation.questions, 8).map((q) => ({ q: str(q && q.q, 300), a: str(q && q.a, 600) })).filter((q) => q.q),
+      },
+      notes: str(d.notes, 600),
+    };
+    if (!out.title && !out.concept.term && !out.sections.length) throw { code: "bad_shape" };
+    return out;
+  }
+
+  /* ---------------- Rendering ---------------- */
+  const T = {
+    ar: { eyebrow: "خطاطة تلخيصية", key: "مفتاح الحفظ والفهم", sig: "الدلالة:", explain: "الشرح المبسّط", points: "الأفكار الأساسية", example: "مثال من الحياة", qs: "أسئلة للمراجعة", ans: "الجواب", notes: "ملاحظة:" },
+    fr: { eyebrow: "Schéma de synthèse", key: "Clé de mémorisation", sig: "Portée :", explain: "Explication simplifiée", points: "Idées essentielles", example: "Exemple concret", qs: "Questions de révision", ans: "Réponse", notes: "Remarque :" },
+    en: { eyebrow: "Summary schematic", key: "Memory key", sig: "Meaning:", explain: "Simple explanation", points: "Key ideas", example: "Everyday example", qs: "Review questions", ans: "Answer", notes: "Note:" },
+  };
+  function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null && text !== "") e.textContent = text; return e; }
+  function arrow() {
+    const d = el("div", "arrow");
+    d.innerHTML = '<svg viewBox="0 0 18 26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v20"/><path d="m4 17 5 5 5-5"/></svg>';
+    return d;
+  }
+  function titleNode(title) {
+    const h = el("h2", "p-title");
+    const parts = title.split(/\s+[—–-]\s+/);
+    if (parts.length === 2) {
+      h.append(document.createTextNode(parts[0] + " "));
+      h.append(el("span", "sep", "—"));
+      h.append(document.createTextNode(" " + parts[1]));
+    } else h.textContent = title;
+    return h;
+  }
+
+  function renderPoster(d) {
+    const t = T[d.lang] || T.ar;
+    const dir = d.lang === "ar" ? "rtl" : "ltr";
+    els.poster.setAttribute("dir", dir);
+    els.poster.setAttribute("lang", d.lang);
+    const inner = el("div", "poster-inner");
+
+    const head = el("header", "p-head");
+    const eb = el("div", "p-eyebrow"); eb.append(icon("book"), document.createTextNode(d.subject ? `${t.eyebrow} — ${d.subject}` : t.eyebrow));
+    head.append(eb);
+    if (d.title) head.append(titleNode(d.title));
+    head.append(el("div", "p-diamond"));
+    inner.append(head);
+
+    let first = true;
+    const join = () => { if (!first) inner.append(arrow()); first = false; };
+
+    if (d.concept.term || d.concept.definition) {
+      join();
+      const c = el("div", "concept");
+      if (d.concept.term) c.append(el("div", "term", d.concept.term));
+      if (d.concept.definition) c.append(el("p", "def", d.concept.definition));
+      inner.append(c);
+    }
+
+    d.sections.forEach((s, idx) => {
+      join();
+      const wrap = el("section");
+      const sh = el("div", "sec-head");
+      sh.append(el("span", "badge", String(idx + 1)), el("h3", null, s.heading));
+      wrap.append(sh);
+      if (s.type === "pillars") {
+        const g = el("div", "pillars");
+        s.items.forEach((it, i) => {
+          const card = el("div", `pillar c${(i % 6) + 1}`);
+          const icw = el("div", "ic"); icw.append(icon(it.icon));
+          card.append(icw, el("h4", null, it.title));
+          if (it.text) card.append(el("p", null, it.text));
+          g.append(card);
+        });
+        wrap.append(g);
+      } else if (s.type === "steps") {
+        const g = el("div", "steps");
+        s.items.forEach((it, i) => {
+          const row = el("div", "step");
+          const b = el("div", "body"); b.append(el("h4", null, it.title)); if (it.text) b.append(el("p", null, it.text));
+          row.append(el("span", "num", String(i + 1)), b);
+          g.append(row);
+        });
+        wrap.append(g);
+      } else if (s.type === "compare") {
+        const g = el("div", "compare");
+        s.columns.forEach((c, i) => {
+          const col = el("div", `col c${(i % 6) + 1}`);
+          col.append(el("h4", null, c.title));
+          const ul = el("ul"); c.points.forEach((p) => ul.append(el("li", null, p)));
+          col.append(ul); g.append(col);
+        });
+        wrap.append(g);
+      } else {
+        const g = el("div", "checklist");
+        s.items.forEach((it) => {
+          const row = el("div", "check-row");
+          const tk = el("span", "tick"); tk.append(icon("check"));
+          const b = el("div", "body"); if (it.title) b.append(el("h4", null, it.title)); if (it.text) b.append(el("p", null, it.text));
+          row.append(tk, b); g.append(row);
+        });
+        wrap.append(g);
+      }
+      inner.append(wrap);
+    });
+
+    if (d.evidence.length) {
+      join();
+      const box = el("div");
+      d.evidence.forEach((e) => {
+        const ev = el("div", "evidence");
+        const lb = el("div", "label"); lb.append(icon("book"), document.createTextNode(e.label || ""));
+        if (e.label) ev.append(lb);
+        const tx = el("div", "text" + (e.text.length > 90 ? " long" : ""));
+        if (e.kind === "quran") {
+          // In RTL the opening ornament ﴿ sits on the right.
+          tx.append(el("span", "orn", "﴿"), el("span", null, e.text), el("span", "orn", "﴾"));
+        } else if (e.kind === "hadith" || e.kind === "quote") {
+          const [o, c] = d.lang === "en" ? ["“", "”"] : ["«", "»"];
+          tx.append(el("span", "orn", o), el("span", null, e.text), el("span", "orn", c));
+        } else tx.append(el("span", null, e.text));
+        ev.append(tx);
+        if (e.source) ev.append(el("div", "src", e.source));
+        if (e.significance) { const p = el("p", "sig"); p.append(el("b", null, t.sig + " "), document.createTextNode(e.significance)); ev.append(p); }
+        box.append(ev);
+      });
+      inner.append(box);
+    }
+
+    if (d.memoryKey.chips.length) {
+      const f = el("footer", "p-foot");
+      f.append(el("span", "k", (d.memoryKey.label || t.key) + (d.lang === "fr" ? " :" : ":")));
+      d.memoryKey.chips.forEach((c, i) => {
+        if (i) f.append(el("span", "bar", "|"));
+        const ch = el("span", `chip c${(i % 6) + 1}`); ch.append(icon(c.icon), document.createTextNode(c.text));
+        f.append(ch);
+      });
+      inner.append(f);
+    }
+    els.poster.replaceChildren(inner);
+  }
+
+  function renderExplain(d) {
+    const t = T[d.lang] || T.ar;
+    const x = d.explanation;
+    els.explain.setAttribute("dir", d.lang === "ar" ? "rtl" : "ltr");
+    els.explain.setAttribute("lang", d.lang);
+    const nodes = [];
+    const h = el("h2"); h.append(icon("bulb"), document.createTextNode(t.explain)); nodes.push(h);
+    if (x.summary) nodes.push(el("p", null, x.summary));
+    if (x.points.length) {
+      const s = el("div"); s.append(el("h3", null, t.points));
+      const ul = el("ul"); x.points.forEach((p) => ul.append(el("li", null, p))); s.append(ul); nodes.push(s);
+    }
+    if (x.example) { const s = el("div", "example"); s.append(el("h3", null, t.example), el("p", null, x.example)); nodes.push(s); }
+    if (x.questions.length) {
+      const s = el("div", "qa"); s.append(el("h3", null, t.qs));
+      x.questions.forEach((q) => {
+        const det = el("details"); det.append(el("summary", null, q.q));
+        if (q.a) { const p = el("p"); p.append(el("b", null, t.ans + ": "), document.createTextNode(q.a)); det.append(p); }
+        s.append(det);
+      });
+      nodes.push(s);
+    }
+    if (d.notes) nodes.push(el("p", "note", `${t.notes} ${d.notes}`));
+    els.explain.replaceChildren(...nodes);
+  }
+
+  function render(d, tag) {
+    state.data = d;
+    renderPoster(d);
+    renderExplain(d);
+    els.tag.textContent = tag;
+  }
+
+  /* ---------------- History (this browser only) ---------------- */
+  function renderHistory() {
+    const h = state.history;
+    els.history.hidden = h.length === 0;
+    if (!h.length) return;
+    const nodes = [el("span", null, "خطاطاتك السابقة:")];
+    h.forEach((item) => {
+      const b = el("button", null, item.data.title || item.data.concept.term || "خطاطة");
+      b.type = "button";
+      b.setAttribute("aria-current", String(item.id === state.currentId));
+      b.onclick = () => { state.currentId = item.id; state.isExample = false; render(item.data, "خطاطة محفوظة"); renderHistory(); };
+      nodes.push(b);
+    });
+    const ex = el("button", null, "المثال"); ex.type = "button";
+    ex.setAttribute("aria-current", String(state.isExample));
+    ex.onclick = () => { state.currentId = null; state.isExample = true; render(EXAMPLE, "مثال: درس «شكر الله»"); renderHistory(); };
+    nodes.push(ex);
+    els.history.replaceChildren(...nodes);
+  }
+  function remember(d) {
+    const id = Date.now().toString(36);
+    state.history = [{ id, data: d }, ...state.history].slice(0, 8);
+    state.currentId = id;
+    store.set("khutata.history", state.history);
+    renderHistory();
+  }
+
+  /* ---------------- Standalone API path ---------------- */
+  async function toJpegBase64(blob) {
+    const bmp = await createImageBitmap(blob);
+    const max = 1600;
+    const scale = Math.min(1, max / Math.max(bmp.width, bmp.height));
+    const c = document.createElement("canvas");
+    c.width = Math.round(bmp.width * scale); c.height = Math.round(bmp.height * scale);
+    const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
+    g.drawImage(bmp, 0, 0, c.width, c.height);
+    const url = c.toDataURL("image/jpeg", 0.88);
+    return url.slice(url.indexOf(",") + 1);
+  }
+  function parseJsonLoose(text) {
+    try { return JSON.parse(text); } catch {}
+    const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (fence) { try { return JSON.parse(fence[1]); } catch {} }
+    const a = text.indexOf("{"), b = text.lastIndexOf("}");
+    if (a >= 0 && b > a) { try { return JSON.parse(text.slice(a, b + 1)); } catch {} }
+    throw { code: "invalid_json" };
+  }
+  async function callApi(prompt, images, signal) {
+    const key = store.get("khutata.apikey", "");
+    if (!key) throw { code: "no_key" };
+    const content = [];
+    for (const im of images) content.push({ type: "image", source: { type: "base64", media_type: "image/jpeg", data: await toJpegBase64(im.blob) } });
+    content.push({ type: "text", text: prompt });
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      signal,
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": key,
+        "anthropic-version": "2026-10-21",
+        "anthropic-beta": "server-side-fallback-2026-07-01",
+        "anthropic-dangerous-direct-browser-access": "true",
+      },
+      body: JSON.stringify({
+        model: "claude-opus-5-5",
+        max_tokens: 16000,
+        output_config: { effort: "medium" },
+        fallbacks: "default",
+        messages: [{ role: "user", content }],
+      }),
+    });
+    const body = await res.json().catch(() => null);
+    if (!res.ok) throw { code: res.status === 401 ? "bad_key" : res.status === 429 ? "rate_limited" : "upstream_error", message: body && body.error && body.error.message };
+    if (body.stop_reason === "refusal") throw { code: "refused" };
+    const text = (body.content || []).filter((b) => b.type === "text").map((b) => b.text).join("");
+    if (body.stop_reason === "max_tokens") throw { code: "invalid_json" };
+    return parseJsonLoose(text);
+  }
+
+  /* ---------------- Generate ---------------- */
+  const ERR = {
+    not_granted: "لم يُسمح للصفحة باستعمال Claude. يمكنك تغيير ذلك من قائمة الأذونات ثم إعادة المحاولة.",
+    sampling_disabled: "Claude غير متاح لهذا الحساب.",
+    rate_limited: "طلبات كثيرة في وقت قصير. انتظر قليلًا ثم أعد المحاولة.",
+    session_expired: "انتهت الجلسة. سجّل الدخول من جديد.",
+    image_rejected: "تعذرت قراءة إحدى الصور. جرّب صورة أوضح بصيغة JPG أو PNG.",
+    images_unavailable: "قراءة الصور غير متاحة في هذا العرض. الصق نص الدرس بدلًا منها.",
+    refused: "رفض Claude معالجة هذا المحتوى. تأكد أن المادة درس مدرسي.",
+    empty_completion: "لم يصل أي جواب. جرّب نصًا أقصر.",
+    invalid_json: "وصل جواب غير مكتمل. أعد المحاولة، أو قسّم الدرس إلى جزأين.",
+    prompt_too_large: "الدرس طويل جدًا لمرة واحدة. قسّمه إلى جزأين.",
+    bad_shape: "لم يُستخرج هيكل واضح من الدرس. تأكد أن النص أو الصور تحتوي درسًا مقروءًا.",
+    no_key: "أدخل مفتاح Anthropic API أولًا ثم اضغط «حفظ».",
+    bad_key: "مفتاح API غير صالح. تحقق منه ثم أعد الحفظ.",
+    upstream_error: "انقطع الاتصال. أعد المحاولة.",
+  };
+
+  els.go.onclick = async () => {
+    await backendReady;
+    const text = els.text.value.trim();
+    const images = state.backend === "claude" && !state.imagesOk ? [] : state.images.slice();
+    if (!text && !images.length) { setStatus(state.images.length ? ERR.images_unavailable : "الصق نص الدرس أو أضف صورة له أولًا.", "err"); return; }
+    if (state.backend === "none") { setStatus("تعذر الوصول إلى Claude من هذا العرض.", "err"); return; }
+
+    const prompt = buildPrompt(text, images.length, els.level.value);
+    state.ctl = new AbortController();
+    els.go.disabled = true; els.stop.hidden = false;
+    setStatus(images.length ? "يقرأ Claude صور الدرس ويبني الخطاطة… (قد يستغرق دقيقة)" : "يحلل Claude الدرس ويبني الخطاطة…", "busy");
+    try {
+      let raw;
+      if (state.backend === "claude") {
+        const opts = { signal: state.ctl.signal, modelTier: "default", onText: ({ text: t }) => setStatus(`يكتب الخطاطة… (${t.length} حرف)`, "busy") };
+        if (images.length) opts.images = images.map((i) => i.blob);
+        raw = await state.sample.json(prompt, opts);
+      } else {
+        raw = await callApi(prompt, images, state.ctl.signal);
+      }
+      const d = normalize(raw);
+      state.isExample = false;
+      render(d, "خطاطتك");
+      remember(d);
+      setStatus(d.notes ? "اكتملت الخطاطة. راجع الملاحظة أسفل الشرح." : "اكتملت الخطاطة.");
+      document.getElementById("result").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+    } catch (e) {
+      const code = (e && e.code) || (e && e.name === "AbortError" ? "cancelled" : "upstream_error");
+      if (code === "cancelled" || (e && e.name === "AbortError")) setStatus("أُوقف التوليد.");
+      else setStatus(ERR[code] || ERR.upstream_error, "err");
+    } finally {
+      els.go.disabled = false; els.stop.hidden = true; state.ctl = null;
+    }
+  };
+  els.stop.onclick = () => state.ctl && state.ctl.abort();
+
+  /* ---------------- Copy as text ---------------- */
+  function asText(d) {
+    const t = T[d.lang] || T.ar;
+    const L = [];
+    L.push(`${d.title}${d.subject ? `  (${d.subject})` : ""}`);
+    if (d.concept.term) L.push("", `■ ${d.concept.term}: ${d.concept.definition}`);
+    d.sections.forEach((s, i) => {
+      L.push("", `${i + 1}. ${s.heading}`);
+      if (s.items) s.items.forEach((it, j) => L.push(`   ${s.type === "steps" ? (j + 1) + ")" : "•"} ${it.title}${it.text ? ": " + it.text : ""}`));
+      if (s.columns) s.columns.forEach((c) => { L.push(`   ◆ ${c.title}`); c.points.forEach((p) => L.push(`      - ${p}`)); });
+    });
+    d.evidence.forEach((e) => {
+      const q = e.kind === "quran" ? `﴿${e.text}﴾` : e.kind === "text" ? e.text : `«${e.text}»`;
+      L.push("", `${e.label ? e.label + ": " : ""}${q}${e.source ? ` [${e.source}]` : ""}`);
+      if (e.significance) L.push(`   ${t.sig} ${e.significance}`);
+    });
+    if (d.memoryKey.chips.length) L.push("", `${d.memoryKey.label || t.key}: ${d.memoryKey.chips.map((c) => c.text).join(" | ")}`);
+    const x = d.explanation;
+    if (x.summary) L.push("", `— ${t.explain} —`, x.summary);
+    if (x.points.length) { L.push("", t.points + ":"); x.points.forEach((p) => L.push(`• ${p}`)); }
+    if (x.example) L.push("", `${t.example}: ${x.example}`);
+    if (x.questions.length) { L.push("", t.qs + ":"); x.questions.forEach((q, i) => L.push(`${i + 1}. ${q.q}`, `   ${t.ans}: ${q.a}`)); }
+    return L.join("\n");
+  }
+  els.copy.onclick = () => {
+    const text = asText(state.data);
+    const done = () => setStatus("نُسخت الخطاطة كنص.");
+    const fallback = () => {
+      const ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.append(ta); ta.select();
+      let ok = false; try { ok = document.execCommand("copy"); } catch {}
+      ta.remove();
+      ok ? done() : setStatus("تعذر النسخ التلقائي في هذا العرض.", "err");
+    };
+    try { navigator.clipboard.writeText(text).then(done, fallback); } catch { fallback(); }
+  };
+
+  /* ---------------- Save as PNG ---------------- */
+  let h2cPromise = null;
+  function loadH2C() {
+    if (window.html2canvas) return Promise.resolve();
+    if (!h2cPromise) h2cPromise = new Promise((res, rej) => {
+      const s = document.createElement("script");
+      s.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+      s.onload = res; s.onerror = () => { h2cPromise = null; rej(new Error("load")); };
+      document.head.append(s);
+    });
+    return h2cPromise;
+  }
+  els.png.onclick = async () => {
+    els.png.disabled = true;
+    setStatus("يجهّز الصورة…", "busy");
+    try {
+      await loadH2C();
+      if (document.fonts && document.fonts.ready) await document.fonts.ready;
+      const bg = getComputedStyle(document.body).backgroundColor;
+      const canvas = await window.html2canvas(els.poster, { backgroundColor: bg, scale: 2, useCORS: true, logging: false });
+      const blob = await new Promise((r) => canvas.toBlob(r, "image/png"));
+      const name = (state.data.title || "khutata").replace(/[\\/:*?"<>|]+/g, " ").trim().slice(0, 80) + ".png";
+      const dl = window.claude && window.claude.use ? await window.claude.use("downloads") : null;
+      if (dl) {
+        await dl.save({ filename: name, data: blob });
+        setStatus("حُفظت الصورة.");
+      } else if (!window.claude) {
+        const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+        setStatus("حُفظت الصورة.");
+      } else {
+        setStatus("حفظ الملفات غير متاح في هذا العرض. يمكنك أخذ لقطة شاشة للخطاطة.", "err");
+      }
+    } catch (e) {
+      if (e && e.code === "declined") setStatus("أُلغي الحفظ.");
+      else setStatus("تعذر تجهيز الصورة في هذا العرض. يمكنك أخذ لقطة شاشة للخطاطة.", "err");
+    } finally {
+      els.png.disabled = false;
+    }
+  };
+
+  /* ---------------- Boot ---------------- */
+  render(EXAMPLE, "مثال: درس «شكر الله»");
+  renderHistory();
+  backendReady = detectBackend();
+})();
+</script>
+
+</body>
+</html>
