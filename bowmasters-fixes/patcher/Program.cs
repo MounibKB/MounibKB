@@ -152,7 +152,6 @@ static class P
 
     static readonly (string type, string name)[] NewVoidMethods =
     {
-        ("Level", "PortResetTurnTimeout"),
     };
 
     static readonly (string type, string method, string oldS, string newS)[] StringPatches =

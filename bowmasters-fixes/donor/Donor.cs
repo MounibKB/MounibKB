@@ -47,24 +47,6 @@ public static class Donor
     }
 
     // ------------------------------------------------------------------------------------------------
-    // BRUTALITY banner: FatalityBase instances are reused, but isBrutalityShowed was never reset, so a
-    // second use of the same fatality object never showed the BRUTALITY sign again.
-    // ------------------------------------------------------------------------------------------------
-    public static void FatalityBase__StartFatality(FatalityBase self, CollisionInfo infoCollision)
-    {
-        if (!self.isActive)
-        {
-            self.isActive = true;
-            self.isBrutalityShowed = false;
-            self.currentTime = self.time;
-            self.CachedManager.CharacterAnimation.state.SetAnimation(0, self.CachedManager.AnimationFace, true);
-            self.startFatalityCollider = infoCollision.otherCollider;
-            self.startFatalityUtilityBone = self.CachedManager.GetUtilityBone(self.startFatalityCollider);
-            self.PlayFatalityStartSound();
-        }
-    }
-
-    // ------------------------------------------------------------------------------------------------
     // BRUTALITY soft-lock guard: an exception inside a (ported) fatality update, or a fatality that never
     // signals completion, left the match stuck in "FINISH HIM" forever.  Exceptions are now contained and
     // a watchdog force-completes the fatality so the match result screen is always reached.
@@ -79,12 +61,6 @@ public static class Donor
             return;
         }
         self.portActiveTime += deltaTime;
-        // Level.UpdateLevel force-ends the turn 15s after the weapon was released.  Long brutalities (ported
-        // ones run 15-25s) were cut by NextTurn() (camera jump, archer swap, new weapon) mid-animation.
-        if (self.level != null)
-        {
-            self.level.PortResetTurnTimeout();
-        }
         try
         {
             fb.UpdateFatality(deltaTime);
@@ -109,24 +85,27 @@ public static class Donor
         }
     }
 
-    public static void NEW_Level__PortResetTurnTimeout(Level self)
-    {
-        self.activeTurnTimeoutTimer = 0f;
-    }
-
     // ------------------------------------------------------------------------------------------------
-    // ANIMATION: the electric "shock" loop plays on track 6 but the "already playing?" test looked at track 0,
-    // so every periodical-damage tick restarted the shock animation from frame 0 (stuttering pose).
+    // CAMERA (Mad Mike / upgraded Footballer burning-ball brutality): Level.UpdateLevel calls
+    // UnfollowWeaponWithVelocity every frame while the victim has an active fatality.  Once the victim is
+    // restored (ragdoll removed) that call re-targets the camera at the victim and resets the zoom to 1,
+    // fighting the fatality's own zoom + tween.  Other ported fatalities switch the auto-follow off first.
     // ------------------------------------------------------------------------------------------------
-    public static void CharacterBase__StartElectricityAnimation(CharacterBase self)
+    public static void FatalityBurningBallUpgrade__RestoreVictimAndPickUpBall(FatalityBurningBallUpgrade self, SkeletonUtilityBone ballBone)
     {
-        if (!self.IsFinishHim && !self.RootRigidBody)
+        if (self.IsActive)
         {
-            TrackEntry current = self.animationCache.AnimationState.GetCurrent(6);
-            if (current == null || current.Animation != self.animationCache.ShockAnimation)
+            PortUtil.CurrentLevel.IsNeedFollowArcherOrWeapon = false;
+            self.affectedCharacter.RestoreBurningBall();
+            if (ballBone != null)
             {
-                self.animationCache.AnimationState.SetAnimation(6, self.animationCache.ShockAnimation, true);
+                self.burningBall.transform.parent = ballBone.gameObject.transform;
+                self.burningBall.transform.localPosition = Vector3.zero;
+                self.burningBall.transform.localRotation = Quaternion.identity;
             }
+            CameraController cameraController = self.CachedCameraController;
+            cameraController.SetScaleWithDuration(self.cameraZoom, self.timeForCameraChangePosition);
+            cameraController.TweenMoveToPosition(cameraController.Position + Vector2.up * self.cameraVerticalOffset, self.timeForCameraChangePosition);
         }
     }
 

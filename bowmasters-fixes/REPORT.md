@@ -10,22 +10,26 @@ The game logic lives in `assets/bin/Data/Managed/Assembly-CSharp.dll` (the Java 
 Only that DLL was changed, by **surgical IL patching** (Mono.Cecil) – no wholesale recompile of the decompiled source,
 so the original (mcs-compiled) code is byte-for-byte unchanged outside the 8 patched members.
 
-## Fixes applied (8 patch operations in 7 classes)
+## Fixes applied (6 patch operations in 5 classes) – revision 2
+
+Revision 2 follows review feedback: some earlier "fixes" touched behaviour that is built into the game
+(15 s turn timeout, one-time BRUTALITY banner flag, shock animation re-trigger). Those were **reverted**
+(`FatalityBase`, `CharacterBase`, `Level` are byte-identical to `final9` again). Online searches found no
+documentation of these mechanics, so the rule used is: keep only changes that cannot alter normal behaviour.
 
 | # | Area | Class::member | Problem (evidence) | Fix |
 |---|------|---------------|--------------------|-----|
-| 1 | **Camera** | `CameraController::ApplyShakeWithDuration` | Every restoring shake re-captured the *currently shaken* position as the restore origin, and any following shake without the restore flag (`FatalityEffect.EmitBrainEffect/EmitGutsEffect` fire a 0.1 s shake inside an explosion shake) silently cancelled the pending restore. On fixed-camera levels (Birds Hunt, `isMoving=false`, where `ExplodeComponent` uses restore) the camera ended up permanently displaced after chained explosions. | Restore origin and restore flag are now kept for the duration of an overlapping shake. Non-overlapping behaviour is identical to before. |
-| 2 | **Brutality / Camera / Turn flow** | `FatalityManager::UpdateFatality` + new `Level::PortResetTurnTimeout` | `Level.UpdateLevel` force-ends the turn 15 s after the weapon is released (`activeTurnTimeoutTimer > 15f → TurnActiveActions = 0 → TurnFinished → NextTurn`). `NextTurn` swaps the active archer, moves the camera (`UpdateCameraPosition`) and spawns a new weapon. Several ported brutalities (Alien probe, Kunai, Lumber, Flag/moon, Jackhammer…) run 15–25 s, so the turn logic could fire **in the middle of the brutality** (camera jump away from the scene, archer swap). | While a fatality is active the timeout is held at 0. |
-| 3 | **Brutality soft-lock** | `FatalityManager::UpdateFatality` | An exception in any fatality's `UpdateFatality` (the ported classes are new code), or a fatality that never reports completion, leaves the match stuck in FINISH HIM with no result screen. | Exceptions are contained and logged once; a watchdog force-completes the fatality (through the normal `FatalityBase_OnFatalityFinish` path: achievements, `OnFatalityEnd`, level end) after an error (≤ 8 s later) or after 60 s. |
-| 4 | **Brutality banner (VFX/SFX)** | `FatalityBase::StartFatality` | `isBrutalityShowed` was set to `true` by `ShowBrutalityEffect` and never reset, but fatality objects are reused → the BRUTALITY sign + sound only ever appeared once per fatality instance. | Flag reset when a fatality starts. |
-| 5 | **VFX (Magician-upgrade piranha brutality)** | `MagicianAquarium::WaveUpdate` / `EatStart` | The prefab ships `waters[]` with `normalColor` → `redColor` (blue → red "blood" tint; the authored sprite colours equal `normalColor` exactly), but `WaveUpdate` was an empty stub, so the water never turned red when the piranhas ate. | `EatStart` starts a 1.5 s tint; `WaveUpdate` lerps `water` and `surface` sprites normal→red. |
-| 6 | **Animation** | `CharacterBase::StartElectricityAnimation` | The shock loop plays on **track 6**, but the "already playing?" test compared against track 0 (`CurrentAnimation`), which is never the shock clip → every periodical-damage tick restarted the shock animation from frame 0 (stutter). | Test track 6 instead. |
-| 7 | **Gameplay (try-a-character)** | `ObjectsSpawner::BeforeTrySelectedCharacterNameType` getter | Setter writes pref `Try_Character_NameType`, getter read `Try_Character` (which holds the *string id*), so the previously selected character name-type was never restored correctly after a try-character session. | Getter reads the right key. |
+| 1 | **Camera – Mad Mike (upgraded Footballer, golden-ball brutality)** | `FatalityBurningBallUpgrade::RestoreVictimAndPickUpBall` | `Level.UpdateLevel` calls `UnfollowWeaponWithVelocity` every frame while the victim has an active fatality. When the victim is restored (ragdoll removed) that call re-targets the camera to the victim **and resets the zoom to 1**, fighting the fatality's own `SetScaleWithDuration(cameraZoom)` + `TweenMoveToPosition`. Every other ported fatality (Kite, Alien, Kunai, Lumber, Hatchet, …) switches `IsNeedFollowArcherOrWeapon` off first; this one only did so at the final collision. | Auto-follow is switched off when the restore/cinematic step starts. |
+| 2 | **Camera** | `CameraController::ApplyShakeWithDuration` | Restoring shakes re-captured the shaken position as origin and a following non-restoring shake cancelled the pending restore (fixed-camera levels, e.g. Birds Hunt). | Origin/flag kept for the duration of an overlapping shake; identical behaviour otherwise. |
+| 3 | **Brutality soft-lock guard** | `FatalityManager::UpdateFatality` | An exception in a (ported) fatality update, or a fatality that never completes, leaves the match stuck in FINISH HIM. | Exceptions contained + logged once; watchdog completes the fatality through the normal finish path after an error (≤ 8 s) or 60 s. Never triggers in normal play. |
+| 4 | **VFX** | `MagicianAquarium::WaveUpdate` / `EatStart` | Prefab ships `normalColor → redColor` per water sprite (authored colours == `normalColor`) but `WaveUpdate` was an empty stub → water never reddened while piranhas ate. | 1.5 s tint normal→red. |
+| 5 | **Gameplay** | `ObjectsSpawner::BeforeTrySelectedCharacterNameType` | Getter read pref `Try_Character` (string id) while the setter writes `Try_Character_NameType`. | Getter reads the right key. |
 
-(Patches 2 and 3 are two changes in the same method.)
+Reverted from revision 1 (judged built-in / not provably a bug): 15 s turn-timeout hold, BRUTALITY banner flag reset,
+electric-shock animation track test.
 
 ## Verification performed
-* Patched DLL decompiled again with ILSpy and diffed against the original decompile: only the intended 7 classes differ.
+* Patched DLL decompiled again with ILSpy and diffed against the original decompile: only the 5 intended classes differ.
 * Microsoft **ILVerify** on original vs. patched DLL: **identical output** (no new IL errors introduced). The 11 pre-existing errors are all in
   `BowmastersLab.LocalPurchaseSimulator` (not touched, see "Not fixed").
 * No serialized layout changed: only *private, non-serialized* value-type fields were added (`port*`), plus one new method. (Unity 5.6
@@ -53,11 +57,9 @@ so the original (mcs-compiled) code is byte-for-byte unchanged outside the 8 pat
 * Balance (`PortBalance`) deliberately ignored as requested.
 
 ## How to test (suggested)
-1. Fixed-camera mode (Birds Hunt): chain several explosions → camera must return to its start position.
-2. Finish a match with the long brutalities (Alien probe, Kunai, Lumber, Flag, Jackhammer): camera must stay on the scene and the match must end normally.
+1. Mad Mike (upgraded Footballer) golden-ball brutality: after the victim is picked up the camera should zoom/tilt as configured and then follow the running footballer, not snap back to the victim.
+2. Fixed-camera mode (Birds Hunt): chain several explosions → camera returns to its start position.
 3. Magician upgrade piranha brutality: aquarium water fades to red while the piranhas eat.
-4. Shock a standing character (Thor/Mjolnir): shock pose animates smoothly, no restarting.
-5. Use the same weapon twice in a session: BRUTALITY banner shows each time.
 
 ## Rebuilding
 `bowmasters-fixes/build.sh` re-creates the APK from `final9` (needs dotnet SDK 8, JDK, openssl; the AOSP test key files
