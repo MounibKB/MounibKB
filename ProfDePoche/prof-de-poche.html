@@ -75,7 +75,7 @@ svg.i { width: 1em; height: 1em; stroke: currentColor; fill: none; stroke-width:
 
 /* layout */
 .shell { max-width: 1320px; margin: 0 auto; padding-block: 18px 90px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
-@media (min-width: 1100px) { .shell { grid-template-columns: minmax(0, 1fr) 390px; align-items: start; } }
+.shell { max-width: 820px; }
 .main { display: grid; gap: 14px; min-width: 0; grid-template-columns: minmax(0, 1fr); }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); min-width: 0; }
 .pad { padding: 16px 18px; }
@@ -94,8 +94,8 @@ svg.i { width: 1em; height: 1em; stroke: currentColor; fill: none; stroke-width:
 .spark { color: var(--purple); }
 
 /* exercise tabs */
-.tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
-.tab { flex: none; border: 1px solid var(--line-2); background: var(--surface); border-radius: 12px; padding: 8px 14px; font-weight: 700; font-size: 14px; color: var(--muted); display: inline-flex; gap: 8px; align-items: center; }
+.tabs { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(120px, 1fr); gap: 8px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
+.tab { justify-content: center; min-width: 0; border: 1px solid var(--line-2); background: var(--surface); border-radius: 12px; padding: 8px 14px; font-weight: 700; font-size: 14px; color: var(--muted); display: inline-flex; gap: 8px; align-items: center; }
 .tab[aria-selected="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
 .tab .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line-2); }
 .tab .dot.part { background: var(--warn); }
@@ -225,8 +225,8 @@ details[open] > summary .chev { transform: rotate(180deg); }
 .errs b { color: var(--bad); }
 
 /* tutor */
-.tutor { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-height: 0; overflow: hidden; }
-@media (min-width: 1100px) { .tutor { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 78px); height: calc(100dvh - env(safe-area-inset-top, 0px) - 96px); } }
+.tutor { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-height: 0; overflow: hidden; position: fixed; z-index: 40; transition: transform .28s ease; box-shadow: 0 -12px 50px rgb(0 0 0 / .45); }
+@media (min-width: 760px) { .tutor { inset: 0 0 0 auto; width: min(420px, 100%); border-radius: 0; border-width: 0 0 0 1px; transform: translateX(105%); padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); padding-right: env(safe-area-inset-right, 0px); } [dir="rtl"] .tutor { inset: 0 auto 0 0; transform: translateX(-105%); } }
 .tutor-head { padding: 13px 14px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .tutor-head h2 { font-size: 16px; display: flex; align-items: center; gap: 8px; }
 .avatar { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--purple), var(--blue)); display: grid; place-items: center; color: #fff; font-size: 15px; }
@@ -248,13 +248,12 @@ details[open] > summary .chev { transform: rotate(180deg); }
 .composer { border-top: 1px solid var(--line); padding: 10px 12px; display: flex; gap: 8px; align-items: flex-end; }
 .composer textarea { flex: 1; min-width: 0; resize: none; border: 1px solid var(--line-2); background: var(--surface-2); border-radius: 12px; padding: 9px 12px; max-height: 120px; line-height: 1.45; }
 .fab { position: fixed; z-index: 25; inset-inline-end: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); border: 0; border-radius: 999px; padding: 12px 18px; background: linear-gradient(135deg, var(--purple), var(--blue)); color: #fff; font-weight: 700; display: inline-flex; gap: 8px; align-items: center; box-shadow: 0 10px 30px rgb(0 0 0 / .35); }
-@media (min-width: 1100px) { .fab { display: none; } }
-@media (max-width: 1099px) {
+@media (max-width: 759px) {
   .tutor { position: fixed; z-index: 40; inset: auto 0 0 0; height: min(78dvh, 640px); border-radius: 18px 18px 0 0; transform: translateY(105%); transition: transform .28s ease; padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); box-shadow: 0 -12px 40px rgb(0 0 0 / .4); }
   .tutor.open { transform: none; }
 }
-.closebtn { display: none; }
-@media (max-width: 1099px) { .closebtn { display: grid; } }
+.tutor.open { transform: none !important; }
+.closebtn { display: grid; }
 
 /* overlays */
 .scrim { position: fixed; inset: 0; z-index: 50; background: rgb(5 7 12 / .62); display: grid; place-items: center; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
@@ -351,6 +350,76 @@ canvas#confetti { position: fixed; inset: 0; z-index: 70; pointer-events: none; 
 .keys { display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: center; font-size: 13.5px; padding: 8px 14px 0; }
 .keys span { display: inline-flex; align-items: center; gap: 6px; }
 .keys i { width: 18px; height: 3px; border-radius: 2px; background: currentColor; display: inline-block; }
+/* ---- organized study view ---- */
+.top .xp .name { display: none; } @media (min-width: 900px) { .top .xp .name { display: inline; } }
+.top-in { flex-wrap: nowrap; } .brand { flex: 1 1 auto; } .top-actions { flex-wrap: nowrap; flex: none; }
+@media (max-width: 520px) { .fab { width: 52px; height: 52px; padding: 0; justify-content: center; font-size: 20px; } .fab span + span { display: none; } .top .xp .bar { display: none; } .brand-t p { display: none; } .brand-t h1 { font-size: 16px; } .shell { padding-bottom: 110px; } }
+.exhead { display: grid; gap: 4px; padding: 2px 2px 0; }
+.exhead h2 { font-size: 18px; }
+.exhead h2 .ex-name { font-family: var(--font-display); font-size: 18px; color: var(--muted); font-weight: 500; }
+.exhead .stmt { margin: 0; color: var(--muted); font-size: 14.5px; overflow-wrap: anywhere; }
+.exhead .stmt.clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.linkbtn { border: 0; background: none; padding: 0; color: var(--accent); font-weight: 700; font-size: 13px; justify-self: start; }
+.board .note { font-size: 19px; }
+.qsec { display: grid; gap: 4px; }
+.qsec h3 { font-size: 17px; line-height: 1.4; }
+.qsec .goal { font-size: 14px; }
+.steps { gap: 4px; margin-top: 10px; }
+.step { border: 1px solid transparent; background: transparent; padding: 8px 8px; border-radius: 12px; gap: 6px; }
+.step.active { background: var(--surface-2); border-color: var(--line); box-shadow: none; }
+.step-row { align-items: flex-start; gap: 12px; }
+.step-n { width: 28px; height: 28px; border-radius: 8px; color: #fff; }
+.step:nth-child(6n+1) .step-n { background: var(--red); } .step:nth-child(6n+2) .step-n { background: var(--green); } .step:nth-child(6n+3) .step-n { background: var(--purple); }
+.step:nth-child(6n+4) .step-n { background: var(--orange); } .step:nth-child(6n+5) .step-n { background: var(--blue); } .step:nth-child(6n) .step-n { background: var(--teal); }
+.step.active .step-n { color: #fff; }
+.step-more { width: 30px; height: 30px; border-radius: 9px; border: 1px solid transparent; background: transparent; color: var(--purple); font-size: 14px; flex: none; display: grid; place-items: center; }
+.step-more:hover, .step-more[aria-expanded="true"] { border-color: color-mix(in srgb, var(--purple) 45%, var(--line-2)); background: var(--surface); }
+.menu, .aibox { margin-inline-start: 40px; }
+.menu { padding-inline-start: 0; }
+.reveal { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.qactions { display: grid; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+.qactions .btn { justify-content: center; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.btn.light { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.btn[aria-pressed="true"] { border-color: var(--accent); }
+.panel .seg { justify-self: start; }
+.tabbar { display: inline-flex; border: 1px solid var(--line-2); border-radius: 10px; overflow: hidden; justify-self: start; }
+.tabbar button { border: 0; background: var(--surface); padding: 6px 12px; font-weight: 700; font-size: 13px; color: var(--muted); }
+.tabbar button + button { border-inline-start: 1px solid var(--line-2); }
+.tabbar button[aria-selected="true"] { background: var(--fg); color: var(--bg); }
+.menu-sec { display: grid; gap: 8px; padding-top: 12px; border-top: 1px solid var(--line); }
+.menu-sec > h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-family: var(--font-mono); }
+.menu-sec .row { display: flex; gap: 8px; flex-wrap: wrap; }
+/* ---- home: pages + generation screen ---- */
+.pagegrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 10px; }
+.pagegrid:empty { display: none; }
+.pagecard { position: relative; aspect-ratio: 3 / 4; border-radius: 10px; overflow: hidden; border: 1px solid var(--line-2); background: var(--surface-2); display: grid; place-items: center; }
+.pagecard img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pagecard .pl { position: absolute; inset: auto 0 0 0; font-family: var(--font-mono); font-size: 11px; padding: 3px 6px; background: linear-gradient(transparent, rgb(0 0 0 / .7)); color: #fff; }
+.pagecard .ext { font-family: var(--font-mono); font-weight: 700; color: var(--accent); }
+.pagecard .x { position: absolute; top: 4px; inset-inline-end: 4px; width: 22px; height: 22px; border-radius: 50%; border: 0; background: rgb(0 0 0 / .65); color: #fff; font-size: 12px; }
+.pagecard.scan::after { content: ""; position: absolute; inset: 0 0 auto; height: 30%; background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--accent) 45%, transparent), transparent); animation: scan 1.6s ease-in-out infinite; }
+@keyframes scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(340%); } }
+.gen { display: grid; gap: 16px; }
+.gen-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.gen-head h3 { font-size: 19px; }
+.gen-sub { font-size: 12.5px; color: var(--muted); font-family: var(--font-mono); }
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.timeline li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; align-items: start; position: relative; padding-bottom: 12px; }
+.timeline li:not(:last-child)::before { content: ""; position: absolute; inset-inline-start: 12px; top: 24px; bottom: 0; width: 2px; background: var(--line-2); }
+.timeline li.ok:not(:last-child)::before { background: var(--ok); }
+.timeline .st { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--line-2); display: grid; place-items: center; font-size: 12px; background: var(--surface); }
+.timeline li.run .st { border-color: var(--accent); border-top-color: transparent; animation: rot .8s linear infinite; }
+.timeline li.ok .st { border-color: var(--ok); background: var(--ok); color: var(--bg); }
+.timeline li.err .st { border-color: var(--bad); color: var(--bad); }
+.timeline .tl { display: grid; } .timeline .tl b { font-size: 14.5px; } .timeline .tl small { color: var(--muted); font-size: 12.5px; }
+.timeline li.err .tl small { color: var(--bad); }
+.gen-ex { display: grid; gap: 6px; }
+.gen-row { display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; background: var(--surface-2); min-width: 0; }
+.gen-row .gi { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; flex: none; }
+.gen-row.ok .gi { background: var(--ok); color: var(--bg); } .gen-row.err .gi { background: var(--bad); color: var(--bg); }
+.gen-row .gt { min-width: 0; flex: 1; display: grid; } .gen-row .gt b { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .gen-row .gt small { color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gen-actions { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
 mjx-container { color: inherit; }
 mjx-container:not([display="true"]) { display: inline-block; max-width: 100%; overflow-x: auto; overflow-y: hidden; vertical-align: middle; }
 mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
@@ -370,9 +439,7 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
     </div>
     <div class="top-actions">
       <span class="xp" id="xpPill" title=""><span class="lvl" id="xpLvl">1</span><span class="bar"><i id="xpBar" style="width:0%"></i></span><span class="name" id="xpName"></span><span class="streak" id="streak" hidden></span></span>
-      <div class="seg" id="uiSeg" role="group" aria-label="Langue"><button type="button" data-l="fr">FR</button><button type="button" data-l="ar">ع</button><button type="button" data-l="en">EN</button></div>
-      <button class="iconbtn" id="themeBtn" type="button" aria-label="Theme"></button>
-      <button class="iconbtn" id="settingsBtn" type="button" aria-label="Settings"><svg class="i" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      <button class="iconbtn" id="settingsBtn" type="button" aria-label="Menu"><svg class="i" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
     </div>
   </div>
 </header>
@@ -386,6 +453,8 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
       <div class="flow" id="flow"></div>
     </div>
     <div class="card maker">
+      <div class="mk-gen" id="mkGen" hidden></div>
+      <div class="mk-form" id="mkForm" style="display:grid;gap:12px">
       <div class="drop" id="mkDrop">
         <span class="big">✦</span>
         <b data-t="importDrop"></b>
@@ -397,7 +466,7 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
         <input type="file" id="mkFile" multiple hidden accept="image/*,.pdf,.docx,.pptx,.txt,.md">
         <input type="file" id="mkCamIn" hidden accept="image/*" capture="environment">
       </div>
-      <div class="thumbs" id="mkFiles"></div>
+      <div class="pagegrid" id="mkFiles"></div>
       <textarea id="mkText" data-tp="pasteText"></textarea>
       <div class="mk-row">
         <label for="mkLevel"><span data-t="level"></span><select class="select" id="mkLevel"></select></label>
@@ -410,30 +479,17 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
         <input class="range" type="range" id="mkEffort" min="0" max="2" step="1">
       </div>
       <button class="btn accent big" type="button" id="mkGo"><span>✦</span><span data-t="build"></span></button>
-      <ul class="stages" id="mkStages"></ul>
+      </div>
     </div>
   </section>
-  <section class="feats" id="feats"></section>
   <section class="lib"><h3 data-t="myLibrary"></h3><div class="lib-grid" id="libGrid"></div></section>
 </div>
 
 <div class="shell" id="app" hidden>
   <main class="main">
-    <div class="toolbar">
-      <div class="grp">
-        <label class="sr" for="seriesSel" data-t="series"></label>
-        <select class="select" id="seriesSel"></select>
-        <button class="btn sm" id="importBtn" type="button"><span>＋</span><span data-t="newSeries"></span></button>
-        <button class="btn sm ai" id="regenBtn" type="button" hidden><span class="spark">✦</span><span data-t="regen"></span></button>
-      </div>
-      <div class="grp">
-        <button class="btn sm ai" id="similarBtn" type="button"><span class="spark">✦</span><span data-t="similar"></span></button>
-        <button class="btn sm" id="summaryBtn" type="button"><svg class="i" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span data-t="summary"></span></button>
-      </div>
-    </div>
     <div class="tabs" id="tabs" role="tablist"></div>
     <section class="card pad qnav" id="qnav"></section>
-    <details class="card pad statement" id="statement" open></details>
+    <section class="exhead" id="statement"></section>
     <section class="card" id="boardCard"></section>
     <section class="card pad" id="qcard"></section>
   </main>
@@ -596,6 +652,14 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
     qsCount: ["{n} questions", "{n} أسئلة", "{n} questions"],
     exCount: ["{n} exercices", "{n} تمارين", "{n} exercises"],
     exampleTag: ["Exemple", "مثال", "Example"],
+    menu: ["Menu", "القائمة", "Menu"], uiLang: ["Langue de l'interface", "لغة الواجهة", "Interface language"], theme: ["Thème", "المظهر", "Theme"], dark: ["Sombre", "داكن", "Dark"], light: ["Clair", "فاتح", "Light"],
+    seriesSec: ["Cette série", "هذه السلسلة", "This series"], aiSec: ["Prof IA", "الأستاذ الذكي", "AI tutor"],
+    quizTab: ["Quiz", "اختبار", "Quiz"], gradeTab: ["Corriger ma réponse", "صحّح جوابي", "Grade my answer"],
+    readMore: ["Lire tout l'énoncé", "اقرأ النص كاملًا", "Read the full statement"], readLess: ["Réduire", "تصغير", "Show less"],
+    genTitle: ["Préparation de ton parcours", "تحضير مسارك", "Preparing your path"], openPath: ["Ouvrir le parcours", "افتح المسار", "Open the path"],
+    hideNames: ["Masquer noms", "إخفاء الأسماء", "Hide names"], showNames: ["Afficher noms", "إظهار الأسماء", "Show names"],
+    page: ["Page", "صفحة", "Page"], stepTools: ["Options de l'étape", "خيارات الخطوة", "Step options"], onFigure: ["Voir sur le schéma", "على الشكل", "Show on figure"],
+    waitingEx: ["en attente", "في الانتظار", "waiting"], solving: ["résolution…", "قيد الحل…", "solving…"], exMissing: ["Aucun exercice détecté pour l'instant.", "لم يُكتشف أي تمرين بعد.", "No exercise detected yet."],
     f1t: ["Étapes guidées", "خطوات موجهة", "Guided steps"], f1d: ["Chaque question résolue pas à pas, à ton rythme.", "كل سؤال محلول خطوة بخطوة بإيقاعك.", "Every question solved step by step, at your pace."],
     f2t: ["Schémas vivants", "أشكال حية", "Live figures"], f2d: ["Figures déplaçables, courbes, schémas de physique.", "أشكال قابلة للتحريك، منحنيات، تبيانات فيزيائية.", "Draggable figures, curves, physics diagrams."],
     f3t: ["Explique autrement", "اشرح بطريقة أخرى", "Explain it differently"], f3d: ["Plus simple, en histoire, en darija, en une phrase.", "أبسط، كقصة، بالدارجة، في جملة.", "Simpler, as a story, in Darija, in one sentence."],
@@ -1106,10 +1170,10 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
     const tools = el("div", "board-tools");
     const mk = (key, ic, pressed, fn) => { const b = el("button", "tog"); b.type = "button"; b.append(icon(ic), el("span", null, t(key))); if (pressed != null) b.setAttribute("aria-pressed", String(pressed)); b.onclick = fn; tools.append(b); return b; };
     if (fig && fig.base) {
-      mk("names", "eye", S.showNames, () => { S.showNames = !S.showNames; renderBoard(); });
-      mk("grid", "gridI", S.showGrid, () => { S.showGrid = !S.showGrid; renderBoard(); });
-      mk("animate", "play", null, animateSteps);
-      mk("reset", "reset", null, () => { delete S.base[`${S.seriesId}|${e.id}`]; renderBoard(); });
+      const ib = (ic, label, fn) => { const b = el("button", "tog"); b.type = "button"; b.append(icon(ic)); b.setAttribute("aria-label", t(label)); b.title = t(label); b.onclick = fn; tools.append(b); };
+      ib("play", "animate", animateSteps);
+      ib("reset", "reset", () => { delete S.base[`${S.seriesId}|${e.id}`]; renderBoard(); });
+      const nb = el("button", "tog"); nb.type = "button"; nb.append(icon("eye"), el("span", null, t(S.showNames ? "hideNames" : "showNames"))); nb.onclick = () => { S.showNames = !S.showNames; renderBoard(); }; tools.append(nb);
     }
     head.append(tools); card.append(head);
     const board = el("div", "board");
@@ -1302,9 +1366,8 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
     setBadge($("subBadge"), home ? "PdP" : s.badge || s.subject);
     $("subBadge").style.background = home ? "linear-gradient(135deg, var(--purple), var(--blue))" : "";
     const L = levelOf(S.progress.xp); $("xpLvl").textContent = `${{ fr: "Niv", ar: "م", en: "Lv" }[ui]} ${L.n}`; $("xpBar").style.width = L.pct + "%"; $("xpName").textContent = `${L.name} · ${S.progress.xp} XP`;
+    $("xpPill").title = `${L.name} · ${S.progress.xp} XP`;
     $("streak").hidden = S.progress.streak < 2; $("streak").textContent = `×${S.progress.streak}`;
-    const sel = $("seriesSel"); sel.replaceChildren(...allSeries().map((x) => { const o = el("option", null, x.builtin ? `${x.title} — ${x.subtitle.split("·")[0].trim()} (${t("example")})` : x.title); o.value = x.id; return o; }));
-    sel.value = S.seriesId;
   }
   function exProgress(e) { const n = e.questions.length; let d = 0; e.questions.forEach((_, i) => { if (S.progress.done[qKey(e, i)]) d++; }); return { d, n }; }
   function renderTabs() {
@@ -1330,72 +1393,70 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
     nav.append(p, nx); box.append(top, segs, nav);
   }
   function goQ(i) { S.qIdx = Math.max(0, Math.min(ex().questions.length - 1, i)); S.panel = null; activeStepOverride = null; clearInterval(animTimer); renderNav(); renderStatement(); renderBoard(); renderQuestion(); renderChips(); }
+  let stmtOpen = false;
   function renderStatement() {
-    const e = ex(), box = $("statement"); const open = box.open; box.replaceChildren();
-    const sum = el("summary"); const h = el("h3"); h.append(document.createTextNode(`${t("statement")} — ${e.title} `)); if (e.name) h.append(el("span", "ex-name", `· ${e.name}`));
-    const ch = icon("chev"); ch.classList.add("chev"); sum.append(h, ch);
-    const body = el("div", "content-ltr"); body.dir = series().lang === "ar" ? "rtl" : "ltr";
-    body.append(richEl("div", "stmt", e.statement));
-    const ol = el("ol", "stmt-qs");
-    e.questions.forEach((q, i) => { const li = el("li"); const b = el("button"); b.type = "button"; b.append(el("span", "lbl", q.label), richEl("span", null, q.title)); b.onclick = () => goQ(i); li.append(b); ol.append(li); });
-    body.append(ol); box.append(sum, body); box.open = open !== false;
+    const e = ex(), box = $("statement"); box.replaceChildren(); box.dir = series().lang === "ar" ? "rtl" : "ltr";
+    const h = el("h2"); h.append(document.createTextNode(e.title)); if (e.name) h.append(el("span", "ex-name", ` — ${e.name}`));
+    const p = richEl("p", "stmt" + (stmtOpen ? "" : " clamp"), e.statement);
+    box.append(h, p);
+    if ((e.statement || "").length > 150) { const b = el("button", "linkbtn", t(stmtOpen ? "readLess" : "readMore")); b.type = "button"; b.onclick = () => { stmtOpen = !stmtOpen; renderStatement(); }; box.append(b); }
     typeset([box]);
   }
   function renderQuestion() {
     const e = ex(), q = qq(), key = qKey(), box = $("qcard"); box.replaceChildren();
     const lang = series().lang === "ar" ? "rtl" : "ltr";
-    const head = el("div", "q-head"); head.dir = lang;
-    head.append(el("div", "q-lbl", `${t("question")} ${q.label} — ${e.title}`), richEl("h3", null, q.title));
+    const head = el("div", "qsec"); head.dir = lang;
+    head.append(richEl("h3", null, `${t("question")} ${q.label} — ${q.title}`));
     if (q.goal) { const g = el("p", "goal"); g.append(el("b", null, t("goal") + " ")); g.append(rich(el("span"), q.goal)); head.append(g); }
     box.append(head);
     if (e.pending || e.error) {
       const pb = el("div", "pending-box");
-      if (e.pending) { pb.append(el("div", "bar"), el("span", null, t("preparing"))); pb.firstChild.append(el("i")); }
+      if (e.pending) { const bar = el("div", "bar"); bar.append(el("i")); pb.append(bar, el("span", null, t("preparing"))); }
       else { pb.append(el("span", null, `${t("prepFailed")} ${e.error}`)); const r = el("button", "btn accent"); r.type = "button"; r.textContent = t("retry"); r.onclick = () => regenCurrent(); pb.append(r); }
       box.append(pb); typeset([box]); return;
     }
     const n = S.revealed[key] || 0;
     const ol = el("ol", "steps"); ol.dir = lang;
     q.steps.slice(0, n).forEach((st, i) => ol.append(renderStep(st, i, i === n - 1)));
-    box.append(ol);
-    const acts = el("div", "step-actions");
+    if (n) box.append(ol);
+    const rv = el("div", "reveal");
     if (n < q.steps.length) {
-      const b = el("button", "btn accent"); b.type = "button"; b.append(icon("play"), el("span", null, `${t("nextStep")} (${n + 1}/${q.steps.length})`));
+      const b = el("button", "btn accent"); b.type = "button"; b.append(icon("play"), el("span", null, `${t("nextStep")} · ${n + 1}/${q.steps.length}`));
       b.onclick = () => { S.revealed[key] = n + 1; activeStepOverride = null; if (n + 1 === q.steps.length) completeQ(); renderQuestion(); renderBoard(); };
-      const all = el("button", "btn"); all.type = "button"; all.textContent = t("showAll");
-      all.onclick = () => { S.revealed[key] = q.steps.length; completeQ(); renderQuestion(); renderBoard(); };
-      acts.append(b, all);
+      rv.append(b);
+      if (q.steps.length - n > 1) { const all = el("button", "btn ghost"); all.type = "button"; all.textContent = t("showAll"); all.onclick = () => { S.revealed[key] = q.steps.length; completeQ(); renderQuestion(); renderBoard(); }; rv.append(all); }
     } else {
-      const d = el("div", "qdone"); d.append(icon("check"), el("span", null, t("qDone"))); box.append(d);
-      const r = el("button", "btn sm ghost"); r.type = "button"; r.append(icon("reset"), el("span", null, t("restart"))); r.onclick = () => { S.revealed[key] = 0; renderQuestion(); renderBoard(); };
-      acts.append(r);
-      if (S.qIdx < e.questions.length - 1) { const nx = el("button", "btn primary"); nx.type = "button"; nx.append(el("span", null, t("next")), icon(ui === "ar" ? "left" : "right")); nx.onclick = () => goQ(S.qIdx + 1); acts.append(nx); }
+      const d = el("div", "qdone"); d.style.margin = "0"; d.append(icon("check"), el("span", null, t("qDone"))); rv.append(d);
+      const r = el("button", "btn sm ghost"); r.type = "button"; r.append(icon("reset"), el("span", null, t("restart"))); r.onclick = () => { S.revealed[key] = 0; renderQuestion(); renderBoard(); }; rv.append(r);
     }
+    box.append(rv);
+    const acts = el("div", "qactions");
+    const test = el("button", "btn"); test.type = "button"; test.append(icon("target"), el("span", null, t("test"))); test.setAttribute("aria-pressed", String(S.panel === "test"));
+    test.onclick = () => { S.panel = S.panel === "test" ? null : "test"; renderQuestion(); };
+    const pair = el("div", "pair");
+    const hint = el("button", "btn"); hint.type = "button"; hint.append(icon("bulb"), el("span", null, t("hint"))); hint.setAttribute("aria-pressed", String(S.panel === "hint"));
+    hint.onclick = () => { S.panel = S.panel === "hint" ? null : "hint"; renderQuestion(); };
+    const sum = el("button", "btn light"); sum.type = "button"; sum.append(icon("pen"), el("span", null, t("summary"))); sum.onclick = openSummary;
+    pair.append(hint, sum); acts.append(test);
+    if (S.panel === "test") acts.append(renderTest(q));
+    acts.append(pair);
+    if (S.panel === "hint") acts.append(renderHint(q));
     box.append(acts);
-    const bar = el("div", "actbar");
-    const mk = (key2, ic, cls, panel) => { const b = el("button", "btn " + cls); b.type = "button"; if (ic === "✦") b.append(el("span", "spark", "✦")); else b.append(icon(ic)); b.append(el("span", null, t(key2))); b.setAttribute("aria-pressed", String(S.panel === panel)); b.onclick = () => { S.panel = S.panel === panel ? null : panel; renderQuestion(); }; bar.append(b); };
-    mk("hint", "bulb", "", "hint"); mk("test", "target", "", "quiz"); mk("verify", "✦", "ai", "verify");
-    const sumB = el("button", "btn"); sumB.type = "button"; sumB.append(icon("pen"), el("span", null, t("summary"))); sumB.onclick = openSummary; bar.append(sumB);
-    box.append(bar);
-    if (S.panel === "hint") box.append(renderHint(q));
-    if (S.panel === "quiz") box.append(renderQuiz(q));
-    if (S.panel === "verify") box.append(renderVerify(q));
     typeset([box]);
   }
   function renderStep(st, i, active) {
     const li = el("li", "step" + (active ? " active" : ""));
-    const row = el("div", "step-row"); row.append(el("span", "step-n", String(i + 1)), richEl("div", "step-body", st.text)); li.append(row);
-    const tools = el("div", "step-tools");
-    const other = el("button", "mini ai"); other.type = "button"; other.append(el("span", null, "✦"), el("span", null, t("explainOther")));
+    const row = el("div", "step-row"); row.append(el("span", "step-n", String(i + 1)), richEl("div", "step-body", st.text));
+    const more = el("button", "step-more", "✦"); more.type = "button"; more.setAttribute("aria-label", t("stepTools")); more.setAttribute("aria-expanded", "false");
+    row.append(more); li.append(row);
     const menu = el("div", "menu"); menu.hidden = true;
-    other.onclick = () => { menu.hidden = !menu.hidden; };
+    more.onclick = () => { menu.hidden = !menu.hidden; more.setAttribute("aria-expanded", String(!menu.hidden)); };
     [["stSimple", "simple"], ["stLife", "life"], ["stStory", "story"], ["stWhy", "why"], ["stDarija", "darija"], ["stFlash", "flash"]].forEach(([k, style]) => {
-      const b = el("button", "mini"); b.type = "button"; b.textContent = t(k); b.onclick = () => explainStep(st, i, style, li, menu); menu.append(b);
+      const b = el("button", "mini ai"); b.type = "button"; b.textContent = t(k); b.onclick = () => explainStep(st, i, style, li, menu); menu.append(b);
     });
-    tools.append(other);
-    if ("speechSynthesis" in window) { const sp = el("button", "mini"); sp.type = "button"; sp.append(icon("speaker"), el("span", null, t("listen"))); sp.onclick = () => speak(st.text, series().lang); tools.append(sp); }
-    const show = el("button", "mini"); show.type = "button"; show.append(icon("eye")); show.setAttribute("aria-label", "figure"); show.onclick = () => { activeStepOverride = i; renderBoard(); $("boardCard").scrollIntoView({ behavior: "smooth", block: "nearest" }); }; tools.append(show);
-    li.append(tools, menu);
+    if ("speechSynthesis" in window) { const sp = el("button", "mini"); sp.type = "button"; sp.append(icon("speaker"), el("span", null, t("listen"))); sp.onclick = () => speak(st.text, series().lang); menu.append(sp); }
+    if (ex().figure && ex().figure.base) { const sh = el("button", "mini"); sh.type = "button"; sh.append(icon("eye"), el("span", null, t("onFigure"))); sh.onclick = () => { activeStepOverride = i; renderBoard(); $("boardCard").scrollIntoView({ behavior: "smooth", block: "nearest" }); }; menu.append(sh); }
+    li.append(menu);
     return li;
   }
   function renderHint(q) {
@@ -1410,10 +1471,18 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
     };
     p.append(b, out); return p;
   }
+  let testTab = "quiz";
+  function renderTest(q) {
+    const wrap = el("div", "panel"); const bar = el("div", "tabbar"); bar.setAttribute("role", "tablist");
+    [["quiz", t("quizTab")], ["grade", "✦ " + t("gradeTab")]].forEach(([k, label]) => { const b = el("button", null, label); b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(testTab === k)); b.onclick = () => { testTab = k; renderQuestion(); }; bar.append(b); });
+    wrap.append(bar);
+    const inner = testTab === "quiz" ? renderQuiz(q) : renderVerify(q);
+    inner.classList.remove("panel"); inner.style.display = "grid"; inner.style.gap = "10px"; wrap.append(inner);
+    return wrap;
+  }
   const quizState = {};
   function renderQuiz(q) {
     const key = qKey(); const p = el("div", "panel");
-    const h = el("h4"); h.append(icon("target"), el("span", null, t("test"))); p.append(h);
     const list = [q.quiz, ...(quizState[key + "|ai"] || [])].filter(Boolean);
     list.forEach((item, qi) => p.append(renderMCQ(item, `${key}|${qi}`)));
     const status = el("div", "status");
@@ -1450,7 +1519,7 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
   }
   const verifyState = { images: [], text: "", result: null };
   function renderVerify(q) {
-    const p = el("div", "panel verify"); const h = el("h4"); h.append(el("span", "spark", "✦"), el("span", null, t("verify"))); p.append(h);
+    const p = el("div", "panel verify");
     const ta = el("textarea"); ta.id = "verifyText"; ta.placeholder = t("verifyPh"); ta.value = verifyState.text; ta.oninput = () => { verifyState.text = ta.value; }; p.append(ta);
     const thumbs = el("div", "thumbs");
     verifyState.images.forEach((im, i) => { const d = el("div", "thumb"); const img = el("img"); img.src = im.url; img.alt = ""; const x = el("button", null, "✕"); x.type = "button"; x.onclick = () => { URL.revokeObjectURL(im.url); verifyState.images.splice(i, 1); renderQuestion(); }; d.append(img, x); thumbs.append(d); });
@@ -1664,7 +1733,26 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
   function modalHead(m, title, close) { const h = el("div", "modal-head"); h.append(el("h2", null, title)); const x = el("button", "iconbtn", "✕"); x.type = "button"; x.setAttribute("aria-label", t("close")); x.onclick = close; h.append(x); m.append(h); }
   function openSettings() {
     modal((m, close) => {
-      modalHead(m, t("settings"), close);
+      modalHead(m, t("menu"), close);
+      const sr = S.library.find((x) => x.id === S.seriesId);
+      if (S.view === "study") {
+        const sec = el("div", "menu-sec"); sec.style.borderTop = "0"; sec.style.paddingTop = "0"; sec.append(el("h3", null, t("seriesSec")));
+        const sel = el("select", "select"); sel.style.maxWidth = "100%"; sel.setAttribute("aria-label", t("series"));
+        allSeries().forEach((x) => { const o = el("option", null, x.builtin ? `${x.title} (${t("example")})` : x.title); o.value = x.id; sel.append(o); }); sel.value = S.seriesId;
+        sel.onchange = () => { close(); openSeries(sel.value); }; sec.append(sel);
+        const row = el("div", "row");
+        const nb = el("button", "btn sm"); nb.type = "button"; nb.append(el("span", null, "＋"), el("span", null, t("newSeries"))); nb.onclick = () => { close(); setView("home"); }; row.append(nb);
+        const sb = el("button", "btn sm ai"); sb.type = "button"; sb.append(el("span", "spark", "✦"), el("span", null, t("similar"))); sb.onclick = () => { close(); makeSimilar(); }; row.append(sb);
+        if (sr && S.exIdx < sr.exercises.length && !ex().pending) { const rb = el("button", "btn sm ai"); rb.type = "button"; rb.append(el("span", "spark", "✦"), el("span", null, t("regen"))); rb.onclick = () => { close(); regenCurrent(); }; row.append(rb); }
+        sec.append(row); m.append(sec);
+      }
+      const look = el("div", "menu-sec"); if (S.view !== "study") { look.style.borderTop = "0"; look.style.paddingTop = "0"; }
+      const lr = el("div", "row"); const ls = el("div", "seg"); [["fr", "FR"], ["ar", "ع"], ["en", "EN"]].forEach(([l, lab]) => { const b = el("button", null, lab); b.type = "button"; b.setAttribute("aria-pressed", String(ui === l)); b.onclick = () => { ui = l; store.set("pdp.ui", ui); close(); renderAll(); renderLogIntro(); openSettings(); }; ls.append(b); });
+      const ts = el("div", "seg"); const isDark = S.settings.theme ? S.settings.theme === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+      [["dark", "dark"], ["light", "light"]].forEach(([v, k]) => { const b = el("button", null, t(k)); b.type = "button"; b.setAttribute("aria-pressed", String((v === "dark") === isDark)); b.onclick = () => { S.settings.theme = v; saveSettings(); applyTheme(); ts.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); }; ts.append(b); });
+      const l1 = el("label", "field"); l1.append(el("span", null, t("uiLang")), ls); const l2 = el("label", "field"); l2.append(el("span", null, t("theme")), ts);
+      lr.style.gap = "18px"; lr.append(l1, l2); look.append(lr); m.append(look);
+      const aiSec = el("div", "menu-sec"); aiSec.append(el("h3", null, t("aiSec"))); m.append(aiSec);
       const f1 = el("div", "field"); f1.append(el("span", null, t("model"))); const ms = el("div", "models");
       Object.entries(MODELS).forEach(([k, md]) => { const lab = el("label", "model-opt"); const r = el("input"); r.type = "radio"; r.name = "model"; r.value = k; r.checked = S.settings.model === k; r.onchange = () => { S.settings.model = k; saveSettings(); $("modelChip").textContent = modelName(); if (S.view === "home") renderHome(); }; const mt = el("span", "mt"); mt.append(el("b", null, md.name), el("small", null, t(md.desc))); lab.append(r, mt); ms.append(lab); });
       f1.append(ms); m.append(f1);
@@ -1805,15 +1893,50 @@ Reply ONLY with the Exercise JSON.`;
     return { id: e.id || `x${i}-${Math.random().toString(36).slice(2, 6)}`, title: String(e.title || `Exercice ${i + 1}`).slice(0, 60), name: String(e.name || "").slice(0, 80), statement: String(e.statement || "").slice(0, 4000), figureHint: String(e.figure_hint || e.figureHint || "").slice(0, 400),
       questions: (Array.isArray(e.questions) ? e.questions : []).map((q, qi) => ({ label: String(q.label || qi + 1).slice(0, 6), title: String(q.title || "").slice(0, 2000), steps: [] })).filter((q) => q.title), pending: true };
   }
-  function setStages(list) { S.mk.stages = list; if (S.view === "home") renderStages(); }
-  function renderStages() {
-    $("mkStages").replaceChildren(...S.mk.stages.map((st) => { const li = el("li", st.state); li.append(el("span", "st", st.state === "ok" ? "✓" : st.state === "err" ? "!" : ""), el("span", null, t(st.key)), el("small", null, st.note || "")); return li; }));
+  function setStages(list) { S.mk.stages = list; if (S.view === "home") renderGen(); }
+  function pageCard(src, label, opts = {}) {
+    const d = el("div", "pagecard" + (opts.scan ? " scan" : ""));
+    if (src) { const im = el("img"); im.src = src; im.alt = label; d.append(im); } else d.append(el("span", "ext", opts.ext || "TXT"));
+    d.append(el("span", "pl", label));
+    if (opts.onRemove) { const x = el("button", "x", "✕"); x.type = "button"; x.setAttribute("aria-label", label); x.onclick = opts.onRemove; d.append(x); }
+    return d;
+  }
+  function renderGen() {
+    const g = S.gen, box = $("mkGen"); $("mkForm").hidden = !!g; box.hidden = !g; if (!g) return;
+    box.replaceChildren(); const wrap = el("div", "gen");
+    const head = el("div", "gen-head"); head.append(el("h3", null, t("genTitle")), el("span", "gen-sub", modelName())); wrap.append(head);
+    const scanning = S.mk.stages.slice(0, 2).some((st) => st.state === "run");
+    if (g.pages.length) { const pg = el("div", "pagegrid"); g.pages.forEach((pp, i) => pg.append(pageCard(pp.url, pp.url ? `${t("page")} ${i + 1}` : pp.label, { scan: scanning, ext: pp.ext }))); wrap.append(pg); }
+    const tl = el("ol", "timeline");
+    S.mk.stages.forEach((st) => { const li = el("li", st.state); const tx = el("div", "tl"); tx.append(el("b", null, t(st.key))); if (st.note) tx.append(el("small", null, st.note)); li.append(el("span", "st", st.state === "ok" ? "✓" : st.state === "err" ? "!" : ""), tx); tl.append(li); });
+    wrap.append(tl);
+    const sr = g.seriesId && S.library.find((x) => x.id === g.seriesId);
+    if (sr) {
+      const list = el("div", "gen-ex");
+      sr.exercises.forEach((e, i) => {
+        const st = e.error ? "err" : e.pending ? (g.solving && g.solving.has(i) ? "run" : "wait") : "ok";
+        const row = el("div", "gen-row " + st); row.append(st === "run" || st === "wait" ? (st === "run" ? el("span", "spin") : el("span", "gi", "·")) : el("span", "gi", st === "ok" ? "✓" : "!"));
+        const tx = el("div", "gt"); tx.append(el("b", null, e.name ? `${e.title} — ${e.name}` : e.title), el("small", null, st === "ok" ? t("qsCount", { n: e.questions.length }) : st === "err" ? e.error : st === "run" ? t("solving") : t("waitingEx"))); row.append(tx);
+        if (st === "ok") { const o = el("button", "btn sm", t("open")); o.type = "button"; o.onclick = () => { S.seriesId = sr.id; S.exIdx = i; S.qIdx = 0; setView("study"); }; row.append(o); }
+        if (st === "err") { const r = el("button", "btn sm", t("retry")); r.type = "button"; r.onclick = () => solveOne(sr, i); row.append(r); }
+        list.append(row);
+      });
+      wrap.append(list);
+    }
+    const acts = el("div", "gen-actions");
+    const ready = sr && sr.exercises.some((e) => !e.pending && !e.error);
+    const open = el("button", "btn accent big", t("openPath")); open.type = "button"; open.disabled = !ready; open.onclick = () => { const i = sr.exercises.findIndex((e) => !e.pending && !e.error); S.seriesId = sr.id; S.exIdx = Math.max(0, i); S.qIdx = 0; setView("study"); };
+    const again = el("button", "btn big", "＋"); again.type = "button"; again.setAttribute("aria-label", t("newSeries")); again.title = t("newSeries"); again.disabled = S.mk.busy; again.onclick = () => { S.gen = null; renderHome(); };
+    acts.append(open, again); wrap.append(acts);
+    box.append(wrap);
   }
   async function makeSeries() {
     if (S.mk.busy) return;
     const typed = $("mkText").value.trim();
     if (!S.mk.files.length && !typed) { toast(t("needInput")); return; }
     S.mk.busy = true; $("mkGo").disabled = true;
+    S.gen = { pages: S.mk.files.map((f) => (/^image\//.test(f.type) ? { url: f._url || (f._url = URL.createObjectURL(f)) } : { url: "", label: f.name, ext: (f.name.split(".").pop() || "").toUpperCase().slice(0, 4) })), seriesId: null, solving: new Set() };
+    if (!S.gen.pages.length) S.gen.pages = [{ url: "", label: "texte", ext: "TXT" }];
     const stages = [{ key: "stRead", state: "run" }, { key: "stTranscribe", state: "" }, { key: "stSolve", state: "" }]; setStages(stages);
     let cur = 0;
     try {
@@ -1824,7 +1947,8 @@ Reply ONLY with the Exercise JSON.`;
       const text = [typed, fileText].filter(Boolean).join("\n\n");
       if (S.backend === "claude" && !S.imagesOk && images.length) { if (!text) throw { code: "images_unavailable" }; images = []; }
       images = images.slice(0, S.maxImages);
-      stages[0].state = "ok"; stages[1].state = "run"; cur = 1; setStages(stages);
+      if (images.length) S.gen.pages = images.map((im) => ({ url: URL.createObjectURL(im.blob) })).concat(S.gen.pages.filter((pp) => !pp.url && pp.ext !== "PDF" && !/^(JPE?G|PNG|WEBP|GIF)$/.test(pp.ext)));
+      stages[0].state = "ok"; stages[0].note = images.length ? `${images.length} × ${t("page").toLowerCase()}` : ""; stages[1].state = "run"; cur = 1; setStages(stages);
       const lvl = $("mkLevel").value, lang = $("mkLang").value;
       const data = await ai(outlinePrompt(images.length, text, lvl, lang), { json: true, images, onText: ({ text: x }) => { stages[1].note = t("writing", { n: x.length }); setStages(stages); } });
       const stubs = (Array.isArray(data.exercises) ? data.exercises : []).map(stubFrom).filter((e) => e.statement || e.questions.length);
@@ -1833,15 +1957,15 @@ Reply ONLY with the Exercise JSON.`;
       const sr = { id: "imp-" + Date.now().toString(36), lang: ["fr", "ar", "en"].includes(data.lang) ? data.lang : lang !== "auto" ? lang : "fr", subject: String(data.subject || "").slice(0, 40), badge: String(data.badge || data.subject || "IA").slice(0, 16), title: String(data.title || "Série").slice(0, 90), subtitle: String(data.subtitle || "").slice(0, 140), level: String(data.level || (lvl !== "auto" ? lvl : "")).slice(0, 40),
         summary: (Array.isArray(data.summary) ? data.summary : []).filter((x) => x && x.title).map((x) => ({ title: String(x.title).slice(0, 90), text: String(x.text || "").slice(0, 700) })).slice(0, 10), exercises: stubs };
       S.library.unshift(sr); saveLibrary(); S.src[sr.id] = { images, text };
-      stages[1].state = "ok"; stages[1].note = ""; stages[2].state = "run"; stages[2].note = `0/${stubs.length}`; cur = 2; setStages(stages);
+      S.gen.seriesId = sr.id;
+      stages[1].state = "ok"; stages[1].note = `${sr.title} · ${t("exCount", { n: stubs.length })}`; stages[2].state = "run"; stages[2].note = `0/${stubs.length}`; cur = 2; setStages(stages);
       S.mk.files = []; $("mkText").value = "";
-      openSeries(sr.id);
       let k = 0; const queue = sr.exercises.map((_, i) => i);
-      const worker = async () => { while (queue.length) { const i = queue.shift(); await solveOne(sr, i); k++; stages[2].note = `${k}/${stubs.length}`; setStages(stages); } };
+      const worker = async () => { while (queue.length) { const i = queue.shift(); S.gen && S.gen.solving.add(i); setStages(stages); await solveOne(sr, i); S.gen && S.gen.solving.delete(i); k++; stages[2].note = `${k}/${stubs.length}`; setStages(stages); } };
       await Promise.all([worker(), worker()]);
       stages[2].state = "ok"; setStages(stages); confetti();
     } catch (e) { stages[cur].state = "err"; stages[cur].note = errText(e); setStages(stages); if (S.view !== "home") toast(errText(e)); }
-    finally { S.mk.busy = false; $("mkGo").disabled = false; if (S.view === "home") renderHome(); }
+    finally { S.mk.busy = false; $("mkGo").disabled = false; if (S.view === "home") renderGen(); }
   }
   async function solveOne(sr, i) {
     const stub = sr.exercises[i]; if (!stub) return;
@@ -1857,7 +1981,7 @@ Reply ONLY with the Exercise JSON.`;
     } catch (e) { base.pending = false; base.error = errText(e); saveLibrary(); refreshEx(sr, i, false); }
   }
   function refreshEx(sr, i, ready) {
-    if (S.view !== "study" || S.seriesId !== sr.id) { if (S.view === "home") renderLibrary(); return; }
+    if (S.view !== "study" || S.seriesId !== sr.id) { if (S.view === "home") { renderLibrary(); renderGen(); } return; }
     if (S.exIdx === i) renderAll(); else renderTabs();
     if (ready) toast(t("exReady", { name: sr.exercises[i].title }));
   }
@@ -1897,9 +2021,8 @@ Reply ONLY with the Exercise JSON.`;
     const seg = $("mkModel"); seg.replaceChildren(...Object.entries(MODELS).map(([k, m]) => { const b = el("button", null, m.name); b.type = "button"; b.setAttribute("aria-pressed", String(S.settings.model === k)); b.onclick = () => { S.settings.model = k; saveSettings(); renderHome(); $("modelChip").textContent = modelName(); }; return b; }));
     $("mkModelNote").textContent = t((MODELS[S.settings.model] || MODELS.haiku).desc);
     $("mkEffort").value = String(S.settings.effort); $("mkEffortLbl").textContent = t(EFF_KEYS[S.settings.effort]);
-    $("mkFiles").replaceChildren(...S.mk.files.map((f, i) => { const d = el("div", "thumb"); if (/^image\//.test(f.type)) { const im = el("img"); im.src = f._url || (f._url = URL.createObjectURL(f)); im.alt = ""; d.append(im); } else { d.style.display = "grid"; d.style.placeItems = "center"; d.append(el("span", "mono", (f.name.split(".").pop() || "").toUpperCase().slice(0, 4))); } const x = el("button", null, "✕"); x.type = "button"; x.setAttribute("aria-label", f.name); x.onclick = () => { S.mk.files.splice(i, 1); renderHome(); }; d.append(x); return d; }));
-    const feats = $("feats"); feats.replaceChildren(...[["f1", "✓"], ["f2", "◭"], ["f3", "✦"], ["f4", "◉"], ["f5", "★"]].map(([k, g]) => { const f = el("div", "feat"); f.append(el("span", "fi", g), el("h4", null, t(k + "t")), el("p", null, t(k + "d"))); return f; }));
-    renderStages(); renderLibrary();
+    $("mkFiles").replaceChildren(...S.mk.files.map((f, i) => pageCard(/^image\//.test(f.type) ? f._url || (f._url = URL.createObjectURL(f)) : "", /^image\//.test(f.type) ? `${t("page")} ${i + 1}` : f.name, { ext: (f.name.split(".").pop() || "").toUpperCase().slice(0, 4), onRemove: () => { S.mk.files.splice(i, 1); renderHome(); } })));
+    renderGen(); renderLibrary();
   }
   const addMk = (list) => { S.mk.files.push(...Array.from(list || []).slice(0, 20)); renderHome(); };
   $("mkPick").onclick = () => $("mkFile").click(); $("mkCam").onclick = () => $("mkCamIn").click();
@@ -1911,7 +2034,7 @@ Reply ONLY with the Exercise JSON.`;
   $("mkEffort").addEventListener("input", (e) => { S.settings.effort = +e.target.value; saveSettings(); $("mkEffortLbl").textContent = t(EFF_KEYS[S.settings.effort]); $("modelChip").textContent = modelName(); });
   $("mkGo").onclick = makeSeries;
   async function makeSimilar() {
-    const b = $("similarBtn"); b.disabled = true; toast(t("simBuilding"));
+    toast(t("simBuilding"));
     try {
       const e = ex(); const src = JSON.stringify({ title: e.title, statement: e.statement, figure: e.figure && e.figure.base ? e.figure : null, questions: e.questions.map((q) => ({ label: q.label, title: q.title, steps: q.steps.map((s) => s.text) })) });
       const data = await ai(`Create ONE new exercise of the same type and difficulty as this one, with different points/coefficients so the student can practise the same method. Solve it fully and correctly; double-check every vector computation. Keep the language "${series().lang}". Give it a fun nickname.\nOriginal exercise:\n${src}\n${EX_SCHEMA}\nReply ONLY with the Exercise JSON.`, { json: true });
@@ -1920,24 +2043,15 @@ Reply ONLY with the Exercise JSON.`;
       x.ai = true; x.title = `${x.title.replace(/\s*✦$/, "")}`;
       const list = S.extra[S.seriesId] || []; list.push(x); S.extra[S.seriesId] = list.slice(-6); store.set("pdp.extra", S.extra);
       S.exIdx = series().exercises.length - 1; S.qIdx = 0; renderAll(); toast(t("simDone"));
-    } catch (er) { toast(errText(er)); } finally { b.disabled = false; }
+    } catch (er) { toast(errText(er)); }
   }
 
   /* ============ Theme, language, wiring ============ */
   function applyTheme() {
     const th = S.settings.theme; if (th) document.documentElement.dataset.theme = th; else delete document.documentElement.dataset.theme;
-    const dark = th ? th === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
-    $("themeBtn").replaceChildren(icon(dark ? "sun" : "moon"));
   }
-  $("themeBtn").onclick = () => { const dark = S.settings.theme ? S.settings.theme === "dark" : !matchMedia("(prefers-color-scheme: light)").matches; S.settings.theme = dark ? "light" : "dark"; saveSettings(); applyTheme(); };
-  $("uiSeg").addEventListener("click", (e) => { const b = e.target.closest("button[data-l]"); if (!b) return; ui = b.dataset.l; store.set("pdp.ui", ui); renderAll(); renderLogIntro(); });
   $("settingsBtn").onclick = openSettings;
-  $("summaryBtn").onclick = openSummary;
-  $("importBtn").onclick = () => setView("home");
   $("homeBtn").onclick = () => setView("home");
-  $("regenBtn").onclick = () => regenCurrent();
-  $("similarBtn").onclick = makeSimilar;
-  $("seriesSel").onchange = (e) => openSeries(e.target.value);
   document.addEventListener("keydown", (e) => {
     if (S.view !== "study" || e.target.closest("input, textarea, select") || $("overlay").childElementCount) return;
     if (e.key === "ArrowRight") goQ(S.qIdx + (ui === "ar" ? -1 : 1));
@@ -1947,14 +2061,12 @@ Reply ONLY with the Exercise JSON.`;
     document.documentElement.lang = ui; $("app").dir = ui === "ar" ? "rtl" : "ltr"; document.querySelector(".top-in").dir = ui === "ar" ? "rtl" : "ltr";
     document.querySelectorAll("[data-t]").forEach((n) => { n.textContent = t(n.dataset.t); });
     document.querySelectorAll("[data-tp]").forEach((n) => { n.placeholder = t(n.dataset.tp); });
-    $("uiSeg").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.l === ui)));
     $("modelChip").textContent = lastServed || modelName();
   }
   function renderAll() {
     if (S.view === "home") { applyUiText(); renderHeader(); renderHome(); return; }
     if (S.exIdx >= series().exercises.length) S.exIdx = 0;
     applyUiText(); renderHeader(); renderTabs(); renderNav(); renderStatement(); renderBoard(); renderQuestion(); renderChips();
-    const sr = S.library.find((x) => x.id === S.seriesId); $("regenBtn").hidden = !(sr && S.exIdx < sr.exercises.length && !ex().pending);
   }
 
   let backendReady;
