@@ -105,17 +105,18 @@ static class P
             int applied = 0;
             foreach (var dt in donor.Types)
             {
-                foreach (var dm in dt.Methods.Where(x => x.IsStatic && x.HasBody && x.Name.Contains("__")).OrderBy(x => x.Name.StartsWith("NEW_") ? 0 : 1).ToList())
+                foreach (var dm in dt.Methods.Where(x => x.IsStatic && x.HasBody && x.Name.Contains("__")).OrderBy(x => x.Name.StartsWith("NEW") ? 0 : 1).ToList())
                 {
                     var dname = dm.Name;
-                    bool isNew = dname.StartsWith("NEW_");
-                    if (isNew) dname = dname.Substring(4);
+                    bool isOvr = dname.StartsWith("NEWOVR_");
+                    bool isNew = dname.StartsWith("NEW_") || isOvr;
+                    if (isOvr) dname = dname.Substring(7); else if (isNew) dname = dname.Substring(4);
                     var parts = dname.Split(new[] { "__" }, StringSplitOptions.None);
                     var tType = target.Types.FirstOrDefault(t => t.Name == parts[0] && t.Namespace == "");
                     if (tType == null) throw new Exception("target type not found: " + parts[0]);
                     if (isNew)
                     {
-                        var nm = new MethodDefinition(parts[1], MethodAttributes.Public | MethodAttributes.HideBySig, cloner.MapType(dm.ReturnType));
+                        var nm = new MethodDefinition(parts[1], isOvr ? (MethodAttributes.Family | MethodAttributes.HideBySig | MethodAttributes.Virtual) : (MethodAttributes.Public | MethodAttributes.HideBySig), cloner.MapType(dm.ReturnType));
                         for (int pi = 1; pi < dm.Parameters.Count; pi++) nm.Parameters.Add(new ParameterDefinition(dm.Parameters[pi].Name, ParameterAttributes.None, cloner.MapType(dm.Parameters[pi].ParameterType)));
                         tType.Methods.Add(nm);
                         cloner.ReplaceBody(nm, dm);

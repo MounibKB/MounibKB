@@ -97,6 +97,11 @@ public static class Donor
         {
             PortUtil.CurrentLevel.IsNeedFollowArcherOrWeapon = false;
             self.affectedCharacter.RestoreBurningBall();
+            // The victim was knocked back by the ball and is snapped to its final position by the restore above.
+            // The run-up (and therefore the touchdown/cheer sound sync) must be measured from THAT position,
+            // not from where the victim stood before the hit.
+            self.directionMultiplier = ((self.footballerCharacter.transform.position.x > self.affectedCharacter.transform.position.x) ? (-1f) : 1f);
+            self.xStartPosition = self.affectedCharacter.transform.position.x - self.directionMultiplier * self.xStartDistance;
             if (ballBone != null)
             {
                 self.burningBall.transform.parent = ballBone.gameObject.transform;
@@ -107,6 +112,65 @@ public static class Donor
             cameraController.SetScaleWithDuration(self.cameraZoom, self.timeForCameraChangePosition);
             cameraController.TweenMoveToPosition(cameraController.Position + Vector2.up * self.cameraVerticalOffset, self.timeForCameraChangePosition);
         }
+    }
+
+    // SFX: unlike the other ported brutalities this class did not override PlayFatalityStartSound, so the base
+    // class also played crowd_glee/crowd_loop at t=0 on top of the per-sound isNeedToPlayCrowdHappySound flag
+    // (doubling the crowd for mike_brutality_2 and adding it to mike_brutality_3 where the data says "no").
+    public static void NEWOVR_FatalityBurningBallUpgrade__PlayFatalityStartSound(FatalityBurningBallUpgrade self)
+    {
+        AudioManager.PlayAudioWithKey("fatality_start", null);
+    }
+
+    // VFX/ANIMATION: ragdoll parts were thrown with free X/Y rotation (all other fatalities freeze them with
+    // constraints 56) so they tumbled out of the 2D plane; the physical guts chunks were never emitted.
+    public static void FatalityBurningBallUpgrade__ApplyFatalityEffects(FatalityBurningBallUpgrade self)
+    {
+        CharacterBase currentCharacter = self.CachedManager.CurrentCharacter;
+        currentCharacter.ApplyCharacterRagdoll();
+        self.CachedMask.Activate(self.startFatalityCollider, self.startFatalityUtilityBone);
+        CharacterType characterType = currentCharacter.CharacterType;
+        self.CachedEffect.EmitBrainEffect(characterType, self.transform, self.CachedHead.transform.position, self.CachedHead.transform.eulerAngles);
+        self.CachedEffect.EmitBrain(self.transform, self.CachedHead.transform.position, Vector3.up);
+        self.CachedEffect.EmitGutsEffect(characterType, self.transform, self.CachedBody.transform.position, self.CachedBody.transform.eulerAngles);
+        self.CachedEffect.EmitGuts(self.transform, self.CachedBody.transform.position, Vector3.up);
+        Rigidbody rigidbody = self.CachedManager.CharacterRagdoll.GetRigidbody(self.CachedBody.boneName);
+        Rigidbody[] rigidbodyArray = self.CachedManager.CharacterRagdoll.GetRigidbodyArray();
+        if (rigidbody != null && rigidbodyArray != null)
+        {
+            for (int i = 0; i < rigidbodyArray.Length; i++)
+            {
+                if (rigidbodyArray[i] == null)
+                {
+                    continue;
+                }
+                string text = rigidbodyArray[i].name;
+                bool flag = false;
+                Bone bone = self.CachedBody.bone;
+                if (bone != null)
+                {
+                    for (int j = 0; j < bone.Children.Count; j++)
+                    {
+                        if (bone.Children.Items[j].Data.Name == text)
+                        {
+                            flag = true;
+                            break;
+                        }
+                    }
+                }
+                if (flag)
+                {
+                    Vector3 position = rigidbodyArray[i].transform.position;
+                    Vector3 position2 = rigidbody.transform.position;
+                    float z = Mathf.Atan2(position.y - position2.y, position.x - position2.x) * 57.2958f;
+                    self.CachedEffect.EmitBloodEffect(characterType, self.CachedBody.transform, position, new Vector3(0f, 0f, z));
+                }
+                rigidbodyArray[i].velocity = new Vector3(self.explodeForce * self.directionMultiplier, Mathf.Abs(self.explodeForce * 0.3f), 0f);
+                rigidbodyArray[i].constraints = (RigidbodyConstraints)56;
+                self.BreakSelfJoint(rigidbodyArray[i]);
+            }
+        }
+        self.CachedEffect.EmitGUICameraEffects(BrutalityEffectType.Finished);
     }
 
     // ------------------------------------------------------------------------------------------------
