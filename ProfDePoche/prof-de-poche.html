@@ -1,0 +1,1977 @@
+<title>Prof de Poche</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap">
+<style>
+/* Layout: sticky header with XP; main column = exercise stepper, statement, live geometry board on squared paper, step-by-step question card; right rail = AI tutor (bottom sheet on phones). Dark-first "blackboard" palette with chalk-yellow accent. */
+:root {
+  --bg: #0b0e14; --bg-2: #0f131b; --surface: #141923; --surface-2: #1a2030; --surface-3: #212839; --line: #262e40; --line-2: #313b52;
+  --fg: #e9edf5; --muted: #8e99b0; --faint: #5f6a82;
+  --accent: #f7c548; --accent-ink: #1b1505; --accent-soft: #2b2512;
+  --red: #ff5c5c; --blue: #5ea1ff; --green: #3fd28c; --purple: #a682ff; --orange: #ff9f45; --pink: #ff6fae; --teal: #36d1c4;
+  --ok: #3fd28c; --ok-soft: #12291f; --bad: #ff6b6b; --bad-soft: #2e1618; --warn: #ffb547; --warn-soft: #2d2312;
+  --paper: #10151f; --grid: #182031; --grid-strong: #1f293c;
+  --font-display: "Bricolage Grotesque", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --radius: 16px;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f3f5fa; --bg-2: #eceff6; --surface: #ffffff; --surface-2: #f2f4f9; --surface-3: #e8ecf4; --line: #dce2ec; --line-2: #c9d1df;
+    --fg: #131925; --muted: #586378; --faint: #8a93a7;
+    --accent: #a86f00; --accent-ink: #ffffff; --accent-soft: #fbf1db;
+    --red: #dc3b3b; --blue: #2d6ee0; --green: #18925a; --purple: #7547de; --orange: #d9700f; --pink: #cf3580; --teal: #0e9488;
+    --ok: #18925a; --ok-soft: #e3f5ec; --bad: #d23c3c; --bad-soft: #fbe9e9; --warn: #b7770a; --warn-soft: #fbf1dc;
+    --paper: #fbfcfe; --grid: #eaeef5; --grid-strong: #dbe2ee;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #f3f5fa; --bg-2: #eceff6; --surface: #ffffff; --surface-2: #f2f4f9; --surface-3: #e8ecf4; --line: #dce2ec; --line-2: #c9d1df;
+  --fg: #131925; --muted: #586378; --faint: #8a93a7;
+  --accent: #a86f00; --accent-ink: #ffffff; --accent-soft: #fbf1db;
+  --red: #dc3b3b; --blue: #2d6ee0; --green: #18925a; --purple: #7547de; --orange: #d9700f; --pink: #cf3580; --teal: #0e9488;
+  --ok: #18925a; --ok-soft: #e3f5ec; --bad: #d23c3c; --bad-soft: #fbe9e9; --warn: #b7770a; --warn-soft: #fbf1dc;
+  --paper: #fbfcfe; --grid: #eaeef5; --grid-strong: #dbe2ee;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html, body { background: var(--bg); color: var(--fg); }
+body { font-family: var(--font-body); font-size: 15.5px; line-height: 1.6; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+h1, h2, h3, h4 { font-family: var(--font-display); margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+svg.i { width: 1em; height: 1em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+/* header */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.top-in { max-width: 1320px; margin: 0 auto; padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1 1 260px; }
+.badge-sub { width: 42px; height: 42px; border-radius: 11px; background: var(--red); color: #fff; display: grid; place-items: center; font-family: var(--font-display); font-weight: 800; font-size: 10.5px; letter-spacing: 0; flex: none; line-height: 1.05; text-align: center; overflow: hidden; }
+.brand-t { min-width: 0; }
+.brand-t h1 { font-size: 18px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.brand-t p { margin: 0; color: var(--muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.top-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.xp { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line-2); background: var(--surface); border-radius: 999px; padding: 4px 12px 4px 6px; font-size: 13px; }
+.xp .lvl { background: var(--accent); color: var(--accent-ink); border-radius: 999px; padding: 1px 8px; font-weight: 700; font-family: var(--font-mono); font-size: 12px; }
+.xp .bar { width: 64px; height: 6px; background: var(--surface-3); border-radius: 99px; overflow: hidden; }
+.xp .bar i { display: block; height: 100%; background: var(--accent); border-radius: 99px; transition: width .4s; }
+.xp .name { color: var(--muted); max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.streak { color: var(--orange); font-weight: 700; font-family: var(--font-mono); }
+.iconbtn { width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--line-2); background: var(--surface); display: grid; place-items: center; font-size: 17px; color: var(--fg); }
+.iconbtn:hover { border-color: var(--accent); }
+.seg { display: inline-flex; border: 1px solid var(--line-2); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.seg button { border: 0; background: transparent; padding: 6px 10px; font-size: 12.5px; font-weight: 700; color: var(--muted); }
+.seg button + button { border-inline-start: 1px solid var(--line-2); }
+.seg button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+
+/* layout */
+.shell { max-width: 1320px; margin: 0 auto; padding-block: 18px 90px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+@media (min-width: 1100px) { .shell { grid-template-columns: minmax(0, 1fr) 390px; align-items: start; } }
+.main { display: grid; gap: 14px; min-width: 0; grid-template-columns: minmax(0, 1fr); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); min-width: 0; }
+.pad { padding: 16px 18px; }
+
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+.toolbar .grp { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; min-width: 0; }
+.select { border: 1px solid var(--line-2); background: var(--surface); border-radius: 10px; padding: 7px 10px; max-width: 260px; }
+.btn { border: 1px solid var(--line-2); background: var(--surface); border-radius: 11px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; color: var(--fg); white-space: nowrap; }
+.btn:hover:not(:disabled) { border-color: var(--accent); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn.primary { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.btn.accent { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.ai { background: linear-gradient(135deg, color-mix(in srgb, var(--purple) 22%, var(--surface)), color-mix(in srgb, var(--blue) 18%, var(--surface))); border-color: color-mix(in srgb, var(--purple) 55%, var(--line-2)); }
+.btn.sm { padding: 5px 10px; font-size: 13px; border-radius: 9px; }
+.btn.ghost { background: transparent; }
+.spark { color: var(--purple); }
+
+/* exercise tabs */
+.tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
+.tab { flex: none; border: 1px solid var(--line-2); background: var(--surface); border-radius: 12px; padding: 8px 14px; font-weight: 700; font-size: 14px; color: var(--muted); display: inline-flex; gap: 8px; align-items: center; }
+.tab[aria-selected="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.tab .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line-2); }
+.tab .dot.part { background: var(--warn); }
+.tab .dot.full { background: var(--ok); }
+.tab .ai-tag { font-size: 11px; color: var(--purple); }
+.tab[aria-selected="true"] .ai-tag { color: inherit; }
+
+/* question nav */
+.qnav { display: grid; gap: 10px; }
+.qnav-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.qnav-top h2 { font-size: 15px; }
+.qnav-top .pct { font-size: 13px; color: var(--muted); }
+.segs { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px; }
+.segs button { height: 30px; border-radius: 8px; border: 1px solid var(--line-2); background: var(--surface-2); color: var(--muted); font-family: var(--font-mono); font-weight: 700; font-size: 13px; }
+.segs button.done { background: color-mix(in srgb, var(--ok) 22%, var(--surface-2)); color: var(--ok); border-color: color-mix(in srgb, var(--ok) 45%, var(--line-2)); }
+.segs button[aria-current="true"] { background: var(--red); color: #fff; border-color: var(--red); }
+.navbtns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.navbtns .btn { justify-content: center; }
+
+/* statement */
+.statement summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.statement summary::-webkit-details-marker { display: none; }
+.statement h3 { font-size: 16px; }
+.ex-name { color: var(--muted); font-size: 13px; font-weight: 400; font-family: var(--font-body); }
+.stmt { margin-top: 10px; font-size: 15.5px; }
+.stmt-qs { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.stmt-qs button { width: 100%; text-align: start; border: 1px solid transparent; background: var(--surface-2); border-radius: 10px; padding: 7px 10px; display: flex; gap: 10px; align-items: baseline; color: var(--fg); }
+.stmt-qs button:hover { border-color: var(--line-2); }
+.stmt-qs .lbl { font-family: var(--font-mono); font-weight: 700; color: var(--accent); flex: none; }
+.chev { transition: transform .2s; color: var(--muted); }
+details[open] > summary .chev { transform: rotate(180deg); }
+
+/* board */
+.board-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 14px 0; }
+.board-head h3 { font-size: 15px; }
+.board-tools { display: flex; gap: 6px; flex-wrap: wrap; }
+.tog { border: 1px solid var(--line-2); background: var(--surface-2); border-radius: 9px; padding: 4px 10px; font-size: 12.5px; font-weight: 700; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; }
+.tog[aria-pressed="true"] { color: var(--fg); border-color: var(--fg); }
+.board { position: relative; margin: 10px 14px 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: var(--paper); }
+.board svg.fig { display: block; width: 100%; height: auto; touch-action: none; user-select: none; -webkit-user-select: none; }
+.board .note { position: absolute; inset-inline-start: 12px; top: 10px; max-width: calc(100% - 24px); font-family: var(--font-display); font-weight: 700; font-size: 16px; color: var(--fg); background: color-mix(in srgb, var(--paper) 80%, transparent); padding: 2px 8px; border-radius: 8px; pointer-events: none; }
+.board .static svg { width: 100%; height: auto; display: block; }
+.checks { display: flex; gap: 8px; flex-wrap: wrap; padding: 10px 14px 0; }
+.chk { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 3px 12px; font-size: 13px; font-weight: 700; background: var(--ok-soft); color: var(--ok); border: 1px solid color-mix(in srgb, var(--ok) 40%, transparent); }
+.chk .mono { font-weight: 500; opacity: .8; font-size: 11.5px; }
+.board-foot { padding: 8px 14px 14px; color: var(--muted); font-size: 12.5px; }
+.fig .gl { stroke: var(--grid); stroke-width: 1; }
+.fig .gl.s { stroke: var(--grid-strong); }
+.fig .seg { stroke: var(--muted); stroke-width: 1.6; fill: none; }
+.fig .poly { fill: color-mix(in srgb, var(--blue) 9%, transparent); stroke: var(--muted); stroke-width: 1.6; }
+.fig .ln { stroke: var(--faint); stroke-width: 1.4; stroke-dasharray: 6 5; fill: none; }
+.fig .ln.hl { stroke: var(--accent); stroke-width: 1.8; }
+.fig .pt { fill: var(--fg); stroke: var(--paper); stroke-width: 2; }
+.fig .pt.base { fill: var(--accent); stroke: var(--paper); cursor: grab; }
+.fig .pt.base.drag { cursor: grabbing; }
+.fig .halo { fill: var(--accent); opacity: .18; cursor: grab; }
+.fig .plbl { fill: var(--fg); font-family: var(--font-display); font-weight: 700; font-size: 17px; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+.fig .vec { stroke-width: 3.4; fill: none; stroke-linecap: round; }
+.fig .vlbl { font-family: var(--font-display); font-weight: 800; font-size: 15px; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+.fig .draw { stroke-dasharray: var(--len); stroke-dashoffset: var(--len); animation: draw .7s ease-out forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+.c-blue { stroke: var(--blue); fill: var(--blue); color: var(--blue); }
+.c-green { stroke: var(--green); fill: var(--green); color: var(--green); }
+.c-orange { stroke: var(--orange); fill: var(--orange); color: var(--orange); }
+.c-purple { stroke: var(--purple); fill: var(--purple); color: var(--purple); }
+.c-red { stroke: var(--red); fill: var(--red); color: var(--red); }
+.c-pink { stroke: var(--pink); fill: var(--pink); color: var(--pink); }
+.c-teal { stroke: var(--teal); fill: var(--teal); color: var(--teal); }
+.c-amber { stroke: var(--accent); fill: var(--accent); color: var(--accent); }
+.fig path.vec { fill: none; }
+
+/* question */
+.q-head { display: grid; gap: 6px; }
+.q-head .q-lbl { font-family: var(--font-mono); font-size: 12.5px; color: var(--accent); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.q-head h3 { font-size: 19px; line-height: 1.35; }
+.goal { color: var(--muted); font-size: 14.5px; margin: 0; }
+.goal b { color: var(--fg); }
+.steps { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 10px; }
+.step { border: 1px solid var(--line); background: var(--surface-2); border-radius: 13px; padding: 11px 13px; display: grid; gap: 8px; animation: pop .35s ease-out; }
+.step.active { border-color: color-mix(in srgb, var(--accent) 60%, var(--line)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent); }
+@keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.step-row { display: flex; gap: 11px; align-items: flex-start; }
+.step-n { width: 26px; height: 26px; border-radius: 8px; background: var(--surface-3); color: var(--fg); display: grid; place-items: center; font-family: var(--font-mono); font-weight: 700; font-size: 13px; flex: none; margin-top: 1px; }
+.step.active .step-n { background: var(--accent); color: var(--accent-ink); }
+.step-body { min-width: 0; flex: 1; overflow-wrap: anywhere; }
+.step-tools { display: flex; gap: 6px; flex-wrap: wrap; padding-inline-start: 37px; }
+.mini { border: 1px solid var(--line-2); background: var(--surface); border-radius: 8px; padding: 3px 9px; font-size: 12.5px; font-weight: 700; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; }
+.mini:hover { color: var(--fg); border-color: var(--fg); }
+.mini.ai { color: var(--purple); border-color: color-mix(in srgb, var(--purple) 45%, var(--line-2)); }
+.menu { display: flex; gap: 6px; flex-wrap: wrap; padding-inline-start: 37px; }
+.aibox { margin-inline-start: 37px; border-radius: 11px; padding: 10px 12px; background: color-mix(in srgb, var(--purple) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--purple) 35%, var(--line)); font-size: 14.5px; overflow-wrap: anywhere; }
+.aibox .meta { font-size: 11.5px; color: var(--muted); margin-top: 6px; font-family: var(--font-mono); }
+.step-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.qdone { margin-top: 12px; display: flex; gap: 10px; align-items: center; color: var(--ok); font-weight: 700; }
+.actbar { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; margin-top: 14px; }
+.actbar .btn { justify-content: center; }
+.panel { margin-top: 12px; border-radius: 13px; padding: 13px 14px; border: 1px solid var(--line); background: var(--surface-2); display: grid; gap: 10px; animation: pop .3s ease-out; }
+.panel h4 { font-size: 15px; display: flex; gap: 8px; align-items: center; }
+.panel.hint { background: var(--warn-soft); border-color: color-mix(in srgb, var(--warn) 40%, transparent); }
+.panel.hint h4 { color: var(--warn); }
+.quiz-q { font-weight: 700; }
+.opts { display: grid; gap: 8px; }
+.opt { text-align: start; border: 1px solid var(--line-2); background: var(--surface); border-radius: 11px; padding: 9px 12px; display: flex; gap: 10px; align-items: center; color: var(--fg); }
+.opt .k { width: 24px; height: 24px; border-radius: 7px; background: var(--surface-3); display: grid; place-items: center; font-family: var(--font-mono); font-weight: 700; font-size: 12px; flex: none; }
+.opt:hover:not(:disabled) { border-color: var(--fg); }
+.opt.right { border-color: var(--ok); background: var(--ok-soft); }
+.opt.right .k { background: var(--ok); color: var(--bg); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.opt.wrong .k { background: var(--bad); color: var(--bg); }
+.why { font-size: 14px; color: var(--muted); }
+.why b { color: var(--fg); }
+.verify textarea { width: 100%; min-height: 110px; resize: vertical; border: 1px solid var(--line-2); background: var(--surface); border-radius: 11px; padding: 10px 12px; line-height: 1.6; }
+.thumbs { display: flex; gap: 8px; flex-wrap: wrap; }
+.thumb { position: relative; width: 70px; height: 86px; border-radius: 9px; overflow: hidden; border: 1px solid var(--line-2); }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb button { position: absolute; top: 3px; inset-inline-end: 3px; width: 22px; height: 22px; border-radius: 50%; border: 0; background: rgb(0 0 0 / .65); color: #fff; font-size: 12px; }
+.verdict { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px; align-items: center; }
+.ring { width: 70px; height: 70px; }
+.ring circle { fill: none; stroke-width: 7; }
+.ring .bg { stroke: var(--surface-3); }
+.ring .fg { stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset .8s; }
+.ring text { font-family: var(--font-mono); font-weight: 700; font-size: 17px; fill: var(--fg); }
+.v-correct .ring .fg { stroke: var(--ok); } .v-partial .ring .fg { stroke: var(--warn); } .v-wrong .ring .fg { stroke: var(--bad); }
+.verdict h4 { font-size: 16px; }
+.v-correct h4 { color: var(--ok); } .v-partial h4 { color: var(--warn); } .v-wrong h4 { color: var(--bad); }
+.errs { margin: 0; padding-inline-start: 20px; display: grid; gap: 6px; font-size: 14.5px; }
+.errs b { color: var(--bad); }
+
+/* tutor */
+.tutor { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-height: 0; overflow: hidden; }
+@media (min-width: 1100px) { .tutor { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 78px); height: calc(100dvh - env(safe-area-inset-top, 0px) - 96px); } }
+.tutor-head { padding: 13px 14px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.tutor-head h2 { font-size: 16px; display: flex; align-items: center; gap: 8px; }
+.avatar { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--purple), var(--blue)); display: grid; place-items: center; color: #fff; font-size: 15px; }
+.model-chip { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); border: 1px solid var(--line-2); border-radius: 999px; padding: 2px 9px; background: var(--surface-2); white-space: nowrap; }
+.log { overflow-y: auto; padding: 14px; display: grid; gap: 10px; align-content: start; min-height: 220px; }
+.msg { max-width: 92%; border-radius: 14px; padding: 9px 12px; font-size: 14.5px; overflow-wrap: anywhere; }
+.msg p { margin: 0 0 6px; } .msg p:last-child { margin: 0; }
+.msg ul { margin: 0 0 6px; padding-inline-start: 18px; }
+.msg.me { justify-self: end; background: var(--fg); color: var(--bg); border-end-end-radius: 4px; }
+.msg.ai { justify-self: start; background: var(--surface-2); border: 1px solid var(--line); border-end-start-radius: 4px; }
+.msg.ai.err { border-color: var(--bad); color: var(--bad); }
+.typing { display: inline-flex; gap: 4px; }
+.typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: blink 1s infinite; }
+.typing i:nth-child(2) { animation-delay: .15s; } .typing i:nth-child(3) { animation-delay: .3s; }
+@keyframes blink { 50% { opacity: .2; } }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; padding: 0 14px 10px; }
+.chip { border: 1px solid var(--line-2); background: var(--surface-2); border-radius: 999px; padding: 4px 11px; font-size: 12.5px; color: var(--fg); }
+.chip:hover { border-color: var(--purple); }
+.composer { border-top: 1px solid var(--line); padding: 10px 12px; display: flex; gap: 8px; align-items: flex-end; }
+.composer textarea { flex: 1; min-width: 0; resize: none; border: 1px solid var(--line-2); background: var(--surface-2); border-radius: 12px; padding: 9px 12px; max-height: 120px; line-height: 1.45; }
+.fab { position: fixed; z-index: 25; inset-inline-end: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); border: 0; border-radius: 999px; padding: 12px 18px; background: linear-gradient(135deg, var(--purple), var(--blue)); color: #fff; font-weight: 700; display: inline-flex; gap: 8px; align-items: center; box-shadow: 0 10px 30px rgb(0 0 0 / .35); }
+@media (min-width: 1100px) { .fab { display: none; } }
+@media (max-width: 1099px) {
+  .tutor { position: fixed; z-index: 40; inset: auto 0 0 0; height: min(78dvh, 640px); border-radius: 18px 18px 0 0; transform: translateY(105%); transition: transform .28s ease; padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); box-shadow: 0 -12px 40px rgb(0 0 0 / .4); }
+  .tutor.open { transform: none; }
+}
+.closebtn { display: none; }
+@media (max-width: 1099px) { .closebtn { display: grid; } }
+
+/* overlays */
+.scrim { position: fixed; inset: 0; z-index: 50; background: rgb(5 7 12 / .62); display: grid; place-items: center; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.modal { width: min(560px, 100%); max-height: calc(100dvh - 32px); overflow-y: auto; background: var(--surface); border: 1px solid var(--line-2); border-radius: 18px; padding: 18px; display: grid; gap: 14px; animation: pop .25s ease-out; }
+.modal-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.modal-head h2 { font-size: 19px; }
+.field { display: grid; gap: 6px; }
+.field > span { font-weight: 700; font-size: 14px; }
+.field small { color: var(--muted); }
+.range { width: 100%; accent-color: var(--accent); }
+.range-labels { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--muted); }
+.range-labels b { color: var(--fg); }
+.models { display: grid; gap: 8px; }
+.model-opt { display: flex; gap: 10px; align-items: center; border: 1px solid var(--line-2); border-radius: 12px; padding: 10px 12px; background: var(--surface-2); cursor: pointer; }
+.model-opt input { accent-color: var(--accent); }
+.model-opt .mt { display: grid; }
+.model-opt .mt small { color: var(--muted); }
+.model-opt:has(input:checked) { border-color: var(--accent); }
+.drop { border: 2px dashed var(--line-2); border-radius: 13px; padding: 16px; text-align: center; color: var(--muted); display: grid; gap: 8px; justify-items: center; }
+.drop.over { border-color: var(--accent); background: var(--accent-soft); }
+.modal textarea { width: 100%; min-height: 110px; resize: vertical; border: 1px solid var(--line-2); background: var(--surface-2); border-radius: 11px; padding: 10px 12px; }
+.sum-list { display: grid; gap: 10px; }
+.sum-item { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: var(--surface-2); overflow-wrap: anywhere; }
+.sum-item h4 { font-size: 14.5px; margin-bottom: 4px; color: var(--accent); }
+.status { display: flex; gap: 10px; align-items: center; font-size: 14px; color: var(--muted); min-height: 20px; }
+.status.err { color: var(--bad); }
+.spin { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line-2); border-top-color: var(--accent); animation: rot .8s linear infinite; flex: none; }
+@keyframes rot { to { transform: rotate(360deg); } }
+.toast { background: var(--fg); color: var(--bg); border-radius: 999px; padding: 9px 18px; font-weight: 700; font-size: 14px; box-shadow: 0 10px 30px rgb(0 0 0 / .35); animation: pop .25s ease-out; max-width: calc(100% - 32px); text-align: center; }
+canvas#confetti { position: fixed; inset: 0; z-index: 70; pointer-events: none; width: 100%; height: 100%; }
+.keyrow { display: flex; gap: 8px; } .keyrow input { flex: 1; min-width: 0; border: 1px solid var(--line-2); border-radius: 10px; padding: 7px 10px; background: var(--surface-2); direction: ltr; }
+
+/* home: the lesson machine */
+.home { max-width: 1180px; margin: 0 auto; padding-block: 26px 80px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 26px; grid-template-columns: minmax(0, 1fr); }
+.hero { display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 980px) { .hero { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); } }
+.eyebrow { font-family: var(--font-mono); font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.hero-t { display: grid; gap: 12px; align-content: start; padding-top: 6px; }
+.hero-t h2 { font-size: clamp(30px, 4.6vw, 50px); line-height: 1.04; font-weight: 800; letter-spacing: -0.025em; }
+.hero-t h2 em { font-style: normal; color: var(--accent); }
+.hero-t p { margin: 0; color: var(--muted); font-size: 16.5px; max-width: 52ch; }
+.flow { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 4px; font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); }
+.flow span { border: 1px solid var(--line-2); border-radius: 8px; padding: 3px 9px; background: var(--surface); }
+.flow b { color: var(--accent); }
+.maker { padding: 16px; display: grid; gap: 12px; }
+.maker .drop { padding: 22px 16px; }
+.maker .drop .big { font-size: 26px; color: var(--accent); }
+.maker textarea { width: 100%; min-height: 84px; resize: vertical; border: 1px solid var(--line-2); background: var(--surface-2); border-radius: 11px; padding: 10px 12px; }
+.mk-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.mk-row label { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; color: var(--muted); }
+.mk-row .select { padding: 5px 8px; font-size: 13.5px; }
+.mk-ai { display: grid; gap: 8px; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: var(--surface-2); }
+.mk-ai .lbl { font-size: 12.5px; color: var(--muted); font-weight: 700; display: flex; justify-content: space-between; gap: 8px; }
+.mk-ai .seg { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); }
+.mk-ai .seg button { padding: 7px 6px; }
+.btn.big { padding: 13px 18px; font-size: 16px; justify-content: center; border-radius: 13px; }
+.stages { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.stages:empty { display: none; }
+.stages li { display: flex; gap: 10px; align-items: center; font-size: 14px; color: var(--muted); }
+.stages li .st { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--line-2); display: grid; place-items: center; font-size: 11px; flex: none; }
+.stages li.run { color: var(--fg); } .stages li.run .st { border-color: var(--accent); border-top-color: transparent; animation: rot .8s linear infinite; }
+.stages li.ok { color: var(--ok); } .stages li.ok .st { border-color: var(--ok); background: var(--ok); color: var(--bg); }
+.stages li.err { color: var(--bad); } .stages li.err .st { border-color: var(--bad); }
+.stages small { color: var(--muted); font-family: var(--font-mono); }
+.feats { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.feat { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--surface); display: grid; gap: 4px; }
+.feat .fi { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; font-size: 16px; background: var(--surface-3); color: var(--accent); }
+.feat h4 { font-size: 15px; } .feat p { margin: 0; color: var(--muted); font-size: 13.5px; }
+.lib h3 { font-size: 20px; margin-bottom: 12px; }
+.lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+.scard { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.scard:hover { border-color: var(--line-2); }
+.scard-top { display: flex; gap: 10px; align-items: center; min-width: 0; }
+.scard .badge-sub { width: 38px; height: 38px; font-size: 11px; border-radius: 10px; }
+.scard h4 { font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scard .sub { color: var(--muted); font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scard .meter { height: 6px; background: var(--surface-3); border-radius: 99px; overflow: hidden; }
+.scard .meter i { display: block; height: 100%; background: var(--ok); }
+.scard .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12.5px; color: var(--muted); }
+.ex-tag { font-family: var(--font-mono); font-size: 11px; color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 6px; padding: 0 6px; }
+.pending-box { display: grid; gap: 10px; justify-items: start; padding: 6px 0; color: var(--muted); }
+.pending-box .bar { width: 100%; height: 8px; border-radius: 99px; background: var(--surface-3); overflow: hidden; }
+.pending-box .bar i { display: block; height: 100%; width: 40%; background: linear-gradient(90deg, var(--purple), var(--blue)); border-radius: 99px; animation: slide 1.4s ease-in-out infinite; }
+@keyframes slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(260%); } }
+.tab .spin { width: 12px; height: 12px; }
+.toasts { position: fixed; z-index: 60; left: 50%; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); display: grid; gap: 8px; justify-items: center; pointer-events: none; width: max-content; max-width: calc(100% - 32px); }
+.toasts .toast { position: static; transform: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: calc(100vw - 32px); }
+.plot svg { width: 100%; height: auto; display: block; direction: ltr; }
+.plot text { font-family: var(--font-body); font-size: 12px; fill: var(--muted); }
+.plot .grid { stroke: var(--grid-strong); stroke-width: 1; }
+.plot .axis { stroke: var(--muted); stroke-width: 1.4; }
+.plot .curve { fill: none; stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
+.plot .guide { stroke-width: 1.3; stroke-dasharray: 5 4; fill: none; stroke: var(--faint); }
+.keys { display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: center; font-size: 13.5px; padding: 8px 14px 0; }
+.keys span { display: inline-flex; align-items: center; gap: 6px; }
+.keys i { width: 18px; height: 3px; border-radius: 2px; background: currentColor; display: inline-block; }
+mjx-container { color: inherit; }
+mjx-container:not([display="true"]) { display: inline-block; max-width: 100%; overflow-x: auto; overflow-y: hidden; vertical-align: middle; }
+mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
+[dir="rtl"] .content-ltr { direction: ltr; text-align: left; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .001s !important; transition-duration: .001s !important; } }
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <button class="iconbtn" id="homeBtn" type="button" hidden><svg class="i" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+      <div class="badge-sub" id="subBadge">PdP</div>
+      <div class="brand-t">
+        <h1 id="seriesTitle"></h1>
+        <p id="seriesSub"></p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <span class="xp" id="xpPill" title=""><span class="lvl" id="xpLvl">1</span><span class="bar"><i id="xpBar" style="width:0%"></i></span><span class="name" id="xpName"></span><span class="streak" id="streak" hidden></span></span>
+      <div class="seg" id="uiSeg" role="group" aria-label="Langue"><button type="button" data-l="fr">FR</button><button type="button" data-l="ar">ع</button><button type="button" data-l="en">EN</button></div>
+      <button class="iconbtn" id="themeBtn" type="button" aria-label="Theme"></button>
+      <button class="iconbtn" id="settingsBtn" type="button" aria-label="Settings"><svg class="i" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div class="home" id="home">
+  <section class="hero">
+    <div class="hero-t">
+      <span class="eyebrow" data-t="heroEyebrow"></span>
+      <h2 id="heroTitle"></h2>
+      <p data-t="heroSub"></p>
+      <div class="flow" id="flow"></div>
+    </div>
+    <div class="card maker">
+      <div class="drop" id="mkDrop">
+        <span class="big">✦</span>
+        <b data-t="importDrop"></b>
+        <span class="types" data-t="mkTypes"></span>
+        <div class="mk-row" style="justify-content:center">
+          <button class="btn sm" type="button" id="mkPick" data-t="choose"></button>
+          <button class="btn sm" type="button" id="mkCam"><svg class="i" viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg><span data-t="takePhoto"></span></button>
+        </div>
+        <input type="file" id="mkFile" multiple hidden accept="image/*,.pdf,.docx,.pptx,.txt,.md">
+        <input type="file" id="mkCamIn" hidden accept="image/*" capture="environment">
+      </div>
+      <div class="thumbs" id="mkFiles"></div>
+      <textarea id="mkText" data-tp="pasteText"></textarea>
+      <div class="mk-row">
+        <label for="mkLevel"><span data-t="level"></span><select class="select" id="mkLevel"></select></label>
+        <label for="mkLang"><span data-t="pathLang"></span><select class="select" id="mkLang"></select></label>
+      </div>
+      <div class="mk-ai">
+        <div class="lbl"><span data-t="model"></span><span id="mkModelNote"></span></div>
+        <div class="seg" id="mkModel" role="group"></div>
+        <div class="lbl"><span data-t="effort"></span><span id="mkEffortLbl"></span></div>
+        <input class="range" type="range" id="mkEffort" min="0" max="2" step="1">
+      </div>
+      <button class="btn accent big" type="button" id="mkGo"><span>✦</span><span data-t="build"></span></button>
+      <ul class="stages" id="mkStages"></ul>
+    </div>
+  </section>
+  <section class="feats" id="feats"></section>
+  <section class="lib"><h3 data-t="myLibrary"></h3><div class="lib-grid" id="libGrid"></div></section>
+</div>
+
+<div class="shell" id="app" hidden>
+  <main class="main">
+    <div class="toolbar">
+      <div class="grp">
+        <label class="sr" for="seriesSel" data-t="series"></label>
+        <select class="select" id="seriesSel"></select>
+        <button class="btn sm" id="importBtn" type="button"><span>＋</span><span data-t="newSeries"></span></button>
+        <button class="btn sm ai" id="regenBtn" type="button" hidden><span class="spark">✦</span><span data-t="regen"></span></button>
+      </div>
+      <div class="grp">
+        <button class="btn sm ai" id="similarBtn" type="button"><span class="spark">✦</span><span data-t="similar"></span></button>
+        <button class="btn sm" id="summaryBtn" type="button"><svg class="i" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span data-t="summary"></span></button>
+      </div>
+    </div>
+    <div class="tabs" id="tabs" role="tablist"></div>
+    <section class="card pad qnav" id="qnav"></section>
+    <details class="card pad statement" id="statement" open></details>
+    <section class="card" id="boardCard"></section>
+    <section class="card pad" id="qcard"></section>
+  </main>
+
+  <aside class="card tutor" id="tutor" aria-label="Prof IA">
+    <div class="tutor-head">
+      <h2><span class="avatar">✦</span><span data-t="tutor"></span></h2>
+      <div style="display:flex;gap:6px;align-items:center">
+        <span class="model-chip" id="modelChip"></span>
+        <button class="iconbtn closebtn" id="tutorClose" type="button" aria-label="Fermer">✕</button>
+      </div>
+    </div>
+    <div class="log" id="log" aria-live="polite"></div>
+    <div>
+      <div class="chips" id="chips"></div>
+      <form class="composer" id="composer">
+        <textarea id="ask" rows="1" data-tp="tutorPh"></textarea>
+        <button class="btn accent" type="submit" id="sendBtn" aria-label="Envoyer"><svg class="i" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button>
+      </form>
+    </div>
+  </aside>
+</div>
+<button class="fab" id="fab" type="button" hidden><span>✦</span><span data-t="tutor"></span></button>
+<canvas id="confetti" hidden></canvas>
+<div id="overlay"></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script>
+(() => {
+  "use strict";
+  const R = String.raw;
+
+  /* ============ Interface text (FR / AR / EN) ============ */
+  const UI = {
+    series: ["Série", "السلسلة", "Series"],
+    importSeries: ["Importer une série", "استيراد سلسلة", "Import a series"],
+    similar: ["Exercice similaire", "تمرين مشابه", "Similar exercise"],
+    summary: ["Résumé à retenir", "ملخص للحفظ", "Key takeaways"],
+    question: ["Question", "السؤال", "Question"],
+    progress: ["{p}% du parcours", "أنجزت {p}%", "{p}% done"],
+    prev: ["Précédente", "السابق", "Previous"],
+    next: ["Suivante", "التالي", "Next"],
+    statement: ["Énoncé", "نص التمرين", "Statement"],
+    board: ["Le schéma interactif", "الشكل التفاعلي", "Interactive figure"],
+    names: ["Noms", "الأسماء", "Names"],
+    grid: ["Quadrillage", "الشبكة", "Grid"],
+    animate: ["Animer", "تحريك", "Animate"],
+    reset: ["Recentrer", "إعادة", "Reset"],
+    dragHint: ["Déplace les points jaunes : la figure se recalcule et les propriétés restent vraies.", "حرّك النقط الصفراء: يُعاد رسم الشكل وتبقى الخاصيات صحيحة.", "Drag the yellow points: the figure recomputes and the properties stay true."],
+    staticHint: ["Schéma de l'exercice.", "شكل التمرين.", "Exercise figure."],
+    goal: ["But :", "الهدف:", "Goal:"],
+    nextStep: ["Étape suivante", "الخطوة التالية", "Next step"],
+    showAll: ["Tout afficher", "عرض الكل", "Show all"],
+    restart: ["Recommencer", "إعادة", "Restart"],
+    hint: ["Indice", "تلميح", "Hint"],
+    aiHint: ["Un indice plus précis", "تلميح أدق", "A sharper hint"],
+    test: ["Tester ma compréhension", "اختبر فهمي", "Test my understanding"],
+    verify: ["Vérifier ma réponse", "صحّح جوابي", "Check my answer"],
+    explainOther: ["Autrement", "بطريقة أخرى", "Another way"],
+    listen: ["Écouter", "استمع", "Listen"],
+    stSimple: ["Plus simple", "أبسط", "Simpler"],
+    stLife: ["Image de la vie", "مثال من الحياة", "Real-life picture"],
+    stStory: ["En histoire", "كقصة", "As a story"],
+    stDarija: ["En darija", "بالدارجة", "In Darija"],
+    stFlash: ["En une phrase", "في جملة", "In one sentence"],
+    stWhy: ["Pourquoi ?", "لماذا؟", "Why?"],
+    qDone: ["Question terminée", "انتهى السؤال", "Question done"],
+    quizMore: ["3 questions de plus", "3 أسئلة أخرى", "3 more questions"],
+    right: ["Bravo, c'est juste !", "أحسنت، جواب صحيح!", "Nice, that's right!"],
+    wrongTry: ["Pas tout à fait. Regarde l'explication.", "ليس تمامًا. اقرأ الشرح.", "Not quite. Read the explanation."],
+    verifyPh: ["Écris ta démonstration ici, ou ajoute une photo de ton cahier…", "اكتب برهانك هنا، أو أضف صورة من دفترك…", "Write your proof here, or add a photo of your notebook…"],
+    addPhoto: ["Photo du cahier", "صورة الدفتر", "Notebook photo"],
+    correct: ["Corriger", "صحّح", "Grade it"],
+    vCorrect: ["Démonstration correcte", "برهان صحيح", "Correct proof"],
+    vPartial: ["Presque !", "قريب جدًا!", "Almost!"],
+    vWrong: ["À revoir", "يحتاج مراجعة", "Needs work"],
+    vGood: ["Ce qui est bien", "ما هو جيد", "What's good"],
+    vFix: ["À corriger", "ما يجب تصحيحه", "To fix"],
+    vNext: ["Prochaine étape", "الخطوة القادمة", "Next step"],
+    tutor: ["Prof IA", "الأستاذ الذكي", "AI tutor"],
+    tutorPh: ["Pose ta question au prof…", "اطرح سؤالك على الأستاذ…", "Ask the tutor…"],
+    hello: ["Salut ! Je suis ton prof de poche. Bloqué sur une étape ? Pose-moi n'importe quelle question : je t'explique avec des images simples, en français, en arabe ou en darija.", "مرحبًا! أنا أستاذك في الجيب. عالق في خطوة؟ اسألني أي سؤال وسأشرح لك بأمثلة بسيطة، بالفرنسية أو العربية أو الدارجة.", "Hi! I'm your pocket tutor. Stuck on a step? Ask me anything and I'll explain with simple pictures, in French, Arabic or Darija."],
+    chip1: ["Je n'ai pas compris cette étape", "لم أفهم هذه الخطوة", "I don't get this step"],
+    chip2: ["Explique avec une image de la vie", "اشرح بمثال من الحياة", "Explain with a real-life picture"],
+    chip3: ["Quelle méthode retenir ?", "ما الطريقة التي يجب حفظها؟", "Which method should I remember?"],
+    chip4: ["Donne-moi un mini-exercice", "أعطني تمرينًا صغيرًا", "Give me a mini exercise"],
+    settings: ["Réglages du prof IA", "إعدادات الأستاذ الذكي", "AI tutor settings"],
+    model: ["Modèle", "النموذج", "Model"],
+    mHaiku: ["Rapide et léger — modèle de base", "سريع وخفيف — النموذج الأساسي", "Fast and light — base model"],
+    mSonnet: ["Équilibré, plus de finesse", "متوازن وأدق", "Balanced, more nuance"],
+    mOpus: ["Le plus puissant, plus lent", "الأقوى، وأبطأ", "Most capable, slower"],
+    effort: ["Effort de réflexion", "مستوى التفكير", "Thinking effort"],
+    eLow: ["Rapide", "سريع", "Quick"], eMed: ["Équilibré", "متوازن", "Balanced"], eHigh: ["Approfondi", "معمّق", "Deep"],
+    effortNote: ["Plus d'effort = réponses plus soignées mais plus lentes.", "تفكير أكثر = أجوبة أدق لكنها أبطأ.", "More effort = more careful but slower answers."],
+    explLang: ["Langue des explications IA", "لغة شروح الذكاء الاصطناعي", "AI explanation language"],
+    lFr: ["Français", "الفرنسية", "French"], lAr: ["Arabe", "العربية", "Arabic"], lEn: ["Anglais", "الإنجليزية", "English"], lDa: ["Darija", "الدارجة", "Darija"],
+    tone: ["Ton du prof", "أسلوب الأستاذ", "Tutor tone"],
+    toneFun: ["Fun et imagé", "مرح ومصوّر", "Fun and visual"], toneCalm: ["Calme et précis", "هادئ ودقيق", "Calm and precise"],
+    apiKey: ["Clé Anthropic API (version hors Claude)", "مفتاح Anthropic API (خارج Claude)", "Anthropic API key (outside Claude)"],
+    apiNote: ["Stockée seulement dans ce navigateur, envoyée uniquement à api.anthropic.com.", "تُحفظ في هذا المتصفح فقط وتُرسل إلى api.anthropic.com فقط.", "Stored only in this browser, sent only to api.anthropic.com."],
+    save: ["Enregistrer", "حفظ", "Save"],
+    close: ["Fermer", "إغلاق", "Close"],
+    resetProgress: ["Remettre à zéro ma progression", "إعادة تقدمي إلى الصفر", "Reset my progress"],
+    importTitle: ["Importer une série d'exercices", "استيراد سلسلة تمارين", "Import an exercise series"],
+    importDesc: ["Photo, PDF ou texte de n'importe quelle série (maths, physique…). Le prof IA la transforme en parcours interactif avec étapes, indices, quiz et figures.", "صورة أو PDF أو نص لأي سلسلة (رياضيات، فيزياء…). يحولها الأستاذ الذكي إلى مسار تفاعلي بخطوات وتلميحات وأسئلة وأشكال.", "A photo, PDF or text of any series (maths, physics…). The AI tutor turns it into an interactive path with steps, hints, quizzes and figures."],
+    importDrop: ["Glisse des photos ou un PDF ici", "اسحب صورًا أو PDF هنا", "Drop photos or a PDF here"],
+    choose: ["Choisir des fichiers", "اختيار ملفات", "Choose files"],
+    pasteText: ["…ou colle le texte de la série", "…أو الصق نص السلسلة", "…or paste the series text"],
+    build: ["Créer le parcours", "إنشاء المسار", "Build the path"],
+    building: ["Le prof IA lit la série et prépare les étapes… (30 s à 2 min)", "يقرأ الأستاذ السلسلة ويحضّر الخطوات… (من 30 ثانية إلى دقيقتين)", "The tutor is reading the series and preparing steps… (30 s–2 min)"],
+    writing: ["Rédaction… ({n} caractères)", "يكتب… ({n} حرف)", "Writing… ({n} characters)"],
+    imported: ["Série importée !", "تم استيراد السلسلة!", "Series imported!"],
+    simBuilding: ["Le prof IA invente un exercice du même type…", "يبتكر الأستاذ تمرينًا من النوع نفسه…", "The tutor is inventing a similar exercise…"],
+    simDone: ["Nouvel exercice ajouté", "أُضيف تمرين جديد", "New exercise added"],
+    xpGain: ["+{n} XP", "+{n} نقطة", "+{n} XP"],
+    levelUp: ["Niveau {n} : {name} !", "المستوى {n}: {name}!", "Level {n}: {name}!"],
+    noAI: ["Le prof IA n'est pas disponible dans cet affichage. Ouvre la page dans Claude.", "الأستاذ الذكي غير متاح في هذا العرض. افتح الصفحة داخل Claude.", "The AI tutor isn't available in this view. Open the page in Claude."],
+    needKey: ["Ajoute ta clé API dans les réglages.", "أضف مفتاح API في الإعدادات.", "Add your API key in settings."],
+    needInput: ["Ajoute une photo, un PDF ou du texte.", "أضف صورة أو PDF أو نصًا.", "Add a photo, a PDF or text."],
+    thinking: ["Le prof réfléchit…", "الأستاذ يفكر…", "The tutor is thinking…"],
+    example: ["exemple", "مثال", "example"],
+    deleteSeries: ["Supprimer cette série", "حذف هذه السلسلة", "Delete this series"],
+    remember: ["À retenir pour cet exercice", "للحفظ في هذا التمرين", "Remember for this exercise"],
+    seriesRules: ["Les règles de la série", "قواعد السلسلة", "Series rules"],
+    e_not_granted: ["Le prof IA n'a pas l'autorisation. Active-la dans les autorisations de la page.", "لم يُسمح للأستاذ الذكي. فعّل الإذن من أذونات الصفحة.", "The AI tutor isn't allowed. Enable it in the page permissions."],
+    e_rate_limited: ["Trop de demandes. Patiente un peu.", "طلبات كثيرة. انتظر قليلًا.", "Too many requests. Wait a moment."],
+    e_refused: ["Le prof IA a refusé cette demande.", "رفض الأستاذ الذكي هذا الطلب.", "The AI tutor declined this request."],
+    e_invalid_json: ["Réponse incomplète. Réessaie (ou augmente l'effort).", "جواب غير مكتمل. أعد المحاولة (أو ارفع مستوى التفكير).", "Incomplete answer. Try again (or raise the effort)."],
+    e_image_rejected: ["Une image n'a pas pu être lue.", "تعذرت قراءة إحدى الصور.", "One image couldn't be read."],
+    e_images_unavailable: ["Les photos ne sont pas disponibles ici ; utilise du texte.", "الصور غير متاحة هنا؛ استعمل النص.", "Photos aren't available here; use text."],
+    e_prompt_too_large: ["Trop long d'un coup : envoie moins de pages.", "طويل جدًا دفعة واحدة: أرسل صفحات أقل.", "Too long at once: send fewer pages."],
+    e_bad_shape: ["Je n'ai pas pu construire le parcours. Réessaie avec une photo plus nette.", "تعذر بناء المسار. أعد المحاولة بصورة أوضح.", "Couldn't build the path. Try a sharper photo."],
+    e_bad_key: ["Clé API invalide.", "مفتاح API غير صالح.", "Invalid API key."],
+    e_generic: ["Connexion interrompue. Réessaie.", "انقطع الاتصال. أعد المحاولة.", "Connection dropped. Try again."],
+    cancelled: ["Arrêté.", "توقف.", "Stopped."],
+    heroEyebrow: ["Machine à cours interactifs", "آلة الدروس التفاعلية", "Interactive lesson machine"],
+    heroA: ["Ta série d'exercices devient un ", "سلسلة تمارينك تصبح ", "Your exercise sheet becomes an "],
+    heroB: ["cours interactif", "درسًا تفاعليًا", "interactive course"],
+    heroSub: ["Photographie n'importe quelle série : maths, physique, SVT, langues… Le prof IA la transcrit, résout chaque question pas à pas, dessine les schémas, prépare indices et quiz, puis corrige ta copie.", "صوّر أي سلسلة: رياضيات، فيزياء، علوم الحياة والأرض، لغات… ينسخها الأستاذ الذكي ويحل كل سؤال خطوة بخطوة ويرسم الأشكال ويحضّر التلميحات والأسئلة ثم يصحح ورقتك.", "Snap any exercise sheet: maths, physics, biology, languages… The AI tutor transcribes it, solves every question step by step, draws the figures, prepares hints and quizzes, then grades your work."],
+    flow1: ["Photo", "صورة", "Photo"], flow2: ["Transcription", "نسخ", "Transcription"], flow3: ["Étapes + schémas", "خطوات + أشكال", "Steps + figures"], flow4: ["Prof IA", "أستاذ ذكي", "AI tutor"],
+    mkTypes: ["Photos · PDF · Word · PowerPoint · texte", "صور · PDF · Word · PowerPoint · نص", "Photos · PDF · Word · PowerPoint · text"],
+    takePhoto: ["Prendre une photo", "التقاط صورة", "Take a photo"],
+    level: ["Niveau", "المستوى", "Level"],
+    lvAuto: ["Détection auto", "تلقائي", "Auto-detect"], lvCol: ["Collège", "الإعدادي", "Middle school"], lvTC: ["Tronc commun", "الجذع المشترك", "Common core"], lv1: ["1ère année Bac", "الأولى باكالوريا", "1st year Bac"], lv2: ["2ème année Bac", "الثانية باكالوريا", "2nd year Bac"], lvSup: ["Supérieur", "التعليم العالي", "Higher education"],
+    pathLang: ["Langue", "اللغة", "Language"], plAuto: ["Celle de la série", "لغة السلسلة", "Same as the sheet"],
+    stRead: ["Lecture des fichiers", "قراءة الملفات", "Reading files"],
+    stTranscribe: ["Transcription de la série", "نسخ السلسلة", "Transcribing the sheet"],
+    stSolve: ["Résolution des exercices", "حل التمارين", "Solving the exercises"],
+    myLibrary: ["Mes séries", "سلاسلي", "My series"],
+    open: ["Ouvrir", "فتح", "Open"], confirmDel: ["Supprimer ?", "حذف؟", "Delete?"],
+    back: ["Mes séries", "سلاسلي", "My series"],
+    newSeries: ["Nouvelle série", "سلسلة جديدة", "New series"],
+    regen: ["Refaire cet exercice", "إعادة إعداد التمرين", "Redo this exercise"],
+    preparing: ["Le prof IA prépare les étapes, le schéma et le quiz de cet exercice…", "يحضّر الأستاذ الذكي خطوات هذا التمرين وشكله وأسئلته…", "The AI tutor is preparing this exercise's steps, figure and quiz…"],
+    prepFailed: ["La préparation de cet exercice a échoué :", "فشل إعداد هذا التمرين:", "Preparing this exercise failed:"],
+    retry: ["Réessayer", "أعد المحاولة", "Retry"],
+    exReady: ["{name} est prêt", "{name} جاهز", "{name} is ready"],
+    tagline: ["Ton prof IA de poche pour n'importe quelle série", "أستاذك الذكي في الجيب لأي سلسلة", "Your pocket AI tutor for any exercise sheet"],
+    graphHint: ["Courbes de l'exercice.", "منحنيات التمرين.", "The exercise's curves."],
+    qsCount: ["{n} questions", "{n} أسئلة", "{n} questions"],
+    exCount: ["{n} exercices", "{n} تمارين", "{n} exercises"],
+    exampleTag: ["Exemple", "مثال", "Example"],
+    f1t: ["Étapes guidées", "خطوات موجهة", "Guided steps"], f1d: ["Chaque question résolue pas à pas, à ton rythme.", "كل سؤال محلول خطوة بخطوة بإيقاعك.", "Every question solved step by step, at your pace."],
+    f2t: ["Schémas vivants", "أشكال حية", "Live figures"], f2d: ["Figures déplaçables, courbes, schémas de physique.", "أشكال قابلة للتحريك، منحنيات، تبيانات فيزيائية.", "Draggable figures, curves, physics diagrams."],
+    f3t: ["Explique autrement", "اشرح بطريقة أخرى", "Explain it differently"], f3d: ["Plus simple, en histoire, en darija, en une phrase.", "أبسط، كقصة، بالدارجة، في جملة.", "Simpler, as a story, in Darija, in one sentence."],
+    f4t: ["Correction photo", "تصحيح بالصورة", "Photo grading"], f4d: ["Photographie ta copie : le prof trouve l'erreur.", "صوّر ورقتك: يجد الأستاذ الخطأ.", "Snap your work: the tutor finds the mistake."],
+    f5t: ["Quiz & XP", "أسئلة ونقاط", "Quiz & XP"], f5d: ["Teste-toi, gagne des niveaux, garde tes séries.", "اختبر نفسك واربح مستويات واحتفظ بسلاسلك.", "Test yourself, level up, keep your series."],
+  };
+  const ULANGS = ["fr", "ar", "en"];
+  const LV = [["Apprenti curieux", "متعلم فضولي", "Curious apprentice"], ["Explorateur", "مستكشف", "Explorer"], ["Stratège des méthodes", "خبير الطرق", "Method strategist"], ["Chasseur d'erreurs", "صياد الأخطاء", "Mistake hunter"], ["Maître des démonstrations", "سيد البراهين", "Proof master"], ["Légende de la classe", "أسطورة القسم", "Class legend"]];
+  let ui = "fr";
+  const t = (k, vars) => { const row = UI[k]; let s = row ? row[ULANGS.indexOf(ui)] || row[0] : k; if (vars) for (const [a, b] of Object.entries(vars)) s = s.replace(`{${a}}`, b); return s; };
+
+  /* ============ Example series: Calcul vectoriel, série n°1 (Tronc commun) ============ */
+  const V = (from, to, color, label) => [from, to, color, label === undefined ? from + to : label];
+  const SERIES1 = {
+    id: "gs-makrizi-vect-1", builtin: true, lang: "fr",
+    subject: "Maths", badge: "MATHS\nTC", title: "Calcul vectoriel", subtitle: "Série n°1 · Tronc commun · GS Al Makrizi",
+    summary: [
+      { title: "Relation de Chasles", text: R`$\vect{AB} + \vect{BC} = \vect{AC}$ : on peut « faire une escale » par n'importe quel point.` },
+      { title: "Colinéarité", text: R`$\vec u$ et $\vec v$ sont colinéaires s'il existe un réel $k$ tel que $\vec u = k\,\vec v$.` },
+      { title: "Alignement", text: R`$A$, $B$, $C$ sont alignés $\iff$ $\vect{AB}$ et $\vect{AC}$ sont colinéaires.` },
+      { title: "Parallélisme", text: R`$(AB) \parallel (CD) \iff \vect{AB} = k\,\vect{CD}$.` },
+      { title: "Milieu", text: R`$I$ milieu de $[AB]$ $\iff \vect{AI} = \frac12\vect{AB} \iff \vect{IA} + \vect{IB} = \vec 0 \iff \vect{MA} + \vect{MB} = 2\vect{MI}$ pour tout point $M$.` },
+      { title: "Parallélogramme", text: R`$ABCD$ parallélogramme $\iff \vect{AB} = \vect{DC} \iff \vect{AB} + \vect{AD} = \vect{AC}$.` },
+      { title: "La méthode qui marche partout", text: R`1) Choisir deux vecteurs de base (par exemple $\vect{AB}$ et $\vect{AC}$). 2) Tout exprimer avec Chasles dans cette base. 3) Comparer : trouver le réel $k$.` },
+    ],
+    exercises: [
+      {
+        id: "e1", title: "Exercice 1", name: "Le parallélogramme qui s'étire",
+        statement: R`Soit $ABCD$ un parallélogramme et $I$ et $J$ deux points tels que : $\vect{AI} = \frac32\vect{AB}$ et $\vect{DJ} = 2\vect{AD}$.`,
+        remember: [R`Dans un parallélogramme $ABCD$ : $\vect{AB} = \vect{DC}$ et $\vect{AD} = \vect{BC}$.`, R`$\vect{CJ} = -2\,\vect{CI}$ suffit pour conclure que $C$, $I$, $J$ sont alignés.`],
+        figure: {
+          base: { A: [0, 0], B: [4, 0], D: [1, 2] },
+          points: [
+            { name: "C", at: "B", plus: [[1, "A", "D"]] },
+            { name: "I", at: "A", plus: [[1.5, "A", "B"]] },
+            { name: "J", at: "D", plus: [[2, "A", "D"]] },
+            { name: "E", mid: ["D", "J"], q: 3 },
+            { name: "F", at: "B", plus: [[1, "A", "B"]], q: 3 },
+          ],
+          polygons: [["A", "B", "C", "D"]],
+          segments: [["A", "I"], ["A", "J"], { a: "E", b: "F", q: 3 }, { a: "B", b: "D", q: 4 }],
+          checks: [{ type: "aligned", pts: ["C", "I", "J"], q: 2 }, { type: "midpoint", m: "C", of: ["E", "F"], q: 3 }, { type: "parallel", l1: ["E", "F"], l2: ["B", "D"], q: 4 }],
+        },
+        questions: [
+          { label: "1", title: "Construire une figure.", goal: "placer $I$ et $J$ à partir des relations vectorielles.",
+            show: { vectors: [V("A", "I", "amber"), V("D", "J", "green")] },
+            steps: [
+              { text: R`Trace le parallélogramme $ABCD$ : $\vect{AB} = \vect{DC}$.`, note: "ABCD", show: { vectors: [V("A", "B", "blue"), V("D", "C", "blue")] } },
+              { text: R`$\vect{AI} = \frac32\vect{AB}$ : $I$ est sur la demi-droite $[AB)$, **au-delà de $B$**, avec $AI = 1{,}5 \times AB$.`, note: "AI = 1,5 AB", show: { vectors: [V("A", "B", "blue"), V("A", "I", "amber")] } },
+              { text: R`$\vect{DJ} = 2\vect{AD}$ : on part de $D$ et on reporte **deux fois** $\vect{AD}$ dans le même sens. $J$ est sur la droite $(AD)$.`, note: "DJ = 2 AD", show: { vectors: [V("A", "D", "purple"), V("D", "J", "green")] } },
+            ],
+            hint: R`Commence par $A$, $B$, $D$, puis place $C$ avec $\vect{AB} = \vect{DC}$.`,
+            quiz: { q: R`Où se trouve le point $I$ ?`, options: [R`Entre $A$ et $B$`, R`Sur $[AB)$, au-delà de $B$`, R`Sur $[BA)$, au-delà de $A$`], answer: 1, why: R`$\frac32$ est positif et plus grand que $1$ : on va dans le sens de $\vect{AB}$ et on dépasse $B$.` } },
+          { label: "2", title: R`Montrer que $\vect{CJ} = -\vect{AB} + 2\vect{AD}$ et $\vect{CI} = \frac12\vect{AB} - \vect{AD}$.`, goal: "décomposer chaque vecteur avec la relation de Chasles.",
+            show: { vectors: [V("C", "J", "amber"), V("C", "I", "pink")] },
+            steps: [
+              { text: R`Chasles : on fait escale en $D$. $\vect{CJ} = \vect{CD} + \vect{DJ}$.`, note: "C → D → J", show: { vectors: [V("C", "D", "blue"), V("D", "J", "green"), V("C", "J", "amber")] } },
+              { text: R`Dans le parallélogramme, $\vect{CD} = \vect{BA} = -\vect{AB}$, et $\vect{DJ} = 2\vect{AD}$. Donc **$\vect{CJ} = -\vect{AB} + 2\vect{AD}$**.`, note: "CD = −AB", show: { vectors: [V("B", "A", "blue"), V("C", "D", "blue"), V("C", "J", "amber")] } },
+              { text: R`Même idée pour $\vect{CI}$, avec une escale en $B$ : $\vect{CI} = \vect{CB} + \vect{BI}$.`, note: "C → B → I", show: { vectors: [V("C", "B", "purple"), V("B", "I", "green"), V("C", "I", "pink")] } },
+              { text: R`$\vect{CB} = -\vect{AD}$ et $\vect{BI} = \vect{AI} - \vect{AB} = \frac32\vect{AB} - \vect{AB} = \frac12\vect{AB}$.`, note: "BI = ½ AB", show: { vectors: [V("A", "D", "purple"), V("C", "B", "purple"), V("B", "I", "green")] } },
+              { text: R`Donc **$\vect{CI} = \frac12\vect{AB} - \vect{AD}$**.`, note: "CI", show: { vectors: [V("C", "I", "pink")] } },
+            ],
+            hint: R`Passe par un point que tu connais bien : $D$ pour $\vect{CJ}$, $B$ pour $\vect{CI}$.`,
+            quiz: { q: R`Dans le parallélogramme $ABCD$, $\vect{CD}$ est égal à :`, options: [R`$\vect{AB}$`, R`$-\vect{AB}$`, R`$\vect{AD}$`], answer: 1, why: R`$\vect{DC} = \vect{AB}$, donc le vecteur opposé $\vect{CD}$ vaut $-\vect{AB}$.` } },
+          { label: "3", title: R`Déduire que les points $C$, $I$ et $J$ sont alignés.`, goal: R`trouver un réel $k$ tel que $\vect{CJ} = k\,\vect{CI}$.`,
+            show: { vectors: [V("C", "I", "pink"), V("C", "J", "amber")], lines: [["I", "J"]] },
+            steps: [
+              { text: R`On a $\vect{CJ} = -\vect{AB} + 2\vect{AD}$ et $\vect{CI} = \frac12\vect{AB} - \vect{AD}$.`, note: "On compare", show: { vectors: [V("C", "I", "pink"), V("C", "J", "amber")] } },
+              { text: R`Remarque : $-2 \times \left(\frac12\vect{AB} - \vect{AD}\right) = -\vect{AB} + 2\vect{AD}$.`, note: "× (−2)", show: { vectors: [V("C", "I", "pink"), V("C", "J", "amber")] } },
+              { text: R`Donc **$\vect{CJ} = -2\,\vect{CI}$** : les vecteurs sont colinéaires et ont le point $C$ en commun. **$C$, $I$, $J$ sont alignés.**`, note: "CJ = −2 CI", show: { vectors: [V("C", "I", "pink"), V("C", "J", "amber")], lines: [["I", "J"]] } },
+            ],
+            hint: R`Cherche le nombre $k$ tel que $\vect{CJ} = k\,\vect{CI}$ : compare les coefficients de $\vect{AB}$.`,
+            quiz: { q: R`Si $\vect{CJ} = k\,\vect{CI}$, que peut-on conclure ?`, options: [R`$C$, $I$, $J$ sont alignés`, R`$CIJ$ est un triangle rectangle`, R`$C$ est le milieu de $[IJ]$`], answer: 0, why: R`Deux vecteurs colinéaires **avec un point commun** : les trois points sont sur une même droite.` } },
+          { label: "4a", title: R`$E$ est le milieu de $[DJ]$ et $\vect{AB} = \vect{BF}$. Montrer que $C$ est le milieu de $[EF]$.`, goal: R`tout exprimer depuis $A$ avec $\vect{AB}$ et $\vect{AD}$.`,
+            show: { vectors: [V("A", "E", "green"), V("A", "F", "blue"), V("A", "C", "amber")] },
+            steps: [
+              { text: R`$E$ milieu de $[DJ]$ : $\vect{DE} = \frac12\vect{DJ} = \vect{AD}$, donc $\vect{AE} = \vect{AD} + \vect{DE} = 2\vect{AD}$.`, note: "AE = 2 AD", show: { vectors: [V("A", "D", "purple"), V("D", "E", "purple"), V("A", "E", "green")] } },
+              { text: R`$\vect{AB} = \vect{BF}$ : $B$ est le milieu de $[AF]$, donc $\vect{AF} = 2\vect{AB}$.`, note: "AF = 2 AB", show: { vectors: [V("A", "B", "blue"), V("B", "F", "blue"), V("A", "F", "teal")] } },
+              { text: R`Le milieu $M$ de $[EF]$ vérifie $\vect{AM} = \frac12\left(\vect{AE} + \vect{AF}\right) = \vect{AD} + \vect{AB}$.`, note: "AM = ½(AE + AF)", show: { vectors: [V("A", "E", "green"), V("A", "F", "teal"), V("A", "C", "amber", "AM")] } },
+              { text: R`Or $\vect{AB} + \vect{AD} = \vect{AC}$ (règle du parallélogramme). Donc $M = C$ : **$C$ est le milieu de $[EF]$.**`, note: "M = C", show: { vectors: [V("A", "C", "amber"), V("E", "C", "pink", ""), V("C", "F", "pink", "")] } },
+            ],
+            hint: R`Exprime $\vect{AE}$ et $\vect{AF}$ en fonction de $\vect{AB}$ et $\vect{AD}$, puis utilise la formule du milieu.`,
+            quiz: { q: R`$M$ est le milieu de $[EF]$ si et seulement si :`, options: [R`$\vect{AM} = \vect{AE} + \vect{AF}$`, R`$\vect{AM} = \frac12\left(\vect{AE} + \vect{AF}\right)$`, R`$\vect{EM} = \vect{EF}$`], answer: 1, why: R`C'est la formule du milieu : la moyenne des deux vecteurs.` } },
+          { label: "4b", title: R`Montrer que $(EF) \parallel (BD)$.`, goal: R`montrer que $\vect{EF}$ et $\vect{BD}$ sont colinéaires.`,
+            show: { vectors: [V("E", "F", "amber"), V("B", "D", "blue")] },
+            steps: [
+              { text: R`$\vect{EF} = \vect{EA} + \vect{AF} = -2\vect{AD} + 2\vect{AB}$.`, note: "E → A → F", show: { vectors: [V("E", "A", "green"), V("A", "F", "teal"), V("E", "F", "amber")] } },
+              { text: R`$\vect{BD} = \vect{BA} + \vect{AD} = -\vect{AB} + \vect{AD}$.`, note: "B → A → D", show: { vectors: [V("B", "A", "blue"), V("A", "D", "purple"), V("B", "D", "pink")] } },
+              { text: R`Donc **$\vect{EF} = -2\,\vect{BD}$** : vecteurs colinéaires, donc **$(EF) \parallel (BD)$**.`, note: "EF = −2 BD", show: { vectors: [V("E", "F", "amber"), V("B", "D", "pink")] } },
+            ],
+            hint: R`Calcule $\vect{EF}$ et $\vect{BD}$ dans la base $\left(\vect{AB}, \vect{AD}\right)$.`,
+            quiz: { q: R`$\vect{EF} = -2\,\vect{BD}$ signifie que :`, options: [R`$(EF)$ et $(BD)$ sont perpendiculaires`, R`$(EF)$ et $(BD)$ sont parallèles`, R`$EF = BD$`], answer: 1, why: R`Vecteurs colinéaires $\Rightarrow$ droites parallèles. Les longueurs, elles, sont dans le rapport $2$.` } },
+        ],
+      },
+      {
+        id: "e2", title: "Exercice 2", name: "Trois points en ligne",
+        statement: R`Soit $ABC$ un triangle et $I$, $J$ et $K$ des points tels que : $\vect{AI} = \frac23\vect{AB}$, $\vect{BJ} = \frac12\vect{BC}$ et $\vect{AK} = 2\vect{AC}$.`,
+        remember: [R`Pour montrer un alignement, exprime les deux vecteurs dans la **même base** ($\vect{AB}$, $\vect{BC}$).`],
+        figure: {
+          base: { A: [0, 0], B: [6, 0], C: [1, 3] },
+          points: [
+            { name: "I", at: "A", plus: [[2 / 3, "A", "B"]] },
+            { name: "J", at: "B", plus: [[0.5, "B", "C"]] },
+            { name: "K", at: "A", plus: [[2, "A", "C"]] },
+          ],
+          polygons: [["A", "B", "C"]],
+          segments: [["C", "K"]],
+          checks: [{ type: "aligned", pts: ["I", "J", "K"], q: 3 }],
+        },
+        questions: [
+          { label: "1", title: "Construire une figure.", goal: "placer $I$, $J$ et $K$.",
+            show: { vectors: [V("A", "I", "amber"), V("B", "J", "green"), V("A", "K", "purple")] },
+            steps: [
+              { text: R`$\vect{AI} = \frac23\vect{AB}$ : $I$ est sur $[AB]$, aux deux tiers en partant de $A$.`, note: "AI = ⅔ AB", show: { vectors: [V("A", "B", "blue"), V("A", "I", "amber")] } },
+              { text: R`$\vect{BJ} = \frac12\vect{BC}$ : $J$ est le **milieu** de $[BC]$.`, note: "J milieu de [BC]", show: { vectors: [V("B", "J", "green")] } },
+              { text: R`$\vect{AK} = 2\vect{AC}$ : $C$ est le milieu de $[AK]$, donc $K$ est le symétrique de $A$ par rapport à $C$.`, note: "AK = 2 AC", show: { vectors: [V("A", "C", "blue"), V("A", "K", "purple")] } },
+            ],
+            hint: R`Un coefficient entre $0$ et $1$ place le point **sur** le segment.`,
+            quiz: { q: R`$\vect{BJ} = \frac12\vect{BC}$ signifie que $J$ est :`, options: [R`le milieu de $[BC]$`, R`le symétrique de $B$ par rapport à $C$`, R`sur $[BC)$, au-delà de $C$`], answer: 0, why: R`On parcourt la moitié du chemin de $B$ vers $C$.` } },
+          { label: "2a", title: R`Exprimer $\vect{IJ}$ en fonction de $\vect{AB}$ et $\vect{BC}$.`, goal: "faire escale en $B$.",
+            show: { vectors: [V("I", "B", "blue"), V("B", "J", "green"), V("I", "J", "amber")] },
+            steps: [
+              { text: R`Chasles : $\vect{IJ} = \vect{IB} + \vect{BJ}$.`, note: "I → B → J", show: { vectors: [V("I", "B", "blue"), V("B", "J", "green"), V("I", "J", "amber")] } },
+              { text: R`$\vect{IB} = \vect{AB} - \vect{AI} = \vect{AB} - \frac23\vect{AB} = \frac13\vect{AB}$.`, note: "IB = ⅓ AB", show: { vectors: [V("A", "I", "amber"), V("I", "B", "blue")] } },
+              { text: R`Donc **$\vect{IJ} = \frac13\vect{AB} + \frac12\vect{BC}$**.`, note: "IJ", show: { vectors: [V("I", "J", "amber")] } },
+            ],
+            hint: R`$\vect{IB} = \vect{IA} + \vect{AB}$ : combien vaut $\vect{IA}$ ?`,
+            quiz: { q: R`$\vect{IB}$ vaut :`, options: [R`$\frac23\vect{AB}$`, R`$\frac13\vect{AB}$`, R`$-\frac13\vect{AB}$`], answer: 1, why: R`Il reste un tiers du chemin entre $I$ et $B$.` } },
+          { label: "2b", title: R`Exprimer $\vect{IK}$ en fonction de $\vect{AB}$ et $\vect{BC}$.`, goal: R`faire escale en $A$, puis remplacer $\vect{AC}$.`,
+            show: { vectors: [V("I", "A", "blue"), V("A", "K", "purple"), V("I", "K", "pink")] },
+            steps: [
+              { text: R`$\vect{IK} = \vect{IA} + \vect{AK} = -\frac23\vect{AB} + 2\vect{AC}$.`, note: "I → A → K", show: { vectors: [V("I", "A", "blue"), V("A", "K", "purple"), V("I", "K", "pink")] } },
+              { text: R`On veut seulement $\vect{AB}$ et $\vect{BC}$ : Chasles donne $\vect{AC} = \vect{AB} + \vect{BC}$.`, note: "AC = AB + BC", show: { vectors: [V("A", "B", "blue"), V("B", "C", "green"), V("A", "C", "amber")] } },
+              { text: R`$\vect{IK} = -\frac23\vect{AB} + 2\vect{AB} + 2\vect{BC}$, donc **$\vect{IK} = \frac43\vect{AB} + 2\vect{BC}$**.`, note: "IK", show: { vectors: [V("I", "K", "pink")] } },
+            ],
+            hint: R`Il faut faire disparaître $\vect{AC}$ : écris-le avec $\vect{AB}$ et $\vect{BC}$.`,
+            quiz: { q: R`Pour écrire $\vect{AC}$ avec $\vect{AB}$ et $\vect{BC}$ :`, options: [R`$\vect{AC} = \vect{AB} - \vect{BC}$`, R`$\vect{AC} = \vect{AB} + \vect{BC}$`, R`$\vect{AC} = \vect{BC} - \vect{AB}$`], answer: 1, why: R`Chasles : on va de $A$ à $C$ en passant par $B$.` } },
+          { label: "3", title: R`Déduire que les points $I$, $J$ et $K$ sont alignés.`, goal: R`comparer $\vect{IK}$ et $\vect{IJ}$.`,
+            show: { vectors: [V("I", "J", "amber"), V("I", "K", "pink")], lines: [["I", "K"]] },
+            steps: [
+              { text: R`$\vect{IK} = \frac43\vect{AB} + 2\vect{BC} = 4\left(\frac13\vect{AB} + \frac12\vect{BC}\right)$.`, note: "on factorise par 4", show: { vectors: [V("I", "K", "pink")] } },
+              { text: R`Donc **$\vect{IK} = 4\,\vect{IJ}$** : colinéaires avec le point $I$ commun. **$I$, $J$, $K$ sont alignés.**`, note: "IK = 4 IJ", show: { vectors: [V("I", "J", "amber"), V("I", "K", "pink")], lines: [["I", "K"]] } },
+            ],
+            hint: R`Divise les coefficients de $\vect{IK}$ par ceux de $\vect{IJ}$ : tu dois trouver le même nombre.`,
+            quiz: { q: R`$\frac43\vect{AB} + 2\vect{BC} = k\left(\frac13\vect{AB} + \frac12\vect{BC}\right)$ pour $k =$`, options: ["$2$", "$3$", "$4$"], answer: 2, why: R`$\frac43 \div \frac13 = 4$ et $2 \div \frac12 = 4$ : même rapport.` } },
+        ],
+      },
+      {
+        id: "e3", title: "Exercice 3", name: "Alignement surprise",
+        statement: R`Soit $ABC$ un triangle, $E$ et $F$ deux points tels que : $\vect{CE} = \frac54\vect{CB}$ et $\vect{AF} = -\frac52\vect{AB} + \frac12\vect{AC}$.`,
+        remember: [R`$\vect{CB} = \vect{AB} - \vect{AC}$ : la base $\left(\vect{AB}, \vect{AC}\right)$ permet de tout comparer.`],
+        figure: {
+          base: { A: [0, 0], B: [4, 0], C: [1, 3] },
+          points: [
+            { name: "E", at: "C", plus: [[1.25, "C", "B"]] },
+            { name: "F", at: "A", plus: [[-2.5, "A", "B"], [0.5, "A", "C"]] },
+            { name: "D", at: "A", plus: [[-4, "A", "B"], [1, "A", "C"]], q: 3 },
+          ],
+          polygons: [["A", "B", "C"]],
+          segments: [["B", "E"], { a: "B", b: "D", q: 3 }],
+          checks: [{ type: "aligned", pts: ["A", "E", "F"], q: 2 }, { type: "parallel", l1: ["B", "D"], l2: ["A", "F"], q: 3 }],
+        },
+        questions: [
+          { label: "1", title: "Construire une figure.", goal: "placer $E$ et $F$.",
+            show: { vectors: [V("C", "E", "amber"), V("A", "F", "purple")] },
+            steps: [
+              { text: R`$\vect{CE} = \frac54\vect{CB}$ : $E$ est sur $[CB)$, un peu **au-delà de $B$** (un quart de $CB$ en plus).`, note: "CE = 5/4 CB", show: { vectors: [V("C", "B", "blue"), V("C", "E", "amber")] } },
+              { text: R`Pour $F$ : depuis $A$, recule de $\frac52\vect{AB}$, puis avance de $\frac12\vect{AC}$.`, note: "AF = −5/2 AB + ½ AC", show: { vectors: [V("A", "F", "purple")] } },
+            ],
+            hint: R`Un coefficient négatif fait aller dans le sens **opposé** au vecteur.`,
+            quiz: { q: R`$\vect{CE} = \frac54\vect{CB}$ : où est $E$ ?`, options: [R`Entre $C$ et $B$`, R`Sur $[CB)$, au-delà de $B$`, R`Sur $[BC)$, au-delà de $C$`], answer: 1, why: R`$\frac54 > 1$ : on dépasse $B$.` } },
+          { label: "2", title: R`Montrer que $\vect{AE} = \frac54\vect{AB} - \frac14\vect{AC}$.`, goal: R`escale en $C$, puis remplacer $\vect{CB}$.`,
+            show: { vectors: [V("A", "E", "amber")] },
+            steps: [
+              { text: R`$\vect{AE} = \vect{AC} + \vect{CE} = \vect{AC} + \frac54\vect{CB}$.`, note: "A → C → E", show: { vectors: [V("A", "C", "blue"), V("C", "E", "green"), V("A", "E", "amber")] } },
+              { text: R`$\vect{CB} = \vect{CA} + \vect{AB} = \vect{AB} - \vect{AC}$.`, note: "CB = AB − AC", show: { vectors: [V("C", "A", "purple"), V("A", "B", "blue"), V("C", "B", "pink")] } },
+              { text: R`$\vect{AE} = \vect{AC} + \frac54\vect{AB} - \frac54\vect{AC}$, donc **$\vect{AE} = \frac54\vect{AB} - \frac14\vect{AC}$**.`, note: "AE", show: { vectors: [V("A", "E", "amber")] } },
+            ],
+            hint: R`Après Chasles, remplace $\vect{CB}$ par $\vect{AB} - \vect{AC}$.`,
+            quiz: { q: R`$\vect{CB}$ en fonction de $\vect{AB}$ et $\vect{AC}$ :`, options: [R`$\vect{AB} + \vect{AC}$`, R`$\vect{AB} - \vect{AC}$`, R`$\vect{AC} - \vect{AB}$`], answer: 1, why: R`$\vect{CB} = \vect{CA} + \vect{AB} = -\vect{AC} + \vect{AB}$.` } },
+          { label: "3", title: R`Déduire que les points $A$, $E$ et $F$ sont alignés.`, goal: R`comparer $\vect{AF}$ et $\vect{AE}$.`,
+            show: { vectors: [V("A", "E", "amber"), V("A", "F", "purple")], lines: [["E", "F"]] },
+            steps: [
+              { text: R`$\vect{AF} = -\frac52\vect{AB} + \frac12\vect{AC} = -2\left(\frac54\vect{AB} - \frac14\vect{AC}\right)$.`, note: "× (−2)", show: { vectors: [V("A", "F", "purple")] } },
+              { text: R`Donc **$\vect{AF} = -2\,\vect{AE}$** : **$A$, $E$, $F$ sont alignés**, et $A$ est entre $E$ et $F$.`, note: "AF = −2 AE", show: { vectors: [V("A", "E", "amber"), V("A", "F", "purple")], lines: [["E", "F"]] } },
+            ],
+            hint: R`Quel nombre multiplie $\frac54$ pour donner $-\frac52$ ?`,
+            quiz: { q: R`$\vect{AF} = -2\,\vect{AE}$ : où est $A$ ?`, options: [R`Entre $E$ et $F$`, R`$E$ est entre $A$ et $F$`, R`$F$ est entre $A$ et $E$`], answer: 0, why: R`Le signe $-$ : $\vect{AF}$ et $\vect{AE}$ partent de $A$ dans des sens opposés.` } },
+          { label: "4", title: R`$D$ vérifie $\vect{DA} = 3\vect{AB} + \vect{CB}$. Montrer que $\vect{BD}$ et $\vect{AF}$ sont colinéaires.`, goal: R`exprimer $\vect{BD}$ dans la base $\left(\vect{AB}, \vect{AC}\right)$.`,
+            show: { vectors: [V("B", "D", "pink"), V("A", "F", "purple")] },
+            steps: [
+              { text: R`$\vect{AD} = -\vect{DA} = -3\vect{AB} - \vect{CB} = -3\vect{AB} - \left(\vect{AB} - \vect{AC}\right) = -4\vect{AB} + \vect{AC}$.`, note: "AD = −4 AB + AC", show: { vectors: [V("A", "D", "green")] } },
+              { text: R`$\vect{BD} = \vect{BA} + \vect{AD} = -\vect{AB} - 4\vect{AB} + \vect{AC} = -5\vect{AB} + \vect{AC}$.`, note: "B → A → D", show: { vectors: [V("B", "A", "blue"), V("A", "D", "green"), V("B", "D", "pink")] } },
+              { text: R`$\vect{AF} = -\frac52\vect{AB} + \frac12\vect{AC} = \frac12\left(-5\vect{AB} + \vect{AC}\right)$, donc **$\vect{AF} = \frac12\vect{BD}$** : colinéaires.`, note: "AF = ½ BD", show: { vectors: [V("B", "D", "pink"), V("A", "F", "purple")] } },
+            ],
+            hint: R`Attention au signe : $\vect{AD} = -\vect{DA}$.`,
+            quiz: { q: R`Deux vecteurs $\vec u$ et $\vec v$ sont colinéaires si :`, options: [R`$\vec u = k\,\vec v$ pour un réel $k$`, R`ils ont la même longueur`, R`ils ont la même origine`], answer: 0, why: R`C'est la définition : l'un est un multiple de l'autre.` } },
+        ],
+      },
+      {
+        id: "e4", title: "Exercice 4", name: "Le symétrique caché",
+        statement: R`Soit $ABC$ un triangle et $I$ et $J$ deux points tels que : $\vect{BJ} + \vect{BC} = \vec 0$ et $\vect{AI} = \frac13\vect{AC}$.`,
+        remember: [R`$\vect{BJ} + \vect{BC} = \vec 0$ : $B$ est le milieu de $[JC]$.`, R`$\vect{AK} = \vect{BC}$ : $ABCK$ est un parallélogramme.`],
+        figure: {
+          base: { A: [0, 0], B: [4, 0], C: [1.5, 3] },
+          points: [
+            { name: "J", at: "B", plus: [[-1, "B", "C"]] },
+            { name: "I", at: "A", plus: [[1 / 3, "A", "C"]] },
+            { name: "K", at: "A", plus: [[-1, "A", "B"], [1, "A", "C"]], q: 3 },
+          ],
+          polygons: [["A", "B", "C"]],
+          segments: [["B", "J"], { a: "A", b: "K", q: 3 }, { a: "K", b: "C", q: 3 }],
+          checks: [{ type: "midpoint", m: "B", of: ["J", "C"], q: 0 }, { type: "aligned", pts: ["I", "J", "K"], q: 4 }],
+        },
+        questions: [
+          { label: "1", title: "Construire une figure.", goal: "placer $J$ et $I$.",
+            show: { vectors: [V("B", "J", "amber"), V("A", "I", "green")] },
+            steps: [
+              { text: R`$\vect{BJ} = -\vect{BC}$ : $J$ est le **symétrique de $C$ par rapport à $B$**.`, note: "BJ = −BC", show: { vectors: [V("B", "C", "blue"), V("B", "J", "amber")] } },
+              { text: R`$\vect{AI} = \frac13\vect{AC}$ : $I$ est sur $[AC]$, au tiers en partant de $A$.`, note: "AI = ⅓ AC", show: { vectors: [V("A", "C", "blue"), V("A", "I", "green")] } },
+            ],
+            hint: R`$\vect{BJ} + \vect{BC} = \vec 0$ veut dire que $\vect{BJ}$ et $\vect{BC}$ sont opposés.`,
+            quiz: { q: R`$\vect{BJ} + \vect{BC} = \vec 0$ signifie :`, options: [R`$B$ est le milieu de $[JC]$`, R`$J = C$`, R`$J$ est le milieu de $[BC]$`], answer: 0, why: R`Deux vecteurs opposés depuis $B$ : $B$ est au milieu.` } },
+          { label: "2a", title: R`Montrer que $\vect{AJ} = 2\vect{AB} - \vect{AC}$.`, goal: "escale en $B$.",
+            show: { vectors: [V("A", "J", "amber")] },
+            steps: [
+              { text: R`$\vect{AJ} = \vect{AB} + \vect{BJ} = \vect{AB} - \vect{BC}$.`, note: "A → B → J", show: { vectors: [V("A", "B", "blue"), V("B", "J", "green"), V("A", "J", "amber")] } },
+              { text: R`$\vect{BC} = \vect{AC} - \vect{AB}$, donc $\vect{AJ} = \vect{AB} - \vect{AC} + \vect{AB}$ : **$\vect{AJ} = 2\vect{AB} - \vect{AC}$**.`, note: "AJ", show: { vectors: [V("A", "J", "amber")] } },
+            ],
+            hint: R`Remplace $\vect{BJ}$ par $-\vect{BC}$.`,
+            quiz: { q: R`$\vect{BC}$ est égal à :`, options: [R`$\vect{AB} - \vect{AC}$`, R`$\vect{AC} - \vect{AB}$`, R`$\vect{AB} + \vect{AC}$`], answer: 1, why: R`$\vect{BC} = \vect{BA} + \vect{AC} = -\vect{AB} + \vect{AC}$.` } },
+          { label: "2b", title: R`Déduire que $\vect{IJ} = 2\vect{AB} - \frac43\vect{AC}$.`, goal: "escale en $A$.",
+            show: { vectors: [V("I", "J", "pink")] },
+            steps: [
+              { text: R`$\vect{IJ} = \vect{IA} + \vect{AJ} = -\frac13\vect{AC} + 2\vect{AB} - \vect{AC}$.`, note: "I → A → J", show: { vectors: [V("I", "A", "green"), V("A", "J", "amber"), V("I", "J", "pink")] } },
+              { text: R`$-\frac13\vect{AC} - \vect{AC} = -\frac43\vect{AC}$, donc **$\vect{IJ} = 2\vect{AB} - \frac43\vect{AC}$**.`, note: "IJ", show: { vectors: [V("I", "J", "pink")] } },
+            ],
+            hint: R`$\vect{IA} = -\vect{AI}$.`,
+            quiz: { q: R`$-\frac13\vect{AC} - \vect{AC} =$`, options: [R`$-\frac23\vect{AC}$`, R`$-\frac43\vect{AC}$`, R`$\frac43\vect{AC}$`], answer: 1, why: R`$-\frac13 - \frac33 = -\frac43$.` } },
+          { label: "3a", title: R`$K$ vérifie $\vect{AK} = -\vect{AB} + \vect{AC}$. Montrer que $\vect{IK} = -\vect{AB} + \frac23\vect{AC}$.`, goal: "escale en $A$.",
+            show: { vectors: [V("I", "K", "purple")] },
+            steps: [
+              { text: R`Remarque : $\vect{AK} = \vect{AC} - \vect{AB} = \vect{BC}$, donc $ABCK$ est un parallélogramme.`, note: "AK = BC", show: { vectors: [V("A", "K", "blue"), V("B", "C", "blue")] } },
+              { text: R`$\vect{IK} = \vect{IA} + \vect{AK} = -\frac13\vect{AC} - \vect{AB} + \vect{AC}$, donc **$\vect{IK} = -\vect{AB} + \frac23\vect{AC}$**.`, note: "I → A → K", show: { vectors: [V("I", "A", "green"), V("A", "K", "blue"), V("I", "K", "purple")] } },
+            ],
+            hint: R`Même méthode qu'en 2b : passe par $A$.`,
+            quiz: { q: R`$\vect{AK} = -\vect{AB} + \vect{AC}$ est égal à :`, options: [R`$\vect{BC}$`, R`$\vect{CB}$`, R`$\vect{AC}$`], answer: 0, why: R`$-\vect{AB} + \vect{AC} = \vect{BA} + \vect{AC} = \vect{BC}$.` } },
+          { label: "3b", title: R`Déduire que les points $I$, $J$ et $K$ sont alignés.`, goal: R`comparer $\vect{IJ}$ et $\vect{IK}$.`,
+            show: { vectors: [V("I", "J", "pink"), V("I", "K", "purple")], lines: [["J", "K"]] },
+            steps: [
+              { text: R`$-2 \times \left(-\vect{AB} + \frac23\vect{AC}\right) = 2\vect{AB} - \frac43\vect{AC}$.`, note: "× (−2)", show: { vectors: [V("I", "K", "purple")] } },
+              { text: R`Donc **$\vect{IJ} = -2\,\vect{IK}$** : **$I$, $J$, $K$ sont alignés**.`, note: "IJ = −2 IK", show: { vectors: [V("I", "J", "pink"), V("I", "K", "purple")], lines: [["J", "K"]] } },
+            ],
+            hint: R`Compare les coefficients de $\vect{AB}$ : $2$ et $-1$.`,
+            quiz: { q: R`Si $\vect{IJ} = -2\,\vect{IK}$, alors :`, options: [R`$I$ est entre $J$ et $K$`, R`$K$ est le milieu de $[IJ]$`, R`$J$ est entre $I$ et $K$`], answer: 0, why: R`Sens opposés depuis $I$ : $I$ est entre les deux.` } },
+        ],
+      },
+      {
+        id: "e5", title: "Exercice 5", name: "Les milieux en cascade",
+        statement: R`Soit $ABC$ un triangle et $J$ et $K$ deux points tels que : $\vect{AJ} = \frac23\vect{AC}$ et $\vect{AK} = \frac23\vect{AB}$. $I$ est le milieu de $[BC]$ et $D$ le milieu de $[KJ]$.`,
+        remember: [R`$I$ milieu de $[BC]$ $\Rightarrow$ $\vect{AB} + \vect{AC} = 2\vect{AI}$ : l'outil clé de cet exercice.`],
+        figure: {
+          base: { A: [0, 0], B: [6, 0], C: [1.5, 4.5] },
+          points: [
+            { name: "I", mid: ["B", "C"] },
+            { name: "J", at: "A", plus: [[2 / 3, "A", "C"]] },
+            { name: "K", at: "A", plus: [[2 / 3, "A", "B"]] },
+            { name: "D", mid: ["K", "J"] },
+            { name: "J'", at: "A", plus: [[1 / 3, "A", "C"]], q: 2 },
+            { name: "K'", at: "A", plus: [[1 / 3, "A", "B"]], q: 2 },
+            { name: "E", inter: [["A", "I"], ["J'", "K'"]], q: 2 },
+          ],
+          polygons: [["A", "B", "C"]],
+          segments: [["K", "J"], ["A", "I"], { a: "J'", b: "K'", q: 2 }],
+          checks: [{ type: "aligned", pts: ["A", "D", "I"], q: 1 }, { type: "midpoint", m: "E", of: ["J'", "K'"], q: 2 }],
+        },
+        questions: [
+          { label: "1", title: "Construire une figure.", goal: "placer $J$, $K$, $I$ et $D$.",
+            show: { vectors: [V("A", "J", "green"), V("A", "K", "blue")] },
+            steps: [
+              { text: R`$J$ aux deux tiers de $[AC]$, $K$ aux deux tiers de $[AB]$ (en partant de $A$).`, note: "⅔", show: { vectors: [V("A", "J", "green"), V("A", "K", "blue")] } },
+              { text: R`$I$ milieu de $[BC]$ et $D$ milieu de $[KJ]$.`, note: "milieux", show: { vectors: [V("A", "I", "amber"), V("A", "D", "pink")] } },
+            ],
+            hint: R`Remarque : $(KJ) \parallel (BC)$ car $\vect{KJ} = \frac23\vect{BC}$.`,
+            quiz: { q: R`$\vect{AK} = \frac23\vect{AB}$ : $K$ est…`, options: [R`aux deux tiers de $[AB]$ en partant de $A$`, R`au milieu de $[AB]$`, R`au tiers de $[AB]$ en partant de $A$`], answer: 0, why: R`On parcourt $\frac23$ du trajet de $A$ vers $B$.` } },
+          { label: "2", title: R`Montrer que $\vect{AD} = \frac23\vect{AI}$.`, goal: "utiliser deux fois la formule du milieu.",
+            show: { vectors: [V("A", "D", "pink"), V("A", "I", "amber")] },
+            steps: [
+              { text: R`$D$ milieu de $[KJ]$ : $\vect{AD} = \frac12\left(\vect{AK} + \vect{AJ}\right) = \frac12\left(\frac23\vect{AB} + \frac23\vect{AC}\right) = \frac13\left(\vect{AB} + \vect{AC}\right)$.`, note: "AD = ⅓(AB + AC)", show: { vectors: [V("A", "K", "blue"), V("A", "J", "green"), V("A", "D", "pink")] } },
+              { text: R`$I$ milieu de $[BC]$ : $\vect{AB} + \vect{AC} = 2\vect{AI}$.`, note: "AB + AC = 2 AI", show: { vectors: [V("A", "B", "blue"), V("A", "C", "green"), V("A", "I", "amber")] } },
+              { text: R`Donc $\vect{AD} = \frac13 \times 2\vect{AI}$ : **$\vect{AD} = \frac23\vect{AI}$**.`, note: "AD = ⅔ AI", show: { vectors: [V("A", "D", "pink"), V("A", "I", "amber")] } },
+            ],
+            hint: R`Écris $\vect{AD}$ avec la formule du milieu, puis reconnais $\vect{AB} + \vect{AC}$.`,
+            quiz: { q: R`Si $I$ est le milieu de $[BC]$, alors $\vect{AB} + \vect{AC} =$`, options: [R`$\vect{AI}$`, R`$2\vect{AI}$`, R`$\frac12\vect{AI}$`], answer: 1, why: R`Formule du milieu : $\vect{AI} = \frac12\left(\vect{AB} + \vect{AC}\right)$.` } },
+          { label: "3", title: R`$\vect{AJ'} = \frac13\vect{AC}$, $\vect{AK'} = \frac13\vect{AB}$ et $E = (AI) \cap (J'K')$. Montrer que $E$ est le milieu de $[J'K']$.`, goal: "montrer que le milieu de $[J'K']$ est sur $(AI)$.",
+            show: { vectors: [V("A", "E", "pink"), V("A", "I", "amber")] },
+            steps: [
+              { text: R`Soit $M$ le milieu de $[J'K']$ : $\vect{AM} = \frac12\left(\vect{AJ'} + \vect{AK'}\right) = \frac16\left(\vect{AB} + \vect{AC}\right) = \frac13\vect{AI}$.`, note: "AM = ⅓ AI", show: { vectors: [V("A", "J'", "green"), V("A", "K'", "blue"), V("A", "E", "pink", "AM")] } },
+              { text: R`Donc $M \in (AI)$, et bien sûr $M \in (J'K')$.`, note: "M sur les deux droites", show: { vectors: [V("A", "I", "amber")], lines: [["A", "I"], ["J'", "K'"]] } },
+              { text: R`$(J'K')$ est parallèle à $(BC)$ car $\vect{K'J'} = \frac13\vect{BC}$, et $(AI)$ coupe $(BC)$ en $I$ : les deux droites se coupent en **un seul point**. Donc $E = M$ : **$E$ est le milieu de $[J'K']$**.`, note: "E = M", show: { vectors: [V("K'", "J'", "purple"), V("B", "C", "purple")] } },
+            ],
+            hint: R`Plutôt que de chercher $E$, calcule le milieu de $[J'K']$ et montre qu'il est sur $(AI)$.`,
+            quiz: { q: R`Pour prouver que $E = M$, on montre que $M$ appartient :`, options: [R`à $(AI)$ et à $(J'K')$`, R`seulement à $(AI)$`, R`à $(BC)$`], answer: 0, why: R`Deux droites sécantes n'ont qu'un point commun : si $M$ est sur les deux, $M = E$.` } },
+        ],
+      },
+      {
+        id: "e6", title: "Exercice 6", name: "Le parallélogramme fantôme",
+        statement: R`Soit $ABC$ un triangle et $M$, $F$ et $H$ des points tels que : $\vect{AM} = \vect{AB} + \vect{AC}$, $\vect{BH} = \frac12\vect{BM}$ et $\vect{FH} = \frac12\vect{AM}$.`,
+        remember: [R`$\vect{AM} = \vect{AB} + \vect{AC}$ : $ABMC$ est un parallélogramme, donc $\vect{BM} = \vect{AC}$.`],
+        figure: {
+          base: { A: [0, 0], B: [5, 0], C: [1, 3] },
+          points: [
+            { name: "M", at: "B", plus: [[1, "A", "C"]] },
+            { name: "H", mid: ["B", "M"] },
+            { name: "F", at: "H", plus: [[-0.5, "A", "M"]] },
+          ],
+          polygons: [["A", "B", "M", "C"]],
+          segments: [["A", "M"], ["B", "C"], ["F", "H"]],
+          checks: [{ type: "midpoint", m: "H", of: ["B", "M"], q: 0 }, { type: "midpoint", m: "F", of: ["A", "B"], q: 2 }],
+        },
+        questions: [
+          { label: "1", title: "Construire une figure.", goal: "placer $M$, $H$, puis $F$.",
+            show: { vectors: [V("A", "M", "amber"), V("F", "H", "pink")] },
+            steps: [
+              { text: R`$\vect{AM} = \vect{AB} + \vect{AC}$ : $ABMC$ est un **parallélogramme** ($M$ est le 4e sommet).`, note: "AM = AB + AC", show: { vectors: [V("A", "B", "blue"), V("A", "C", "green"), V("A", "M", "amber")] } },
+              { text: R`$\vect{BH} = \frac12\vect{BM}$ : $H$ est le milieu de $[BM]$.`, note: "H milieu de [BM]", show: { vectors: [V("B", "H", "purple")] } },
+              { text: R`$\vect{FH} = \frac12\vect{AM}$ : depuis $H$, on recule de la moitié de $\vect{AM}$ pour trouver $F$.`, note: "FH = ½ AM", show: { vectors: [V("F", "H", "pink"), V("A", "M", "amber")] } },
+            ],
+            hint: R`$\vect{FH} = \frac12\vect{AM}$ donne $\vect{HF} = -\frac12\vect{AM}$ : c'est ce vecteur qu'on reporte depuis $H$.`,
+            quiz: { q: R`$\vect{AM} = \vect{AB} + \vect{AC}$ signifie que :`, options: [R`$ABMC$ est un parallélogramme`, R`$M$ est le milieu de $[BC]$`, R`$M = A$`], answer: 0, why: R`Règle du parallélogramme.` } },
+          { label: "2", title: R`Montrer que $\vect{HC} = \frac12\left(\vect{BA} + \vect{BC}\right)$.`, goal: R`escale en $B$, puis $\vect{BM} = \vect{AC}$.`,
+            show: { vectors: [V("H", "C", "amber")] },
+            steps: [
+              { text: R`$\vect{HC} = \vect{HB} + \vect{BC} = -\frac12\vect{BM} + \vect{BC}$.`, note: "H → B → C", show: { vectors: [V("H", "B", "purple"), V("B", "C", "blue"), V("H", "C", "amber")] } },
+              { text: R`$ABMC$ parallélogramme : $\vect{BM} = \vect{AC} = \vect{AB} + \vect{BC}$.`, note: "BM = AC", show: { vectors: [V("B", "M", "green"), V("A", "C", "green")] } },
+              { text: R`$\vect{HC} = -\frac12\vect{AB} - \frac12\vect{BC} + \vect{BC} = \frac12\vect{BA} + \frac12\vect{BC}$ : **$\vect{HC} = \frac12\left(\vect{BA} + \vect{BC}\right)$**.`, note: "HC", show: { vectors: [V("H", "C", "amber")] } },
+            ],
+            hint: R`Dans $ABMC$, les côtés opposés $[BM]$ et $[AC]$ donnent des vecteurs égaux.`,
+            quiz: { q: R`Dans le parallélogramme $ABMC$, $\vect{BM} =$`, options: [R`$\vect{AC}$`, R`$\vect{CA}$`, R`$\vect{AB}$`], answer: 0, why: R`$\vect{AB} = \vect{CM}$ et $\vect{AC} = \vect{BM}$.` } },
+          { label: "3", title: R`Montrer que $F$ est le milieu du segment $[AB]$.`, goal: R`montrer que $\vect{AF} = \frac12\vect{AB}$.`,
+            show: { vectors: [V("A", "F", "amber")] },
+            steps: [
+              { text: R`$\vect{AF} = \vect{AH} + \vect{HF} = \vect{AH} - \frac12\vect{AM}$.`, note: "A → H → F", show: { vectors: [V("A", "H", "blue"), V("H", "F", "pink"), V("A", "F", "amber")] } },
+              { text: R`$\vect{AH} = \vect{AB} + \vect{BH} = \vect{AB} + \frac12\vect{AC}$ (car $\vect{BM} = \vect{AC}$).`, note: "AH = AB + ½ AC", show: { vectors: [V("A", "B", "blue"), V("B", "H", "purple"), V("A", "H", "teal")] } },
+              { text: R`$\vect{AF} = \vect{AB} + \frac12\vect{AC} - \frac12\vect{AB} - \frac12\vect{AC} = \frac12\vect{AB}$ : **$F$ est le milieu de $[AB]$**.`, note: "AF = ½ AB", show: { vectors: [V("A", "F", "amber"), V("F", "B", "amber", "")] } },
+            ],
+            hint: R`Remplace $\vect{AM}$ par $\vect{AB} + \vect{AC}$ et simplifie.`,
+            quiz: { q: R`$\vect{AF} = \frac12\vect{AB}$ signifie :`, options: [R`$F$ est le milieu de $[AB]$`, R`$F = B$`, R`$AF = 2\,AB$`], answer: 0, why: R`On parcourt la moitié du trajet de $A$ vers $B$.` } },
+        ],
+      },
+    ],
+  };
+
+  /* ============ Storage & state ============ */
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } },
+  };
+  const MODELS = {
+    haiku: { id: "claude-haiku-5-5", tier: "quick", name: "Haiku 5.5", desc: "mHaiku" },
+    sonnet: { id: "claude-sonnet-5-5", tier: "default", name: "Sonnet 5.5", desc: "mSonnet" },
+    opus: { id: "claude-opus-5-5", tier: "complex", name: "Opus 5.5", desc: "mOpus" },
+  };
+  const EFFORTS = ["low", "medium", "high"], EFF_KEYS = ["eLow", "eMed", "eHigh"];
+  const S = {
+    library: store.get("pdp.library", []),          // imported series
+    extra: store.get("pdp.extra", {}),              // AI-generated exercises per series id
+    settings: Object.assign({ model: "haiku", effort: 1, lang: "fr", tone: "fun", theme: "" }, store.get("pdp.settings", {})),
+    progress: Object.assign({ xp: 0, streak: 0, done: {}, quiz: {} }, store.get("pdp.progress", {})),
+    seriesId: store.get("pdp.series", SERIES1.id), exIdx: 0, qIdx: 0,
+    revealed: {}, base: {}, showNames: true, showGrid: true, panel: null, chat: [], backend: "wait", sample: null, imagesOk: false, maxImages: 10,
+    view: "home", src: {}, mk: { files: [], busy: false, stages: [] },
+  };
+  const saveSettings = () => store.set("pdp.settings", S.settings);
+  const saveProgress = () => store.set("pdp.progress", S.progress);
+  const allSeries = () => [...S.library, SERIES1];
+  const series = () => { const s = allSeries().find((x) => x.id === S.seriesId) || SERIES1; return { ...s, exercises: [...s.exercises, ...(S.extra[s.id] || [])] }; };
+  const ex = () => series().exercises[S.exIdx] || series().exercises[0];
+  const qq = () => ex().questions[S.qIdx] || ex().questions[0];
+  const qKey = (e = ex(), i = S.qIdx) => `${S.seriesId}|${e.id}|${i}`;
+
+  /* ============ DOM helpers ============ */
+  const $ = (id) => document.getElementById(id);
+  function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null && text !== "") e.textContent = text; return e; }
+  const ICONS = {
+    bulb: '<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>',
+    check: '<path d="M20 6 9 17l-5-5"/>', target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+    pen: '<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>', play: '<path d="m6 3 14 9-14 9z"/>', speaker: '<path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>',
+    left: '<path d="m15 18-6-6 6-6"/>', right: '<path d="m9 18 6-6-6-6"/>', chev: '<path d="m6 9 6 6 6-6"/>', camera: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
+    moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>', reset: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>', eye: '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>', gridI: '<path d="M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18"/>',
+  };
+  const icon = (n) => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("class", "i"); s.setAttribute("aria-hidden", "true"); s.innerHTML = ICONS[n] || ""; return s; };
+  // **bold** + line breaks; $math$ is left for MathJax
+  function rich(node, text) {
+    node.replaceChildren();
+    String(text || "").split(/\n/).forEach((line, li) => {
+      if (li) node.append(document.createElement("br"));
+      line.split(/(\*\*[^*]+\*\*)/).forEach((part) => {
+        if (/^\*\*[^*]+\*\*$/.test(part)) node.append(el("strong", null, part.slice(2, -2)));
+        else if (part) node.append(document.createTextNode(part));
+      });
+    });
+    return node;
+  }
+  const richEl = (tag, cls, text) => rich(el(tag, cls), text);
+  function mdBlock(node, text) {
+    node.replaceChildren(); let ul = null;
+    String(text).split(/\n/).forEach((line) => {
+      const l = line.trim(); if (!l) { ul = null; return; }
+      const m = l.match(/^(?:[-•*]|\d+[.)])\s+(.*)/);
+      const clean = (s) => s.replace(/^#+\s*/, "");
+      if (m) { if (!ul) { ul = el("ul"); node.append(ul); } ul.append(richEl("li", null, clean(m[1]))); }
+      else { ul = null; node.append(richEl("p", null, clean(l))); }
+    });
+  }
+  function toast(msg) { const box = $("toasts"); const d = el("div", "toast", msg); box.append(d); while (box.children.length > 3) box.firstChild.remove(); setTimeout(() => d.remove(), 2600); }
+
+  /* ============ MathJax (loaded on demand) ============ */
+  const LIB = { mathjax: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js", pdf: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js", pdfWorker: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js", mammoth: "https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js", jszip: "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" };
+  const loaded = {};
+  function loadScript(url) {
+    if (!loaded[url]) loaded[url] = new Promise((res, rej) => { const s = document.createElement("script"); s.src = url; s.async = true; s.onload = () => res(); s.onerror = () => { delete loaded[url]; rej({ code: "lib" }); }; document.head.append(s); });
+    return loaded[url];
+  }
+  let mj = null;
+  function loadMath() {
+    if (!mj) {
+      window.MathJax = { tex: { inlineMath: [["$", "$"]], displayMath: [["$$", "$$"]], processEscapes: true, macros: { vect: ["\\overrightarrow{#1}", 1] } }, svg: { fontCache: "local" }, options: { ignoreHtmlClass: "no-tex" }, startup: { typeset: false } };
+      mj = loadScript(LIB.mathjax).then(() => window.MathJax.startup.promise).catch((e) => { mj = null; throw e; });
+    }
+    return mj;
+  }
+  async function typeset(nodes) {
+    const list = nodes.filter((n) => n && n.isConnected && n.textContent.includes("$"));
+    if (!list.length) return;
+    try { await loadMath(); window.MathJax.typesetClear(list); await window.MathJax.typesetPromise(list); } catch {}
+  }
+
+  /* ============ Geometry engine ============ */
+  const fnum = (v) => { if (typeof v === "number" && isFinite(v)) return v; if (typeof v === "string") { const m = v.trim().match(/^(-?\d+(?:\.\d+)?)(?:\s*\/\s*(\d+(?:\.\d+)?))?$/); if (m) return m[2] ? +m[1] / +m[2] : +m[1]; } return null; };
+  function evalPoint(p, P) {
+    if (p.mid) { const [a, b] = p.mid; if (!P[a] || !P[b]) return null; return [(P[a][0] + P[b][0]) / 2, (P[a][1] + P[b][1]) / 2]; }
+    if (p.inter) {
+      const [[a, b], [c, d]] = p.inter; if (![a, b, c, d].every((n) => P[n])) return null;
+      const [x1, y1] = P[a], [x2, y2] = P[b], [x3, y3] = P[c], [x4, y4] = P[d];
+      const den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4); if (Math.abs(den) < 1e-12) return null;
+      const tt = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den;
+      return [x1 + tt * (x2 - x1), y1 + tt * (y2 - y1)];
+    }
+    const o = P[p.at]; if (!o) return null; let x = o[0], y = o[1];
+    for (const term of p.plus || []) { const [k, a, b] = term; const kk = fnum(k); if (kk == null || !P[a] || !P[b]) return null; x += kk * (P[b][0] - P[a][0]); y += kk * (P[b][1] - P[a][1]); }
+    return [x, y];
+  }
+  function computeFigure(fig, base) {
+    const P = {}; for (const [k, v] of Object.entries(base)) P[k] = [v[0], v[1]];
+    let pending = fig.points.slice();
+    for (let pass = 0; pass < fig.points.length + 1 && pending.length; pass++) {
+      const next = []; for (const p of pending) { const r = evalPoint(p, P); if (r && isFinite(r[0]) && isFinite(r[1])) P[p.name] = r; else next.push(p); }
+      if (next.length === pending.length) break; pending = next;
+    }
+    return P;
+  }
+  const cross = (a, b) => a[0] * b[1] - a[1] * b[0];
+  const sub = (a, b) => [a[0] - b[0], a[1] - b[1]];
+  const len = (a) => Math.hypot(a[0], a[1]);
+  function runCheck(c, P) {
+    const need = (n) => P[n];
+    if (c.type === "aligned") { const [a, b, d] = c.pts; if (![a, b, d].every(need)) return null; const u = sub(P[b], P[a]), v = sub(P[d], P[a]); const s = cross(u, v) / ((len(u) * len(v)) || 1); return { ok: Math.abs(s) < 1e-6, val: `sin = ${Math.abs(s).toFixed(3)}`, label: c.pts.join(", ") }; }
+    if (c.type === "midpoint") { const [a, b] = c.of; if (![c.m, a, b].every(need)) return null; const mid = [(P[a][0] + P[b][0]) / 2, (P[a][1] + P[b][1]) / 2]; const d = len(sub(mid, P[c.m])) / (len(sub(P[a], P[b])) || 1); return { ok: d < 1e-6, val: `Δ = ${d.toFixed(3)}`, label: `${c.m} = mil[${a}${b}]` }; }
+    if (c.type === "parallel") { const [a, b] = c.l1, [d, e] = c.l2; if (![a, b, d, e].every(need)) return null; const u = sub(P[b], P[a]), v = sub(P[e], P[d]); const s = cross(u, v) / ((len(u) * len(v)) || 1); return { ok: Math.abs(s) < 1e-6, val: `sin = ${Math.abs(s).toFixed(3)}`, label: `(${a}${b}) ∥ (${d}${e})` }; }
+    return null;
+  }
+  const CHECK_TXT = {
+    aligned: [(l) => `${l} alignés`, (l) => `${l} مستقيمية`, (l) => `${l} aligned`],
+    midpoint: [(l) => l, (l) => l, (l) => l],
+    parallel: [(l) => l, (l) => l, (l) => l],
+  };
+
+  /* ============ Board rendering ============ */
+  const SVGNS = "http://www.w3.org/2000/svg";
+  const sv = (tag, attrs, parent) => { const e = document.createElementNS(SVGNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.append(e); return e; };
+  const COLORS = ["blue", "green", "orange", "purple", "red", "pink", "teal", "amber"];
+  const W = 720, H = 440, PAD = 46;
+  let dragState = null, frozenTf = null, animTimer = null, activeStepOverride = null;
+  const itemQ = (it) => (Array.isArray(it) ? 0 : it.q || 0);
+  const itemPts = (it, kind) => (Array.isArray(it) ? it : kind === "seg" ? [it.a, it.b] : it.pts || []);
+  function fitTransform(P) {
+    const xs = Object.values(P).map((p) => p[0]), ys = Object.values(P).map((p) => p[1]);
+    let x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+    if (x1 - x0 < 1) { x0 -= 1; x1 += 1; } if (y1 - y0 < 1) { y0 -= 1; y1 += 1; }
+    const s = Math.min((W - 2 * PAD) / (x1 - x0), (H - 2 * PAD) / (y1 - y0));
+    const ox = (W - s * (x1 - x0)) / 2 - s * x0, oy = (H + s * (y1 - y0)) / 2 + s * y0;
+    return { s, ox, oy };
+  }
+  const toS = (tf, p) => [tf.ox + tf.s * p[0], tf.oy - tf.s * p[1]];
+  const toW = (tf, x, y) => [(x - tf.ox) / tf.s, (tf.oy - y) / tf.s];
+  function currentShow() {
+    const q = qq(); const n = S.revealed[qKey()] || 0;
+    const idx = activeStepOverride != null ? activeStepOverride : n - 1;
+    const st = q.steps[idx];
+    return { show: (st && st.show) || q.show || {}, note: st ? st.note : "" };
+  }
+  function renderBoard() {
+    const card = $("boardCard"); const e = ex(); const fig = e.figure;
+    card.replaceChildren();
+    const head = el("div", "board-head"); head.append(el("h3", null, t("board")));
+    const tools = el("div", "board-tools");
+    const mk = (key, ic, pressed, fn) => { const b = el("button", "tog"); b.type = "button"; b.append(icon(ic), el("span", null, t(key))); if (pressed != null) b.setAttribute("aria-pressed", String(pressed)); b.onclick = fn; tools.append(b); return b; };
+    if (fig && fig.base) {
+      mk("names", "eye", S.showNames, () => { S.showNames = !S.showNames; renderBoard(); });
+      mk("grid", "gridI", S.showGrid, () => { S.showGrid = !S.showGrid; renderBoard(); });
+      mk("animate", "play", null, animateSteps);
+      mk("reset", "reset", null, () => { delete S.base[`${S.seriesId}|${e.id}`]; renderBoard(); });
+    }
+    head.append(tools); card.append(head);
+    const board = el("div", "board");
+    if (fig && fig.base) {
+      const svg = drawFigure(e, fig);
+      board.append(svg);
+      const { note } = currentShow();
+      if (note) board.append(el("div", "note", note));
+      card.append(board);
+      const checks = el("div", "checks"); checks.id = "checks"; card.append(checks); renderChecks();
+      card.append(el("div", "board-foot", t("dragHint")));
+    } else if (fig && fig.svg) {
+      const node = sanitizeSvg(fig.svg);
+      const wrap = el("div", "static no-tex"); if (node) wrap.append(node); board.append(wrap); card.append(board);
+      card.append(el("div", "board-foot", t("staticHint")));
+    } else if (fig && fig.graph) {
+      const { svg, keys } = plotGraph(fig.graph);
+      const wrap = el("div", "plot no-tex"); wrap.append(svg); board.append(wrap); card.append(board);
+      if (keys) card.append(keys);
+      card.append(el("div", "board-foot", t("graphHint")));
+    }
+    card.hidden = !(fig && (fig.base || fig.svg || fig.graph));
+    if (!card.hidden) typeset([card]);
+  }
+  function getBase(e) { const k = `${S.seriesId}|${e.id}`; if (!S.base[k]) S.base[k] = JSON.parse(JSON.stringify(e.figure.base)); return S.base[k]; }
+  function drawFigure(e, fig) {
+    const svg = sv("svg", { viewBox: `0 0 ${W} ${H}`, class: "fig no-tex", role: "img", "aria-label": e.name || e.title });
+    let tf = paintFigure(svg, e, fig);
+    svg.addEventListener("pointerdown", (ev) => {
+      const n = ev.target.getAttribute && ev.target.getAttribute("data-pt"); if (!n) return;
+      ev.preventDefault(); try { svg.setPointerCapture(ev.pointerId); } catch {}
+      dragState = { name: n }; frozenTf = tf;
+    });
+    svg.addEventListener("pointermove", (ev) => {
+      if (!dragState) return;
+      const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+      const loc = pt.matrixTransform(svg.getScreenCTM().inverse());
+      const w = toW(frozenTf, Math.max(8, Math.min(W - 8, loc.x)), Math.max(8, Math.min(H - 8, loc.y)));
+      getBase(e)[dragState.name] = [Math.round(w[0] * 100) / 100, Math.round(w[1] * 100) / 100];
+      paintFigure(svg, e, fig); renderChecks();
+    });
+    const end = () => { if (!dragState) return; dragState = null; frozenTf = null; tf = paintFigure(svg, e, fig); renderChecks(); };
+    svg.addEventListener("pointerup", end); svg.addEventListener("pointercancel", end);
+    return svg;
+  }
+  function paintFigure(svg, e, fig) {
+    svg.replaceChildren();
+    const P = computeFigure(fig, getBase(e));
+    const tf = frozenTf || fitTransform(P);
+    const defs = sv("defs", {}, svg);
+    COLORS.forEach((c) => { const m = sv("marker", { id: `ah-${c}`, viewBox: "0 0 10 10", refX: "8.5", refY: "5", markerWidth: "4.6", markerHeight: "4.6", orient: "auto-start-reverse" }, defs); sv("path", { d: "M0 0L10 5L0 10z", class: `c-${c}` }, m); });
+    if (S.showGrid) {
+      const step = tf.s >= 26 ? 1 : tf.s >= 12 ? 2 : 5; const g = sv("g", {}, svg);
+      const [wx0, wy1] = toW(tf, 0, 0), [wx1, wy0] = toW(tf, W, H);
+      for (let x = Math.floor(wx0 / step) * step; x <= wx1; x += step) { const sx = tf.ox + tf.s * x; sv("line", { x1: sx, x2: sx, y1: 0, y2: H, class: "gl" + (x === 0 ? " s" : "") }, g); }
+      for (let y = Math.floor(wy0 / step) * step; y <= wy1; y += step) { const sy = tf.oy - tf.s * y; sv("line", { x1: 0, x2: W, y1: sy, y2: sy, class: "gl" + (y === 0 ? " s" : "") }, g); }
+    }
+    const qi = S.qIdx;
+    const vis = new Set(Object.keys(fig.base));
+    fig.points.forEach((p) => { if ((p.q || 0) <= qi && P[p.name]) vis.add(p.name); });
+    const has = (arr) => arr.every((n) => vis.has(n) && P[n]);
+    (fig.polygons || []).forEach((it) => { const pts = itemPts(it); if (itemQ(it) <= qi && has(pts)) sv("polygon", { points: pts.map((n) => toS(tf, P[n]).join(",")).join(" "), class: "poly" }, svg); });
+    (fig.segments || []).forEach((it) => { const [a, b] = itemPts(it, "seg"); if (itemQ(it) <= qi && has([a, b])) { const [x1, y1] = toS(tf, P[a]), [x2, y2] = toS(tf, P[b]); sv("line", { x1, y1, x2, y2, class: "seg" }, svg); } });
+    const { show } = currentShow();
+    (show.lines || []).forEach(([a, b]) => {
+      if (!P[a] || !P[b]) return; const A = toS(tf, P[a]), B = toS(tf, P[b]); const d = sub(B, A), L = len(d) || 1; const k = 2000 / L;
+      sv("line", { x1: A[0] - d[0] * k, y1: A[1] - d[1] * k, x2: A[0] + d[0] * k, y2: A[1] + d[1] * k, class: "ln hl" }, svg);
+    });
+    const animate = !dragState;
+    (show.vectors || []).forEach((v, i) => {
+      const [a, b, color, label] = v; if (!P[a] || !P[b]) return;
+      const c = COLORS.includes(color) ? color : COLORS[i % COLORS.length];
+      const A = toS(tf, P[a]), B = toS(tf, P[b]); const L = len(sub(B, A)); if (L < 2) return;
+      const shrink = Math.min(7, L / 4); const ux = (B[0] - A[0]) / L, uy = (B[1] - A[1]) / L;
+      const path = sv("path", { d: `M${A[0]} ${A[1]}L${B[0] - ux * shrink} ${B[1] - uy * shrink}`, class: `vec c-${c}` + (animate ? " draw" : ""), "marker-end": `url(#ah-${c})` }, svg);
+      if (animate) { path.style.setProperty("--len", String(Math.ceil(L))); path.style.animationDelay = `${i * 0.25}s`; }
+      if (label) {
+        const nx = -uy, ny = ux; const mx = (A[0] + B[0]) / 2 + nx * 16, my = (A[1] + B[1]) / 2 + ny * 16;
+        const tx = sv("text", { x: mx, y: my + 5, "text-anchor": "middle", class: `vlbl c-${c}` }, svg); tx.textContent = label;
+        const w = label.length * 9.5; sv("path", { d: `M${mx - w / 2} ${my - 12}H${mx + w / 2}M${mx + w / 2 - 4} ${my - 15}L${mx + w / 2} ${my - 12}L${mx + w / 2 - 4} ${my - 9}`, class: `vec c-${c}`, style: "stroke-width:1.6" }, svg);
+      }
+    });
+    const cen = [...vis].reduce((acc, n) => [acc[0] + P[n][0] / vis.size, acc[1] + P[n][1] / vis.size], [0, 0]);
+    [...vis].forEach((n) => {
+      const isBase = n in fig.base; const [x, y] = toS(tf, P[n]);
+      if (isBase) sv("circle", { cx: x, cy: y, r: 16, class: "halo", "data-pt": n }, svg);
+      sv("circle", { cx: x, cy: y, r: isBase ? 6.5 : 4.5, class: "pt" + (isBase ? " base" : "") + (dragState && dragState.name === n ? " drag" : ""), "data-pt": isBase ? n : "" }, svg);
+      if (S.showNames) {
+        let d = sub(P[n], cen); const L = len(d); d = L > 1e-9 ? [d[0] / L, -d[1] / L] : [0.7, -0.7];
+        const tx = sv("text", { x: x + d[0] * 20, y: y + d[1] * 20 + 6, "text-anchor": "middle", class: "plbl" }, svg); tx.textContent = n;
+      }
+    });
+    return tf;
+  }
+  function renderChecks() {
+    const box = $("checks"); if (!box) return; const e = ex(); const fig = e.figure; if (!fig || !fig.base) return;
+    const P = computeFigure(fig, getBase(e)); box.replaceChildren();
+    (fig.checks || []).forEach((c) => {
+      if ((c.q || 0) > S.qIdx) return; const r = runCheck(c, P); if (!r) return;
+      const chip = el("span", "chk"); chip.append(document.createTextNode((r.ok ? "✓ " : "✗ ") + CHECK_TXT[c.type][ULANGS.indexOf(ui)](r.label)), el("span", "mono", r.val));
+      box.append(chip);
+    });
+  }
+  function animateSteps() {
+    clearInterval(animTimer); const q = qq(); let i = 0;
+    const tick = () => { if (i >= q.steps.length) { clearInterval(animTimer); activeStepOverride = null; renderBoard(); return; } activeStepOverride = i++; renderBoard(); };
+    tick(); animTimer = setInterval(tick, 1700);
+  }
+
+  /* ============ Function plots (safe expression compiler, no eval) ============ */
+  const FUN = { sin: Math.sin, cos: Math.cos, tan: Math.tan, asin: Math.asin, acos: Math.acos, atan: Math.atan, sqrt: Math.sqrt, abs: Math.abs, ln: Math.log, log: Math.log10, exp: Math.exp, floor: Math.floor };
+  const NAMES = Object.keys(FUN).concat(["pi", "x", "e"]).sort((a, b) => b.length - a.length);
+  function compileExpr(src) {
+    let s2 = String(src).toLowerCase().replace(/\*\*/g, "^").replace(/π/g, "pi").replace(/√/g, "sqrt").replace(/×|·/g, "*").replace(/−/g, "-").replace(/,/g, ".");
+    s2 = s2.replace(/^\s*(?:[a-z]\w*\s*\(\s*[a-z]\s*\)|y)\s*=\s*/, "").replace(/(?<![a-z])t(?![a-z])/g, "x");
+    const toks = []; let i = 0;
+    while (i < s2.length) {
+      const c = s2[i]; if (/\s/.test(c)) { i++; continue; }
+      const m = s2.slice(i).match(/^(\d+\.?\d*|\.\d+)(e[+-]?\d+)?/); if (m) { toks.push({ k: "n", v: parseFloat(m[0]) }); i += m[0].length; continue; }
+      const w = s2.slice(i).match(/^[a-z]+/);
+      if (w) { let word = w[0]; i += word.length; while (word) { const f = NAMES.find((n) => word.startsWith(n)); if (!f) throw new Error("name"); toks.push(FUN[f] ? { k: "f", v: f } : { k: "v", v: f }); word = word.slice(f.length); } continue; }
+      if ("+-*/^()".includes(c)) { toks.push({ k: c }); i++; continue; } throw new Error("char");
+    }
+    const tk = []; for (const x of toks) { const p = tk[tk.length - 1]; if (p && (p.k === "n" || p.k === "v" || p.k === ")") && (x.k === "n" || x.k === "v" || x.k === "f" || x.k === "(")) tk.push({ k: "*" }); tk.push(x); }
+    let pos = 0; const peek = () => tk[pos]; const eat = (k) => { if (!tk[pos] || tk[pos].k !== k) throw new Error("syntax"); pos++; };
+    const expr = () => { let a = term(); while (peek() && (peek().k === "+" || peek().k === "-")) { const op = tk[pos++].k, l = a, r = term(); a = op === "+" ? (x) => l(x) + r(x) : (x) => l(x) - r(x); } return a; };
+    const term = () => { let a = unary(); while (peek() && (peek().k === "*" || peek().k === "/")) { const op = tk[pos++].k, l = a, r = unary(); a = op === "*" ? (x) => l(x) * r(x) : (x) => l(x) / r(x); } return a; };
+    const unary = () => { if (peek() && peek().k === "-") { pos++; const u = unary(); return (x) => -u(x); } if (peek() && peek().k === "+") { pos++; return unary(); } return power(); };
+    const power = () => { const b = primary(); if (peek() && peek().k === "^") { pos++; const e = unary(); return (x) => Math.pow(b(x), e(x)); } return b; };
+    const primary = () => { const x = tk[pos++]; if (!x) throw new Error("end"); if (x.k === "n") return () => x.v; if (x.k === "v") return x.v === "x" ? (v) => v : x.v === "pi" ? () => Math.PI : () => Math.E; if (x.k === "f") { const fn = FUN[x.v]; let arg; if (peek() && peek().k === "(") { pos++; arg = expr(); eat(")"); } else arg = power(); return (v) => fn(arg(v)); } if (x.k === "(") { const e = expr(); eat(")"); return e; } throw new Error("syntax"); };
+    const f = expr(); if (pos !== tk.length) throw new Error("trailing"); return f;
+  }
+  function plotGraph(g) {
+    const GW = 640, GH = 380, m = { l: 48, r: 16, t: 16, b: 34 }, pw = GW - m.l - m.r, ph = GH - m.t - m.b;
+    const fns = g.functions.map((f) => { try { return { ...f, fn: compileExpr(f.expr) }; } catch { return null; } }).filter(Boolean);
+    const [x0, x1] = g.xRange || [-5, 5];
+    const samples = fns.map((f) => Array.from({ length: 501 }, (_, i) => { const x = x0 + (x1 - x0) * i / 500; let y; try { y = f.fn(x); } catch { y = NaN; } return [x, y]; }));
+    let y0, y1;
+    if (g.yRange) [y0, y1] = g.yRange;
+    else { const ys = samples.flat().map((p) => p[1]).filter(isFinite).concat(g.points.map((p) => p.y)).sort((a, b) => a - b); y0 = ys.length ? ys[Math.floor(ys.length * 0.02)] : -5; y1 = ys.length ? ys[Math.max(0, Math.ceil(ys.length * 0.98) - 1)] : 5; if (y1 - y0 < 1e-9) { y0 -= 1; y1 += 1; } const pd = (y1 - y0) * 0.1; y0 -= pd; y1 += pd; }
+    const sx = (x) => m.l + (x - x0) / (x1 - x0) * pw, sy = (y) => m.t + (y1 - y) / (y1 - y0) * ph;
+    const svg = sv("svg", { viewBox: `0 0 ${GW} ${GH}`, role: "img" });
+    const cid = `gc${++sid}`; const cp = sv("clipPath", { id: cid }, sv("defs", {}, svg)); sv("rect", { x: m.l, y: m.t, width: pw, height: ph }, cp);
+    const nice = (span) => { const raw = span / 7, p = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / p; return (f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10) * p; };
+    const fmt = (v, st) => (Math.abs(v) < st / 1e6 ? 0 : v).toFixed(Math.max(0, -Math.floor(Math.log10(st) + 1e-9))).replace("-", "−");
+    const xs = nice(x1 - x0), ys = nice(y1 - y0);
+    for (let x = Math.ceil(x0 / xs - 1e-9) * xs; x <= x1 + 1e-9; x += xs) { sv("line", { x1: sx(x), x2: sx(x), y1: m.t, y2: m.t + ph, class: "grid" }, svg); sv("text", { x: sx(x), y: m.t + ph + 16, "text-anchor": "middle" }, svg).textContent = fmt(x, xs); }
+    for (let y = Math.ceil(y0 / ys - 1e-9) * ys; y <= y1 + 1e-9; y += ys) { sv("line", { x1: m.l, x2: m.l + pw, y1: sy(y), y2: sy(y), class: "grid" }, svg); sv("text", { x: m.l - 6, y: sy(y) + 4, "text-anchor": "end" }, svg).textContent = fmt(y, ys); }
+    const ax = y0 <= 0 && y1 >= 0 ? sy(0) : m.t + ph, ay = x0 <= 0 && x1 >= 0 ? sx(0) : m.l;
+    sv("line", { x1: m.l, x2: m.l + pw, y1: ax, y2: ax, class: "axis" }, svg); sv("line", { x1: ay, x2: ay, y1: m.t, y2: m.t + ph, class: "axis" }, svg);
+    const plot = sv("g", { "clip-path": `url(#${cid})` }, svg); const cols = ["blue", "red", "green", "purple"];
+    samples.forEach((pts, i) => { let d = "", pen = false, prev = null; for (const [x, y] of pts) { if (!isFinite(y)) { pen = false; prev = null; continue; } if (prev != null && Math.abs(y - prev) > (y1 - y0) * 3) pen = false; d += (pen ? "L" : "M") + sx(x).toFixed(1) + " " + Math.max(-2000, Math.min(2000, sy(y))).toFixed(1); pen = true; prev = y; } if (d) sv("path", { d, class: `curve c-${cols[i % 4]}` }, plot); });
+    g.points.forEach((p) => { sv("line", { x1: sx(p.x), x2: sx(p.x), y1: sy(p.y), y2: ax, class: "guide" }, plot); sv("circle", { cx: sx(p.x), cy: sy(p.y), r: 5, class: "c-amber" }, plot); if (p.label) sv("text", { x: sx(p.x) + 8, y: sy(p.y) - 8, class: "c-amber", style: "stroke:none;font-weight:700" }, svg).textContent = p.label; });
+    let keys = null;
+    if (fns.some((f) => f.label)) { keys = el("div", "keys"); fns.forEach((f, i) => { const sp = el("span", `c-${cols[i % 4]}`); const tx = el("span", null, f.label || f.expr); tx.style.color = "var(--fg)"; sp.append(el("i"), tx); keys.append(sp); }); }
+    return { svg, keys };
+  }
+
+  /* ============ SVG sanitizer (for AI-made static figures) ============ */
+  const SVG_TAGS = new Set(["svg", "g", "path", "line", "polyline", "polygon", "rect", "circle", "ellipse", "text", "tspan", "defs", "marker", "title"]);
+  const SVG_ATTRS = new Set(["viewBox", "width", "height", "x", "y", "x1", "y1", "x2", "y2", "cx", "cy", "r", "rx", "ry", "d", "points", "transform", "fill", "stroke", "stroke-width", "stroke-dasharray", "stroke-linecap", "stroke-linejoin", "fill-opacity", "stroke-opacity", "opacity", "font-size", "font-weight", "font-style", "text-anchor", "dominant-baseline", "id", "marker-end", "marker-start", "refX", "refY", "markerWidth", "markerHeight", "orient", "markerUnits", "dx", "dy", "xmlns"]);
+  const PAL = { "#1f2937": "fg", "#000": "fg", "#000000": "fg", black: "fg", "#ffffff": "fg", "#fff": "fg", white: "fg", "#2563eb": "blue", blue: "blue", "#dc2626": "red", red: "red", "#16a34a": "green", green: "green", "#ea580c": "orange", orange: "orange", "#7c3aed": "purple", purple: "purple", "#9ca3af": "muted", grey: "muted", gray: "muted", "#f59e0b": "accent" };
+  let sid = 0;
+  function sanitizeSvg(src) {
+    const start = String(src).indexOf("<svg"); if (start < 0) return null;
+    let code = String(src).slice(start); if (!/^<svg[^>]*\sxmlns=/.test(code)) code = code.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+    const doc = new DOMParser().parseFromString(code, "image/svg+xml"); const root = doc.documentElement;
+    if (!root || root.localName !== "svg" || doc.getElementsByTagName("parsererror").length) return null;
+    const pre = `s${++sid}-`; const ids = new Set();
+    const walk = (n) => {
+      for (const ch of Array.from(n.children)) { if (!SVG_TAGS.has(ch.localName)) ch.remove(); else walk(ch); }
+      for (const a of Array.from(n.attributes)) if (!SVG_ATTRS.has(a.name) || /javascript:/i.test(a.value) || (/url\(/i.test(a.value) && !/^url\(#[\w-]+\)$/.test(a.value.trim()))) n.removeAttribute(a.name);
+      if (n.id) { ids.add(n.id); n.id = pre + n.id; }
+      const css = []; for (const p of ["fill", "stroke"]) { const v = (n.getAttribute(p) || "").toLowerCase().trim(); if (PAL[v]) { n.removeAttribute(p); css.push(`${p}:var(--${PAL[v]})`); } }
+      if (css.length) n.setAttribute("style", css.join(";"));
+    };
+    walk(root);
+    root.querySelectorAll("*").forEach((n) => { for (const a of ["marker-end", "marker-start"]) { const m = (n.getAttribute(a) || "").match(/^url\(#([\w-]+)\)$/); if (m && ids.has(m[1])) n.setAttribute(a, `url(#${pre}${m[1]})`); } });
+    root.removeAttribute("width"); root.removeAttribute("height"); root.setAttribute("style", "fill:var(--fg);font-family:var(--font-body)");
+    return document.importNode(root, true);
+  }
+
+  /* ============ Rendering: header, tabs, nav, statement, question ============ */
+  function levelOf(xp) { const lv = Math.floor(xp / 100); return { n: lv + 1, pct: xp % 100, name: LV[Math.min(lv, LV.length - 1)][ULANGS.indexOf(ui)] }; }
+  function setBadge(node, text) { node.replaceChildren(); String(text || "IA").toUpperCase().slice(0, 14).split("\n").slice(0, 2).forEach((l, i) => { if (i) node.append(document.createElement("br")); node.append(document.createTextNode(l.slice(0, 6))); }); }
+  function renderHeader() {
+    const s = series(); const home = S.view === "home";
+    $("homeBtn").hidden = home; $("homeBtn").setAttribute("aria-label", t("back"));
+    $("seriesTitle").textContent = home ? "Prof de Poche" : s.title; $("seriesSub").textContent = home ? t("tagline") : s.subtitle || "";
+    setBadge($("subBadge"), home ? "PdP" : s.badge || s.subject);
+    $("subBadge").style.background = home ? "linear-gradient(135deg, var(--purple), var(--blue))" : "";
+    const L = levelOf(S.progress.xp); $("xpLvl").textContent = `${{ fr: "Niv", ar: "م", en: "Lv" }[ui]} ${L.n}`; $("xpBar").style.width = L.pct + "%"; $("xpName").textContent = `${L.name} · ${S.progress.xp} XP`;
+    $("streak").hidden = S.progress.streak < 2; $("streak").textContent = `×${S.progress.streak}`;
+    const sel = $("seriesSel"); sel.replaceChildren(...allSeries().map((x) => { const o = el("option", null, x.builtin ? `${x.title} — ${x.subtitle.split("·")[0].trim()} (${t("example")})` : x.title); o.value = x.id; return o; }));
+    sel.value = S.seriesId;
+  }
+  function exProgress(e) { const n = e.questions.length; let d = 0; e.questions.forEach((_, i) => { if (S.progress.done[qKey(e, i)]) d++; }); return { d, n }; }
+  function renderTabs() {
+    const box = $("tabs"); box.replaceChildren();
+    series().exercises.forEach((e, i) => {
+      const b = el("button", "tab"); b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(i === S.exIdx));
+      const { d, n } = exProgress(e); const dot = el("span", "dot" + (d === n ? " full" : d ? " part" : ""));
+      b.append(e.pending ? el("span", "spin") : dot, el("span", null, e.title)); if (e.ai) b.append(el("span", "ai-tag", "✦")); if (e.error) b.append(el("span", "ai-tag", "!"));
+      b.onclick = () => { S.exIdx = i; S.qIdx = 0; S.panel = null; renderAll(); };
+      box.append(b);
+    });
+  }
+  function renderNav() {
+    const e = ex(), box = $("qnav"); box.replaceChildren();
+    const top = el("div", "qnav-top");
+    top.append(el("h2", null, `${t("question")} ${S.qIdx + 1} / ${e.questions.length}`));
+    const { d, n } = exProgress(e); top.append(el("span", "pct mono", t("progress", { p: Math.round((d / n) * 100) })));
+    const segs = el("div", "segs");
+    e.questions.forEach((q, i) => { const b = el("button", S.progress.done[qKey(e, i)] ? "done" : "", q.label); b.type = "button"; b.setAttribute("aria-current", String(i === S.qIdx)); b.setAttribute("aria-label", `${t("question")} ${q.label}`); b.onclick = () => goQ(i); segs.append(b); });
+    const nav = el("div", "navbtns");
+    const p = el("button", "btn"); p.type = "button"; p.append(icon(ui === "ar" ? "right" : "left"), el("span", null, t("prev"))); p.disabled = S.qIdx === 0; p.onclick = () => goQ(S.qIdx - 1);
+    const nx = el("button", "btn primary"); nx.type = "button"; nx.append(el("span", null, t("next")), icon(ui === "ar" ? "left" : "right")); nx.disabled = S.qIdx >= e.questions.length - 1; nx.onclick = () => goQ(S.qIdx + 1);
+    nav.append(p, nx); box.append(top, segs, nav);
+  }
+  function goQ(i) { S.qIdx = Math.max(0, Math.min(ex().questions.length - 1, i)); S.panel = null; activeStepOverride = null; clearInterval(animTimer); renderNav(); renderStatement(); renderBoard(); renderQuestion(); renderChips(); }
+  function renderStatement() {
+    const e = ex(), box = $("statement"); const open = box.open; box.replaceChildren();
+    const sum = el("summary"); const h = el("h3"); h.append(document.createTextNode(`${t("statement")} — ${e.title} `)); if (e.name) h.append(el("span", "ex-name", `· ${e.name}`));
+    const ch = icon("chev"); ch.classList.add("chev"); sum.append(h, ch);
+    const body = el("div", "content-ltr"); body.dir = series().lang === "ar" ? "rtl" : "ltr";
+    body.append(richEl("div", "stmt", e.statement));
+    const ol = el("ol", "stmt-qs");
+    e.questions.forEach((q, i) => { const li = el("li"); const b = el("button"); b.type = "button"; b.append(el("span", "lbl", q.label), richEl("span", null, q.title)); b.onclick = () => goQ(i); li.append(b); ol.append(li); });
+    body.append(ol); box.append(sum, body); box.open = open !== false;
+    typeset([box]);
+  }
+  function renderQuestion() {
+    const e = ex(), q = qq(), key = qKey(), box = $("qcard"); box.replaceChildren();
+    const lang = series().lang === "ar" ? "rtl" : "ltr";
+    const head = el("div", "q-head"); head.dir = lang;
+    head.append(el("div", "q-lbl", `${t("question")} ${q.label} — ${e.title}`), richEl("h3", null, q.title));
+    if (q.goal) { const g = el("p", "goal"); g.append(el("b", null, t("goal") + " ")); g.append(rich(el("span"), q.goal)); head.append(g); }
+    box.append(head);
+    if (e.pending || e.error) {
+      const pb = el("div", "pending-box");
+      if (e.pending) { pb.append(el("div", "bar"), el("span", null, t("preparing"))); pb.firstChild.append(el("i")); }
+      else { pb.append(el("span", null, `${t("prepFailed")} ${e.error}`)); const r = el("button", "btn accent"); r.type = "button"; r.textContent = t("retry"); r.onclick = () => regenCurrent(); pb.append(r); }
+      box.append(pb); typeset([box]); return;
+    }
+    const n = S.revealed[key] || 0;
+    const ol = el("ol", "steps"); ol.dir = lang;
+    q.steps.slice(0, n).forEach((st, i) => ol.append(renderStep(st, i, i === n - 1)));
+    box.append(ol);
+    const acts = el("div", "step-actions");
+    if (n < q.steps.length) {
+      const b = el("button", "btn accent"); b.type = "button"; b.append(icon("play"), el("span", null, `${t("nextStep")} (${n + 1}/${q.steps.length})`));
+      b.onclick = () => { S.revealed[key] = n + 1; activeStepOverride = null; if (n + 1 === q.steps.length) completeQ(); renderQuestion(); renderBoard(); };
+      const all = el("button", "btn"); all.type = "button"; all.textContent = t("showAll");
+      all.onclick = () => { S.revealed[key] = q.steps.length; completeQ(); renderQuestion(); renderBoard(); };
+      acts.append(b, all);
+    } else {
+      const d = el("div", "qdone"); d.append(icon("check"), el("span", null, t("qDone"))); box.append(d);
+      const r = el("button", "btn sm ghost"); r.type = "button"; r.append(icon("reset"), el("span", null, t("restart"))); r.onclick = () => { S.revealed[key] = 0; renderQuestion(); renderBoard(); };
+      acts.append(r);
+      if (S.qIdx < e.questions.length - 1) { const nx = el("button", "btn primary"); nx.type = "button"; nx.append(el("span", null, t("next")), icon(ui === "ar" ? "left" : "right")); nx.onclick = () => goQ(S.qIdx + 1); acts.append(nx); }
+    }
+    box.append(acts);
+    const bar = el("div", "actbar");
+    const mk = (key2, ic, cls, panel) => { const b = el("button", "btn " + cls); b.type = "button"; if (ic === "✦") b.append(el("span", "spark", "✦")); else b.append(icon(ic)); b.append(el("span", null, t(key2))); b.setAttribute("aria-pressed", String(S.panel === panel)); b.onclick = () => { S.panel = S.panel === panel ? null : panel; renderQuestion(); }; bar.append(b); };
+    mk("hint", "bulb", "", "hint"); mk("test", "target", "", "quiz"); mk("verify", "✦", "ai", "verify");
+    const sumB = el("button", "btn"); sumB.type = "button"; sumB.append(icon("pen"), el("span", null, t("summary"))); sumB.onclick = openSummary; bar.append(sumB);
+    box.append(bar);
+    if (S.panel === "hint") box.append(renderHint(q));
+    if (S.panel === "quiz") box.append(renderQuiz(q));
+    if (S.panel === "verify") box.append(renderVerify(q));
+    typeset([box]);
+  }
+  function renderStep(st, i, active) {
+    const li = el("li", "step" + (active ? " active" : ""));
+    const row = el("div", "step-row"); row.append(el("span", "step-n", String(i + 1)), richEl("div", "step-body", st.text)); li.append(row);
+    const tools = el("div", "step-tools");
+    const other = el("button", "mini ai"); other.type = "button"; other.append(el("span", null, "✦"), el("span", null, t("explainOther")));
+    const menu = el("div", "menu"); menu.hidden = true;
+    other.onclick = () => { menu.hidden = !menu.hidden; };
+    [["stSimple", "simple"], ["stLife", "life"], ["stStory", "story"], ["stWhy", "why"], ["stDarija", "darija"], ["stFlash", "flash"]].forEach(([k, style]) => {
+      const b = el("button", "mini"); b.type = "button"; b.textContent = t(k); b.onclick = () => explainStep(st, i, style, li, menu); menu.append(b);
+    });
+    tools.append(other);
+    if ("speechSynthesis" in window) { const sp = el("button", "mini"); sp.type = "button"; sp.append(icon("speaker"), el("span", null, t("listen"))); sp.onclick = () => speak(st.text, series().lang); tools.append(sp); }
+    const show = el("button", "mini"); show.type = "button"; show.append(icon("eye")); show.setAttribute("aria-label", "figure"); show.onclick = () => { activeStepOverride = i; renderBoard(); $("boardCard").scrollIntoView({ behavior: "smooth", block: "nearest" }); }; tools.append(show);
+    li.append(tools, menu);
+    return li;
+  }
+  function renderHint(q) {
+    const p = el("div", "panel hint"); const h = el("h4"); h.append(icon("bulb"), el("span", null, t("hint"))); p.append(h, richEl("div", null, q.hint || "—"));
+    const out = el("div"); const b = el("button", "btn sm ai"); b.type = "button"; b.append(el("span", "spark", "✦"), el("span", null, t("aiHint")));
+    b.onclick = async () => {
+      b.disabled = true; out.className = "aibox"; out.style.marginInlineStart = "0"; out.replaceChildren(typingDots());
+      try {
+        const text = await ai(`${persona()}\n${context()}\nThe student asks for a hint. Give ONE short, sharp hint (max 2 sentences) that unlocks the next move WITHOUT giving the final answer. ${langRule()}`, { onText: ({ text: s }) => mdBlock(out, s) });
+        mdBlock(out, text); addMeta(out); typeset([out]);
+      } catch (e) { out.textContent = errText(e); } finally { b.disabled = false; }
+    };
+    p.append(b, out); return p;
+  }
+  const quizState = {};
+  function renderQuiz(q) {
+    const key = qKey(); const p = el("div", "panel");
+    const h = el("h4"); h.append(icon("target"), el("span", null, t("test"))); p.append(h);
+    const list = [q.quiz, ...(quizState[key + "|ai"] || [])].filter(Boolean);
+    list.forEach((item, qi) => p.append(renderMCQ(item, `${key}|${qi}`)));
+    const status = el("div", "status");
+    const more = el("button", "btn sm ai"); more.type = "button"; more.append(el("span", "spark", "✦"), el("span", null, t("quizMore")));
+    more.onclick = async () => {
+      more.disabled = true; status.replaceChildren(el("span", "spin"), document.createTextNode(t("thinking")));
+      try {
+        const data = await ai(`${context()}\nCreate 3 NEW multiple-choice questions that test understanding of this question's key ideas (not the same as the official one). Each has 3 options, exactly one correct, plausible distractors based on typical student mistakes, and a one-sentence explanation. Write math in LaTeX between $…$, vectors as \\vect{AB} (double the backslashes in JSON). ${langRule()}\nReply ONLY with JSON: {"questions":[{"q":"...","options":["...","...","..."],"answer":0,"why":"..."}]}`, { json: true });
+        const qs = (Array.isArray(data.questions) ? data.questions : []).map((x) => ({ q: String(x.q || ""), options: (x.options || []).map(String).slice(0, 4), answer: +x.answer || 0, why: String(x.why || "") })).filter((x) => x.q && x.options.length >= 2 && x.answer < x.options.length);
+        if (!qs.length) throw { code: "invalid_json" };
+        quizState[key + "|ai"] = [...(quizState[key + "|ai"] || []), ...qs]; renderQuestion();
+      } catch (e) { status.className = "status err"; status.textContent = errText(e); more.disabled = false; }
+    };
+    p.append(more, status); return p;
+  }
+  function renderMCQ(item, id) {
+    const wrap = el("div"); wrap.style.display = "grid"; wrap.style.gap = "8px";
+    wrap.append(richEl("div", "quiz-q", item.q));
+    const opts = el("div", "opts"); const why = el("div", "why"); const st = quizState[id];
+    item.options.forEach((o, i) => {
+      const b = el("button", "opt"); b.type = "button"; b.append(el("span", "k", "ABCD"[i]), richEl("span", null, o));
+      if (st != null) { b.disabled = true; if (i === item.answer) b.classList.add("right"); else if (i === st) b.classList.add("wrong"); }
+      b.onclick = () => {
+        quizState[id] = i; const ok = i === item.answer;
+        if (ok) { S.progress.streak++; gainXP(S.progress.quiz[id] ? 3 : 15); S.progress.quiz[id] = 1; confetti(); toast(t("right")); }
+        else { S.progress.streak = 0; S.progress.quiz[id] = 1; saveProgress(); renderHeader(); }
+        renderQuestion();
+      };
+      opts.append(b);
+    });
+    wrap.append(opts);
+    if (st != null) { why.append(el("b", null, (st === item.answer ? t("right") : t("wrongTry")) + " ")); why.append(rich(el("span"), item.why || "")); wrap.append(why); }
+    return wrap;
+  }
+  const verifyState = { images: [], text: "", result: null };
+  function renderVerify(q) {
+    const p = el("div", "panel verify"); const h = el("h4"); h.append(el("span", "spark", "✦"), el("span", null, t("verify"))); p.append(h);
+    const ta = el("textarea"); ta.id = "verifyText"; ta.placeholder = t("verifyPh"); ta.value = verifyState.text; ta.oninput = () => { verifyState.text = ta.value; }; p.append(ta);
+    const thumbs = el("div", "thumbs");
+    verifyState.images.forEach((im, i) => { const d = el("div", "thumb"); const img = el("img"); img.src = im.url; img.alt = ""; const x = el("button", null, "✕"); x.type = "button"; x.onclick = () => { URL.revokeObjectURL(im.url); verifyState.images.splice(i, 1); renderQuestion(); }; d.append(img, x); thumbs.append(d); });
+    const row = el("div", "step-actions");
+    const fi = el("input"); fi.type = "file"; fi.accept = "image/*"; fi.multiple = true; fi.hidden = true; fi.setAttribute("capture", "environment");
+    fi.onchange = () => { Array.from(fi.files).slice(0, 4).forEach((f) => verifyState.images.push({ blob: f, url: URL.createObjectURL(f) })); renderQuestion(); };
+    const ph = el("button", "btn sm"); ph.type = "button"; ph.append(icon("camera"), el("span", null, t("addPhoto"))); ph.onclick = () => fi.click();
+    if (S.backend === "claude" && !S.imagesOk) ph.hidden = true;
+    const go = el("button", "btn sm accent"); go.type = "button"; go.textContent = t("correct");
+    const status = el("div", "status"); const out = el("div");
+    go.onclick = async () => {
+      if (!verifyState.text.trim() && !verifyState.images.length) { status.className = "status err"; status.textContent = t("needInput"); return; }
+      go.disabled = true; status.className = "status"; status.replaceChildren(el("span", "spin"), document.createTextNode(t("thinking")));
+      try {
+        const data = await ai(`${persona()}\n${context()}\nThe student submitted their own solution for this question${verifyState.images.length ? " (photos of their notebook are attached; read the handwriting carefully)" : ""}:\n<student>\n${verifyState.text}\n</student>\nGrade it like a kind but rigorous teacher. Accept any correct method, not only the official one. Point to the exact line of each error and how to fix it. ${langRule()} Math in LaTeX between $…$, vectors as \\vect{AB} (double backslashes in JSON).\nReply ONLY with JSON: {"verdict":"correct"|"partial"|"wrong","score":0-100,"summary":"one encouraging sentence","good":["..."],"errors":[{"where":"...","fix":"..."}],"next":"one concrete next step"}`, { json: true, images: verifyState.images });
+        verifyState.result = data; status.replaceChildren();
+        const sc = Math.max(0, Math.min(100, +data.score || 0)); gainXP(Math.round(sc / 5)); if (sc >= 80) confetti();
+        renderVerdict(out, data); typeset([out]);
+      } catch (e) { status.className = "status err"; status.textContent = errText(e); } finally { go.disabled = false; }
+    };
+    row.append(fi, ph, go); p.append(thumbs, row, status, out);
+    if (verifyState.result) renderVerdict(out, verifyState.result);
+    return p;
+  }
+  function renderVerdict(out, d) {
+    out.replaceChildren(); const v = ["correct", "partial", "wrong"].includes(d.verdict) ? d.verdict : "partial"; const sc = Math.max(0, Math.min(100, +d.score || 0));
+    const box = el("div", `verdict v-${v}`);
+    const ring = sv("svg", { viewBox: "0 0 70 70", class: "ring" }); sv("circle", { cx: 35, cy: 35, r: 29, class: "bg" }, ring);
+    const C = 2 * Math.PI * 29; const fg = sv("circle", { cx: 35, cy: 35, r: 29, class: "fg", "stroke-dasharray": C, "stroke-dashoffset": C * (1 - sc / 100) }, ring);
+    const tx = sv("text", { x: 35, y: 41, "text-anchor": "middle" }, ring); tx.textContent = String(sc);
+    const txt = el("div"); txt.append(el("h4", null, t(v === "correct" ? "vCorrect" : v === "partial" ? "vPartial" : "vWrong")), richEl("p", null, String(d.summary || "")));
+    box.append(ring, txt); out.append(box);
+    const good = (Array.isArray(d.good) ? d.good : []).map(String).filter(Boolean);
+    if (good.length) { out.append(el("h4", null, t("vGood"))); const ul = el("ul", "errs"); good.forEach((g) => ul.append(richEl("li", null, g))); out.append(ul); }
+    const errs = (Array.isArray(d.errors) ? d.errors : []).filter((x) => x && (x.where || x.fix));
+    if (errs.length) { out.append(el("h4", null, t("vFix"))); const ul = el("ul", "errs"); errs.forEach((x) => { const li = el("li"); li.append(el("b", null, String(x.where || "") + " → ")); li.append(rich(el("span"), String(x.fix || ""))); ul.append(li); }); out.append(ul); }
+    if (d.next) { const p = el("p"); p.append(el("b", null, t("vNext") + " : ")); p.append(rich(el("span"), String(d.next))); out.append(p); }
+    void fg;
+  }
+  function completeQ() { const k = qKey(); if (!S.progress.done[k]) { S.progress.done[k] = 1; gainXP(10); renderNav(); renderTabs(); } }
+
+  /* ============ XP & confetti ============ */
+  function gainXP(n) {
+    const before = levelOf(S.progress.xp).n; S.progress.xp += n; saveProgress(); renderHeader();
+    const after = levelOf(S.progress.xp); toast(after.n > before ? t("levelUp", { n: after.n, name: after.name }) : t("xpGain", { n }));
+    if (after.n > before) confetti(160);
+  }
+  function confetti(count = 90) {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const c = $("confetti"); c.hidden = false; const ctx = c.getContext("2d"); const dpr = Math.min(2, window.devicePixelRatio || 1);
+    c.width = innerWidth * dpr; c.height = innerHeight * dpr; ctx.scale(dpr, dpr);
+    const cs = getComputedStyle(document.documentElement); const cols = ["--accent", "--blue", "--green", "--pink", "--purple", "--orange"].map((v) => cs.getPropertyValue(v).trim());
+    const parts = Array.from({ length: count }, () => ({ x: innerWidth / 2 + (Math.random() - .5) * 200, y: innerHeight * 0.35, vx: (Math.random() - .5) * 11, vy: -Math.random() * 11 - 4, r: Math.random() * 6 + 3, c: cols[(Math.random() * cols.length) | 0], a: Math.random() * 6, va: (Math.random() - .5) * .3 }));
+    let f = 0; const step = () => { ctx.clearRect(0, 0, innerWidth, innerHeight); parts.forEach((p) => { p.vy += .32; p.x += p.vx; p.y += p.vy; p.a += p.va; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a); ctx.fillStyle = p.c; ctx.fillRect(-p.r, -p.r / 2, p.r * 2, p.r); ctx.restore(); }); if (++f < 120) requestAnimationFrame(step); else { ctx.clearRect(0, 0, innerWidth, innerHeight); c.hidden = true; } };
+    requestAnimationFrame(step);
+  }
+
+  /* ============ Speech ============ */
+  function speak(text, lang) {
+    const sy = window.speechSynthesis; sy.cancel();
+    const clean = String(text).replace(/\$([^$]*)\$/g, (_, m) => " " + m.replace(/\\vect\{([^}]*)\}/g, "vecteur $1").replace(/\\frac\{([^}]*)\}\{([^}]*)\}/g, "$1 sur $2").replace(/\\[a-zA-Z]+/g, " ").replace(/[{}^_]/g, " ") + " ").replace(/\*\*/g, "");
+    const u = new SpeechSynthesisUtterance(clean); const tag = lang === "ar" ? "ar" : lang === "en" ? "en" : "fr"; u.lang = { ar: "ar-SA", en: "en-US", fr: "fr-FR" }[tag];
+    const v = sy.getVoices().find((x) => x.lang && x.lang.toLowerCase().startsWith(tag)); if (v) u.voice = v; sy.speak(u);
+  }
+
+  /* ============ AI layer ============ */
+  function persona() {
+    return S.settings.tone === "fun"
+      ? "You are 'Prof de Poche', a warm, funny Moroccan tutor for middle- and high-school students in EVERY subject (maths, physics-chemistry, life & earth sciences, languages, history-geography, philosophy, Islamic education, economics…). You explain with vivid everyday images (GPS trips, taxis in Casablanca, football passes, recipes, the souk), short sentences, and a little humour, never at the student's expense. You stay rigorous and faithful to the course."
+      : "You are 'Prof de Poche', a calm, precise tutor for Moroccan middle- and high-school students in every subject. Short, clear sentences, rigorous reasoning, no fluff.";
+  }
+  function langRule() {
+    return { fr: "Write in French.", ar: "Write in clear Modern Standard Arabic (keep mathematical notation in LaTeX).", en: "Write in English.", darija: "Write in Moroccan Darija using Arabic script (الدارجة المغربية), friendly and natural; keep usual French maths words (vecteur, colinéaires, milieu, Chasles) when Moroccan students use them." }[S.settings.lang] || "Write in French.";
+  }
+  function context() {
+    const s = series(), e = ex(), q = qq(), n = S.revealed[qKey()] || 0;
+    return `Series: ${s.title} — ${s.subtitle || ""}\nExercise: ${e.title}${e.name ? " (" + e.name + ")" : ""}\nStatement: ${e.statement}\nCurrent question ${q.label}: ${q.title}\nOfficial solution steps (the student has revealed ${n} of ${q.steps.length}):\n${q.steps.map((st, i) => `${i + 1}. ${st.text}`).join("\n")}\nNotation: $\\vect{AB}$ means vector AB.${s.level ? "\nLevel: " + s.level : ""}`;
+  }
+  function modelName() { const m = MODELS[S.settings.model] || MODELS.haiku; return `${m.name} · ${t(EFF_KEYS[S.settings.effort])}`; }
+  let lastServed = "";
+  function addMeta(node) { const m = el("div", "meta", lastServed || modelName()); node.append(m); }
+  const errText = (e) => { const c = (e && e.code) || "generic"; if (c === "cancelled") return t("cancelled"); if (c === "no_key") return t("needKey"); if (c === "none") return t("noAI"); return UI["e_" + c] ? t("e_" + c) : t("e_generic"); };
+  function repairJson(s) {
+    let out = "", inStr = false;
+    for (let i = 0; i < s.length; i++) {
+      const c = s[i];
+      if (!inStr) { if (c === '"') inStr = true; out += c; continue; }
+      if (c === '"') { inStr = false; out += c; continue; }
+      if (c === "\n") { out += "\\n"; continue; } if (c === "\r") continue; if (c === "\t") { out += "\\t"; continue; }
+      if (c === "\\") {
+        const n = s[i + 1] || "";
+        if (n === '"' || n === "\\" || n === "/") { out += c + n; i++; continue; }
+        if (n === "u" && /^[0-9a-fA-F]{4}$/.test(s.substr(i + 2, 4))) { out += c + n; i++; continue; }
+        if (n && "bfnrt".includes(n)) { const w = (s.slice(i + 1).match(/^[a-zA-Z]+/) || [""])[0]; out += w.length > 1 && !(n === "n" && /^n[A-Z]/.test(w)) ? "\\\\" : "\\"; continue; }
+        out += "\\\\"; continue;
+      }
+      out += c;
+    }
+    return out;
+  }
+  function parseJsonLoose(text) {
+    const tr = text.trim(); const tries = [tr];
+    const f = tr.match(/```(?:json)?\s*([\s\S]*?)```/); if (f) tries.push(f[1]);
+    const a = tr.indexOf("{"), b = tr.lastIndexOf("}"); if (a >= 0 && b > a) tries.push(tr.slice(a, b + 1));
+    for (const c of tries) { try { return JSON.parse(repairJson(c)); } catch {} }
+    for (const c of tries) { try { return JSON.parse(c); } catch {} }
+    throw { code: "invalid_json" };
+  }
+  async function toJpegB64(blob) {
+    const bmp = await createImageBitmap(blob); const sc = Math.min(1, 1568 / Math.max(bmp.width, bmp.height));
+    const c = document.createElement("canvas"); c.width = Math.round(bmp.width * sc); c.height = Math.round(bmp.height * sc);
+    const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); g.drawImage(bmp, 0, 0, c.width, c.height);
+    const u = c.toDataURL("image/jpeg", 0.88); return u.slice(u.indexOf(",") + 1);
+  }
+  async function callApi(turns, images, signal, m, effort) {
+    const key = store.get("pdp.apikey", ""); if (!key) throw { code: "no_key" };
+    const messages = [];
+    for (let i = 0; i < turns.length; i++) {
+      const tn = turns[i];
+      if (i === turns.length - 1 && images.length) { const content = []; for (const im of images) content.push({ type: "image", source: { type: "base64", media_type: "image/jpeg", data: await toJpegB64(im.blob) } }); content.push({ type: "text", text: tn.content }); messages.push({ role: tn.role, content }); }
+      else messages.push({ role: tn.role, content: tn.content });
+    }
+    const body = { model: m.id, max_tokens: 16000, output_config: { effort }, messages };
+    const headers = { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2026-10-21", "anthropic-dangerous-direct-browser-access": "true" };
+    if (m.id !== "claude-haiku-5-5") { body.fallbacks = "default"; headers["anthropic-beta"] = "server-side-fallback-2026-07-01"; }
+    const res = await fetch("https://api.anthropic.com/v1/messages", { method: "POST", signal, headers, body: JSON.stringify(body) });
+    const j = await res.json().catch(() => null);
+    if (!res.ok) throw { code: res.status === 401 ? "bad_key" : res.status === 429 ? "rate_limited" : res.status === 413 ? "prompt_too_large" : "generic" };
+    if (j.stop_reason === "refusal") throw { code: "refused" };
+    const text = (j.content || []).filter((b) => b.type === "text").map((b) => b.text).join("");
+    lastServed = `${m.name} · ${t(EFF_KEYS[S.settings.effort])}`;
+    return text;
+  }
+  // One entry point: input is a prompt string or chat turns. Uses the model + effort from settings.
+  async function ai(input, { images = [], onText, signal, json = false, cache } = {}) {
+    await backendReady;
+    const m = MODELS[S.settings.model] || MODELS.haiku, effort = EFFORTS[S.settings.effort] || "medium";
+    const turns = typeof input === "string" ? [{ role: "user", content: input }] : input;
+    let text;
+    if (S.backend === "claude") {
+      const opts = { model: m.id, modelTier: m.tier, effort };
+      if (signal) opts.signal = signal; if (onText && !json) opts.onText = onText; if (json && onText) opts.onText = onText;
+      if (images.length) opts.images = images.map((i) => i.blob);
+      opts.cache = cache === undefined ? false : cache;
+      const r = await S.sample(typeof input === "string" ? input : turns, opts);
+      text = r.text;
+      const tierName = { quick: "Haiku", default: "Sonnet", complex: "Opus" }[r.modelTierApplied] || r.modelTierApplied;
+      lastServed = r.modelApplied ? `${m.name} · ${t(EFF_KEYS[S.settings.effort])}` : `${tierName} (${t(EFF_KEYS[S.settings.effort])})`;
+      $("modelChip").textContent = lastServed;
+    } else if (S.backend === "api") text = await callApi(turns, images, signal, m, effort);
+    else throw { code: "none" };
+    return json ? parseJsonLoose(text) : text;
+  }
+  const typingDots = () => { const s = el("span", "typing"); s.append(el("i"), el("i"), el("i")); return s; };
+
+  async function explainStep(st, i, style, li, menu) {
+    menu.hidden = true;
+    let box = li.querySelector(".aibox"); if (!box) { box = el("div", "aibox"); li.append(box); }
+    box.dir = "auto"; box.replaceChildren(typingDots());
+    const styles = {
+      simple: "Re-explain this step much more simply, as if to a 12-year-old: 3–5 very short sentences.",
+      life: "Re-explain this step with ONE vivid real-life picture (a trip, a taxi route, a football pass, a recipe…), then link it back to the maths in one sentence.",
+      story: "Tell this step as a tiny story (4–6 sentences) where the points are characters travelling along the vectors.",
+      why: "Explain WHY this step is allowed and why it is a good idea here (what it prepares for). 3–5 short sentences.",
+      darija: "Re-explain this step in Moroccan Darija (Arabic script), friendly, 3–5 short sentences, keeping LaTeX for the maths.",
+      flash: "Summarise this step in ONE punchy sentence a student can memorise.",
+    };
+    const lr = style === "darija" ? "" : langRule();
+    try {
+      const text = await ai(`${persona()}\n${context()}\nFocus on step ${i + 1}: ${st.text}\n${styles[style]} ${lr} Math in LaTeX between $…$, vectors as \\vect{AB}. No headings.`, { onText: ({ text: s }) => mdBlock(box, s), cache: true });
+      mdBlock(box, text); addMeta(box); typeset([box]);
+    } catch (e) { box.textContent = errText(e); }
+  }
+
+  /* ============ Tutor chat ============ */
+  function renderChips() {
+    const box = $("chips"); box.replaceChildren();
+    ["chip1", "chip2", "chip3", "chip4"].forEach((k) => { const b = el("button", "chip", t(k)); b.type = "button"; b.onclick = () => sendChat(t(k)); box.append(b); });
+  }
+  function renderLogIntro() { const log = $("log"); log.replaceChildren(); const m = el("div", "msg ai"); m.dir = "auto"; m.append(richEl("p", null, t("hello"))); log.append(m); }
+  let chatCtl = null;
+  async function sendChat(text) {
+    const q = text.trim(); if (!q) return;
+    const log = $("log"); const me = el("div", "msg me"); me.dir = "auto"; me.textContent = q; log.append(me);
+    const out = el("div", "msg ai"); out.dir = "auto"; out.append(typingDots()); log.append(out); log.scrollTop = log.scrollHeight;
+    S.chat.push({ role: "user", content: q });
+    const rules = `${persona()}\nYou are chatting with a student inside a step-by-step exercise app. Current context:\n${context()}\n\nRules: answer what they ask; be encouraging; prefer guiding questions when they want the answer to a proof, but give it if they insist. Keep answers short (under 150 words) unless they ask for more. Use "- " bullets when listing. Math in LaTeX between $…$, vectors as \\vect{AB}. ${langRule()} If the student writes in another language or in Darija, answer in that language.`;
+    $("sendBtn").disabled = true; chatCtl = new AbortController();
+    try {
+      const reply = await ai([{ role: "user", content: rules }, ...S.chat.slice(-10)], { onText: ({ text: s }) => { mdBlock(out, s); log.scrollTop = log.scrollHeight; }, signal: chatCtl.signal });
+      S.chat.push({ role: "assistant", content: reply }); mdBlock(out, reply); typeset([out]);
+    } catch (e) { S.chat.pop(); out.className = "msg ai err"; out.textContent = errText(e); }
+    finally { $("sendBtn").disabled = false; log.scrollTop = log.scrollHeight; }
+  }
+  $("composer").addEventListener("submit", (e) => { e.preventDefault(); const ta = $("ask"); const v = ta.value; ta.value = ""; ta.style.height = ""; sendChat(v); });
+  $("ask").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("composer").requestSubmit(); } });
+  $("ask").addEventListener("input", (e) => { e.target.style.height = "auto"; e.target.style.height = Math.min(120, e.target.scrollHeight) + "px"; });
+  $("fab").onclick = () => { $("tutor").classList.add("open"); $("ask").focus(); };
+  $("tutorClose").onclick = () => $("tutor").classList.remove("open");
+
+  /* ============ Overlays: settings, summary, import ============ */
+  function modal(build) {
+    const ov = $("overlay"); ov.replaceChildren(); const scrim = el("div", "scrim"); const m = el("div", "modal"); m.setAttribute("role", "dialog"); m.setAttribute("aria-modal", "true");
+    const close = () => { ov.replaceChildren(); document.removeEventListener("keydown", onKey); };
+    const onKey = (e) => { if (e.key === "Escape") close(); };
+    scrim.addEventListener("click", (e) => { if (e.target === scrim) close(); }); document.addEventListener("keydown", onKey);
+    build(m, close); scrim.append(m); ov.append(scrim); m.dir = ui === "ar" ? "rtl" : "ltr";
+    const f = m.querySelector("button, input, select, textarea"); if (f) f.focus();
+    return { m, close };
+  }
+  function modalHead(m, title, close) { const h = el("div", "modal-head"); h.append(el("h2", null, title)); const x = el("button", "iconbtn", "✕"); x.type = "button"; x.setAttribute("aria-label", t("close")); x.onclick = close; h.append(x); m.append(h); }
+  function openSettings() {
+    modal((m, close) => {
+      modalHead(m, t("settings"), close);
+      const f1 = el("div", "field"); f1.append(el("span", null, t("model"))); const ms = el("div", "models");
+      Object.entries(MODELS).forEach(([k, md]) => { const lab = el("label", "model-opt"); const r = el("input"); r.type = "radio"; r.name = "model"; r.value = k; r.checked = S.settings.model === k; r.onchange = () => { S.settings.model = k; saveSettings(); $("modelChip").textContent = modelName(); if (S.view === "home") renderHome(); }; const mt = el("span", "mt"); mt.append(el("b", null, md.name), el("small", null, t(md.desc))); lab.append(r, mt); ms.append(lab); });
+      f1.append(ms); m.append(f1);
+      const f2 = el("div", "field"); f2.append(el("span", null, t("effort")));
+      const rg = el("input", "range"); rg.type = "range"; rg.min = "0"; rg.max = "2"; rg.step = "1"; rg.value = String(S.settings.effort); rg.id = "effortRange"; rg.setAttribute("aria-label", t("effort"));
+      const labels = el("div", "range-labels"); const paint = () => { labels.replaceChildren(...EFF_KEYS.map((k, i) => (i === S.settings.effort ? el("b", null, t(k)) : el("span", null, t(k))))); };
+      rg.oninput = () => { S.settings.effort = +rg.value; saveSettings(); paint(); $("modelChip").textContent = modelName(); if (S.view === "home") renderHome(); };
+      paint(); f2.append(rg, labels, el("small", null, t("effortNote"))); m.append(f2);
+      const f3 = el("label", "field"); f3.append(el("span", null, t("explLang"))); const sel = el("select", "select"); sel.style.maxWidth = "100%";
+      [["fr", "lFr"], ["ar", "lAr"], ["en", "lEn"], ["darija", "lDa"]].forEach(([v, k]) => { const o = el("option", null, t(k)); o.value = v; sel.append(o); }); sel.value = S.settings.lang; sel.onchange = () => { S.settings.lang = sel.value; saveSettings(); };
+      f3.append(sel); m.append(f3);
+      const f4 = el("div", "field"); f4.append(el("span", null, t("tone"))); const seg = el("div", "seg");
+      [["fun", "toneFun"], ["calm", "toneCalm"]].forEach(([v, k]) => { const b = el("button", null, t(k)); b.type = "button"; b.setAttribute("aria-pressed", String(S.settings.tone === v)); b.onclick = () => { S.settings.tone = v; saveSettings(); seg.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); }; seg.append(b); });
+      f4.append(seg); m.append(f4);
+      if (S.backend === "api") {
+        const f5 = el("div", "field"); f5.append(el("span", null, t("apiKey"))); const row = el("div", "keyrow"); const inp = el("input"); inp.type = "password"; inp.placeholder = "sk-ant-…"; inp.value = store.get("pdp.apikey", ""); inp.autocomplete = "off";
+        const sb = el("button", "btn sm", t("save")); sb.type = "button"; sb.onclick = () => { store.set("pdp.apikey", inp.value.trim()); toast(t("save") + " ✓"); };
+        row.append(inp, sb); f5.append(row, el("small", null, t("apiNote"))); m.append(f5);
+      }
+      const rp = el("button", "btn sm ghost", t("resetProgress")); rp.type = "button"; rp.onclick = () => { S.progress = { xp: 0, streak: 0, done: {}, quiz: {} }; saveProgress(); renderAll(); close(); }; m.append(rp);
+    });
+  }
+  function openSummary() {
+    modal((m, close) => {
+      modalHead(m, t("summary"), close);
+      const e = ex(); const list = el("div", "sum-list");
+      if (e.remember && e.remember.length) { const it = el("div", "sum-item"); it.append(el("h4", null, `${t("remember")} — ${e.title}`)); const ul = el("ul", "errs"); e.remember.forEach((r) => ul.append(richEl("li", null, r))); it.append(ul); list.append(it); }
+      const s = series(); if (s.summary && s.summary.length) { list.append(el("h3", null, t("seriesRules"))); s.summary.forEach((x) => { const it = el("div", "sum-item"); it.append(el("h4", null, x.title), richEl("div", null, x.text)); list.append(it); }); }
+      list.dir = s.lang === "ar" ? "rtl" : "ltr"; m.append(list); typeset([m]);
+    });
+  }
+
+  /* ============ AI: series import & similar exercise ============ */
+  const EX_SCHEMA = String.raw`Exercise JSON (all text in the series language; math in LaTeX between $…$, vectors written \\vect{AB}; every backslash doubled in JSON):
+{
+ "id": "short-id", "title": "Exercice 1", "name": "short fun nickname",
+ "statement": "exercise statement (faithful to the source)",
+ "remember": ["key idea to memorise"],
+ "figure": FIGURE or null,
+ "questions": [
+  { "label": "1" (or "2a"…), "title": "the question as asked", "goal": "what we aim to show, short",
+    "steps": [ { "text": "one reasoning move, short; **bold** the conclusion", "note": "≤4 words shown on the figure", "show": { "vectors": [["A","B","blue","AB"]], "lines": [["A","B"]] } } ],
+    "show": { "vectors": [...] },
+    "hint": "one hint without the answer",
+    "quiz": { "q": "...", "options": ["...","...","..."], "answer": 0, "why": "..." } }
+ ]
+}
+FIGURE for vector/geometry exercises (interactive, preferred):
+{ "base": { "A": [0,0], "B": [4,0], "C": [1,3] },            // free points (2–4), pick nice coordinates
+  "points": [ { "name": "I", "at": "A", "plus": [[1.5, "A", "B"]] },   // I = A + 1.5·AB  (coefficients as numbers or "2/3")
+              { "name": "E", "mid": ["D", "J"], "q": 3 },              // midpoint; "q" = question index (0-based) where it appears
+              { "name": "P", "inter": [["A","I"], ["J","K"]] } ],      // intersection of two lines
+  "polygons": [["A","B","C"]], "segments": [["A","I"], {"a":"E","b":"F","q":3}],
+  "checks": [ {"type":"aligned","pts":["C","I","J"],"q":2}, {"type":"midpoint","m":"C","of":["E","F"],"q":3}, {"type":"parallel","l1":["E","F"],"l2":["B","D"],"q":4} ] }
+FIGURE for functions / analysis / statistics curves: { "graph": { "functions": [ { "expr": "x^2-4", "label": "$f(x) = x^2 - 4$" } ], "xRange": [-4, 4], "yRange": [-5, 6], "points": [ { "x": 2, "y": 0, "label": "A" } ] } }  (expr uses x only; + - * / ^, explicit *, sin cos tan sqrt abs ln log exp, pi, e)
+FIGURE for other exercises (physics, chemistry, biology, etc.): { "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 300'>…</svg>" } using only svg, g, path, line, polyline, polygon, rect, circle, ellipse, text, defs, marker; colours #1f2937, #2563eb, #dc2626, #16a34a, #ea580c, #7c3aed, #9ca3af; arrowheads via <marker>; single-quoted attributes.
+Choose the FIGURE type: vectors/geometry → interactive base/points; functions/analysis → graph; physics, chemistry, biology, geography… → svg; text-only subjects (languages, philosophy, history…) → null.
+Vector colours for "show": blue, green, orange, purple, red, pink, teal, amber ("show" only for interactive figures). Steps must be correct and complete; 2–5 steps per question.`;
+  function normEx(x, i) {
+    if (!x || typeof x !== "object") return null;
+    const str = (v, m = 2000) => (typeof v === "string" ? v.slice(0, m) : v == null ? "" : String(v).slice(0, m));
+    const showOf = (s) => (s && typeof s === "object" ? { vectors: (Array.isArray(s.vectors) ? s.vectors : []).filter((v) => Array.isArray(v) && v.length >= 2).map((v) => [str(v[0], 8), str(v[1], 8), str(v[2] || "", 10), v[3] === undefined ? str(v[0], 8) + str(v[1], 8) : str(v[3], 12)]), lines: (Array.isArray(s.lines) ? s.lines : []).filter((l) => Array.isArray(l) && l.length === 2).map((l) => [str(l[0], 8), str(l[1], 8)]) } : {});
+    let figure = null;
+    if (x.figure && typeof x.figure === "object") {
+      const f = x.figure;
+      if (f.base && typeof f.base === "object") {
+        const base = {}; Object.entries(f.base).forEach(([k, v]) => { if (Array.isArray(v) && isFinite(+v[0]) && isFinite(+v[1])) base[str(k, 8)] = [+v[0], +v[1]]; });
+        const points = (Array.isArray(f.points) ? f.points : []).filter((p) => p && p.name).map((p) => { const o = { name: str(p.name, 8), q: +p.q || 0 }; if (Array.isArray(p.mid)) o.mid = p.mid.slice(0, 2).map((n) => str(n, 8)); else if (Array.isArray(p.inter)) o.inter = p.inter.slice(0, 2).map((l) => (Array.isArray(l) ? l.slice(0, 2).map((n) => str(n, 8)) : [])); else { o.at = str(p.at, 8); o.plus = (Array.isArray(p.plus) ? p.plus : []).filter((tm) => Array.isArray(tm) && tm.length === 3).map((tm) => [fnum(tm[0]), str(tm[1], 8), str(tm[2], 8)]).filter((tm) => tm[0] != null); } return o; });
+        if (Object.keys(base).length >= 2) figure = { base, points, polygons: Array.isArray(f.polygons) ? f.polygons : [], segments: Array.isArray(f.segments) ? f.segments : [], checks: (Array.isArray(f.checks) ? f.checks : []).filter((c) => c && ["aligned", "midpoint", "parallel"].includes(c.type)) };
+      } else if (typeof f.svg === "string") figure = { svg: f.svg.slice(0, 40000) };
+      else if (f.graph && typeof f.graph === "object") {
+        const g = f.graph; const rng = (r) => (Array.isArray(r) && r.length === 2 && isFinite(+r[0]) && isFinite(+r[1]) && +r[1] > +r[0] ? [+r[0], +r[1]] : null);
+        const fns = (Array.isArray(g.functions) ? g.functions : []).filter((fn) => fn && fn.expr).map((fn) => ({ expr: str(fn.expr, 200), label: str(fn.label, 120) })).slice(0, 4);
+        if (fns.length) figure = { graph: { functions: fns, xRange: rng(g.xRange), yRange: rng(g.yRange), points: (Array.isArray(g.points) ? g.points : []).filter((pt) => pt && isFinite(+pt.x) && isFinite(+pt.y)).map((pt) => ({ x: +pt.x, y: +pt.y, label: str(pt.label, 40) })).slice(0, 10) } };
+      }
+    }
+    const questions = (Array.isArray(x.questions) ? x.questions : []).map((q, qi) => {
+      const steps = (Array.isArray(q.steps) ? q.steps : []).map((s) => (typeof s === "string" ? { text: s } : { text: str(s && s.text), note: str(s && s.note, 40), show: showOf(s && s.show) })).filter((s) => s.text);
+      const quiz = q.quiz && Array.isArray(q.quiz.options) && q.quiz.options.length >= 2 ? { q: str(q.quiz.q), options: q.quiz.options.slice(0, 4).map((o) => str(o, 400)), answer: Math.max(0, Math.min(q.quiz.options.length - 1, +q.quiz.answer || 0)), why: str(q.quiz.why) } : null;
+      return { label: str(q.label || qi + 1, 6), title: str(q.title), goal: str(q.goal, 400), steps, show: showOf(q.show), hint: str(q.hint, 600), quiz };
+    }).filter((q) => q.title && q.steps.length);
+    if (!questions.length) return null;
+    return { id: str(x.id || `x${i}`, 30).replace(/[^\w-]/g, "") + "-" + Math.random().toString(36).slice(2, 6), title: str(x.title || `Exercice ${i + 1}`, 60), name: str(x.name, 80), statement: str(x.statement, 4000), remember: (Array.isArray(x.remember) ? x.remember : []).map((r) => str(r, 400)).slice(0, 5), figure, questions };
+  }
+  /* ============ The machine: any series → interactive path ============ */
+  async function readFiles(files) {
+    const images = []; const texts = [];
+    for (const f of files) {
+      const name = f.name || "image";
+      if (f.type === "application/pdf" || /\.pdf$/i.test(name)) {
+        await loadScript(LIB.pdf); await loadScript(LIB.pdfWorker); window.pdfjsLib.GlobalWorkerOptions.workerSrc = LIB.pdfWorker;
+        const pdf = await window.pdfjsLib.getDocument({ data: new Uint8Array(await f.arrayBuffer()), isEvalSupported: false }).promise;
+        let txt = "";
+        for (let i = 1; i <= Math.min(pdf.numPages, 40); i++) { const tc = await (await pdf.getPage(i)).getTextContent(); txt += `\n--- ${name} p.${i} ---\n` + tc.items.map((it) => it.str + (it.hasEOL ? "\n" : " ")).join(""); }
+        if (txt.replace(/[\s\d.\-p]/g, "").length > 60) texts.push(txt);
+        for (let i = 1; i <= Math.min(pdf.numPages, 8); i++) {
+          const page = await pdf.getPage(i); const v1 = page.getViewport({ scale: 1 }); const vp = page.getViewport({ scale: Math.min(2.5, 1400 / v1.width) });
+          const c = document.createElement("canvas"); c.width = Math.round(vp.width); c.height = Math.round(vp.height); const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
+          await page.render({ canvasContext: g, viewport: vp }).promise; const blob = await new Promise((r) => c.toBlob(r, "image/jpeg", 0.85)); if (blob) images.push({ blob, name: `${name} p.${i}` });
+        }
+      } else if (/\.docx$/i.test(name)) {
+        await loadScript(LIB.mammoth); const r = await window.mammoth.extractRawText({ arrayBuffer: await f.arrayBuffer() }); texts.push(`--- ${name} ---\n${r.value}`);
+      } else if (/\.pptx$/i.test(name)) {
+        await loadScript(LIB.jszip); const zip = await window.JSZip.loadAsync(await f.arrayBuffer());
+        const num = (pp) => +(pp.match(/(\d+)\.xml$/) || [0, 0])[1];
+        const slides = Object.keys(zip.files).filter((pp) => /^ppt\/slides\/slide\d+\.xml$/.test(pp)).sort((x, y) => num(x) - num(y));
+        let txt = `--- ${name} ---`;
+        for (const sp of slides) { const xml = new DOMParser().parseFromString(await zip.file(sp).async("string"), "application/xml"); txt += `\n[slide ${num(sp)}]\n` + Array.from(xml.getElementsByTagNameNS("*", "p")).map((pp) => Array.from(pp.getElementsByTagNameNS("*", "t")).map((x) => x.textContent).join("")).filter((x) => x.trim()).join("\n"); }
+        texts.push(txt);
+      } else if (/^image\//.test(f.type) || /\.(jpe?g|png|webp|gif)$/i.test(name)) images.push({ blob: f, name });
+      else if (/^text\//.test(f.type) || /\.(txt|md)$/i.test(name)) texts.push(`--- ${name} ---\n${await f.text()}`);
+    }
+    return { images, text: texts.join("\n\n") };
+  }
+  const LEVELS = [["auto", "lvAuto"], ["Collège", "lvCol"], ["Tronc commun", "lvTC"], ["1ère année Bac", "lv1"], ["2ème année Bac", "lv2"], ["Supérieur", "lvSup"]];
+  const LANG_NAMES = { fr: "French", ar: "Modern Standard Arabic", en: "English" };
+  function outlinePrompt(nImg, text, level, lang) {
+    return `You are digitizing a school exercise sheet for an interactive tutoring app used by Moroccan students.
+Source: ${nImg ? nImg + " attached page image(s)" : ""}${nImg && text ? " + " : ""}${text ? "the extracted/pasted text below" : ""}.
+Transcribe it FAITHFULLY: every exercise, its full statement and every question exactly as asked (fix only obvious OCR noise; never invent). Detect the subject and level${level !== "auto" ? ` (the student says the level is: ${level})` : ""}.
+${lang === "auto" ? "Keep the language of the source." : `Write every field in ${LANG_NAMES[lang]}, translating faithfully.`}
+Math in LaTeX between $…$ (vectors as \\vect{AB}); double every backslash in JSON.
+Reply ONLY with JSON:
+{"title":"chapter / lesson title","subtitle":"Série … · level · school if visible","subject":"Maths|Physique-Chimie|SVT|Français|…","badge":"2 short lines like \\"MATHS\\nTC\\"","lang":"fr|ar|en","level":"detected level","summary":[{"title":"key rule or formula the series relies on","text":"correct statement"}],"exercises":[{"title":"Exercice 1","name":"fun 2–5 word nickname","statement":"full statement","figure_hint":"one sentence describing any figure/table in the source, or empty","questions":[{"label":"1","title":"question exactly as asked"}]}]}
+summary: 3–7 items, correct and useful for this sheet.${text ? `\n\n<source>\n${text.slice(0, 80000)}\n</source>` : ""}`;
+  }
+  function solvePrompt(s, stub) {
+    return `${persona()}
+Build the interactive, step-by-step solution of ONE exercise from the series "${s.title}" (${s.subject || ""}, level: ${s.level || "lycée"}).
+Exercise (keep title, statement, question labels and titles exactly; you may only fix obvious typos):
+${JSON.stringify({ title: stub.title, name: stub.name, statement: stub.statement, figure_hint: stub.figureHint || "", questions: stub.questions.map((q) => ({ label: q.label, title: q.title })) })}
+Solve every question yourself, correctly and completely, at the student's level; double-check every computation. Write in ${s.lang === "ar" ? "Arabic" : s.lang === "en" ? "English" : "French"}. Steps are short and friendly; **bold** each conclusion. Each question gets a hint (no answer) and a 3-option quiz on its key idea.
+${EX_SCHEMA}
+Reply ONLY with the Exercise JSON.`;
+  }
+  function saveLibrary() { let lib = S.library.slice(0, 12); while (lib.length && !store.set("pdp.library", lib)) lib = lib.slice(0, -1); }
+  function stubFrom(e, i) {
+    return { id: e.id || `x${i}-${Math.random().toString(36).slice(2, 6)}`, title: String(e.title || `Exercice ${i + 1}`).slice(0, 60), name: String(e.name || "").slice(0, 80), statement: String(e.statement || "").slice(0, 4000), figureHint: String(e.figure_hint || e.figureHint || "").slice(0, 400),
+      questions: (Array.isArray(e.questions) ? e.questions : []).map((q, qi) => ({ label: String(q.label || qi + 1).slice(0, 6), title: String(q.title || "").slice(0, 2000), steps: [] })).filter((q) => q.title), pending: true };
+  }
+  function setStages(list) { S.mk.stages = list; if (S.view === "home") renderStages(); }
+  function renderStages() {
+    $("mkStages").replaceChildren(...S.mk.stages.map((st) => { const li = el("li", st.state); li.append(el("span", "st", st.state === "ok" ? "✓" : st.state === "err" ? "!" : ""), el("span", null, t(st.key)), el("small", null, st.note || "")); return li; }));
+  }
+  async function makeSeries() {
+    if (S.mk.busy) return;
+    const typed = $("mkText").value.trim();
+    if (!S.mk.files.length && !typed) { toast(t("needInput")); return; }
+    S.mk.busy = true; $("mkGo").disabled = true;
+    const stages = [{ key: "stRead", state: "run" }, { key: "stTranscribe", state: "" }, { key: "stSolve", state: "" }]; setStages(stages);
+    let cur = 0;
+    try {
+      await backendReady;
+      if (S.backend === "none") throw { code: "none" };
+      const { images: allImgs, text: fileText } = await readFiles(S.mk.files);
+      let images = allImgs;
+      const text = [typed, fileText].filter(Boolean).join("\n\n");
+      if (S.backend === "claude" && !S.imagesOk && images.length) { if (!text) throw { code: "images_unavailable" }; images = []; }
+      images = images.slice(0, S.maxImages);
+      stages[0].state = "ok"; stages[1].state = "run"; cur = 1; setStages(stages);
+      const lvl = $("mkLevel").value, lang = $("mkLang").value;
+      const data = await ai(outlinePrompt(images.length, text, lvl, lang), { json: true, images, onText: ({ text: x }) => { stages[1].note = t("writing", { n: x.length }); setStages(stages); } });
+      const stubs = (Array.isArray(data.exercises) ? data.exercises : []).map(stubFrom).filter((e) => e.statement || e.questions.length);
+      stubs.forEach((e) => { if (!e.questions.length) e.questions = [{ label: "1", title: e.statement.slice(0, 200), steps: [] }]; });
+      if (!stubs.length) throw { code: "bad_shape" };
+      const sr = { id: "imp-" + Date.now().toString(36), lang: ["fr", "ar", "en"].includes(data.lang) ? data.lang : lang !== "auto" ? lang : "fr", subject: String(data.subject || "").slice(0, 40), badge: String(data.badge || data.subject || "IA").slice(0, 16), title: String(data.title || "Série").slice(0, 90), subtitle: String(data.subtitle || "").slice(0, 140), level: String(data.level || (lvl !== "auto" ? lvl : "")).slice(0, 40),
+        summary: (Array.isArray(data.summary) ? data.summary : []).filter((x) => x && x.title).map((x) => ({ title: String(x.title).slice(0, 90), text: String(x.text || "").slice(0, 700) })).slice(0, 10), exercises: stubs };
+      S.library.unshift(sr); saveLibrary(); S.src[sr.id] = { images, text };
+      stages[1].state = "ok"; stages[1].note = ""; stages[2].state = "run"; stages[2].note = `0/${stubs.length}`; cur = 2; setStages(stages);
+      S.mk.files = []; $("mkText").value = "";
+      openSeries(sr.id);
+      let k = 0; const queue = sr.exercises.map((_, i) => i);
+      const worker = async () => { while (queue.length) { const i = queue.shift(); await solveOne(sr, i); k++; stages[2].note = `${k}/${stubs.length}`; setStages(stages); } };
+      await Promise.all([worker(), worker()]);
+      stages[2].state = "ok"; setStages(stages); confetti();
+    } catch (e) { stages[cur].state = "err"; stages[cur].note = errText(e); setStages(stages); if (S.view !== "home") toast(errText(e)); }
+    finally { S.mk.busy = false; $("mkGo").disabled = false; if (S.view === "home") renderHome(); }
+  }
+  async function solveOne(sr, i) {
+    const stub = sr.exercises[i]; if (!stub) return;
+    const base = stub.pending || stub.error ? stub : stubFrom({ ...stub, questions: stub.questions }, i);
+    base.pending = true; base.error = ""; sr.exercises[i] = base; refreshEx(sr, i, false);
+    try {
+      const src = S.src[sr.id] || { images: [], text: "" };
+      const needImg = src.images.length && (src.images.length <= 3 || /figure|schéma|schema|ci-contre|graphique|tableau|courbe|الشكل|الرسم|المبيان|diagram|table/i.test(base.statement + " " + base.figureHint));
+      const data = await ai(solvePrompt(sr, base), { json: true, images: needImg ? src.images : [] });
+      const x = normEx({ ...data, title: data.title || base.title, name: data.name || base.name, statement: data.statement || base.statement }, i);
+      if (!x) throw { code: "bad_shape" };
+      x.id = base.id; sr.exercises[i] = x; saveLibrary(); refreshEx(sr, i, true);
+    } catch (e) { base.pending = false; base.error = errText(e); saveLibrary(); refreshEx(sr, i, false); }
+  }
+  function refreshEx(sr, i, ready) {
+    if (S.view !== "study" || S.seriesId !== sr.id) { if (S.view === "home") renderLibrary(); return; }
+    if (S.exIdx === i) renderAll(); else renderTabs();
+    if (ready) toast(t("exReady", { name: sr.exercises[i].title }));
+  }
+  async function regenCurrent() {
+    const sr = S.library.find((x) => x.id === S.seriesId); if (!sr) return;
+    const i = S.exIdx; if (i >= sr.exercises.length) return;
+    const e = sr.exercises[i]; sr.exercises[i] = stubFrom({ id: e.id, title: e.title, name: e.name, statement: e.statement, figureHint: e.figureHint, questions: e.questions }, i);
+    S.revealed = {}; renderAll(); await solveOne(sr, i);
+  }
+  function openSeries(id) { S.seriesId = id; store.set("pdp.series", id); S.exIdx = 0; S.qIdx = 0; S.panel = null; setView("study"); }
+  function setView(v) {
+    S.view = v; $("home").hidden = v !== "home"; $("app").hidden = v !== "study"; $("fab").hidden = v !== "study";
+    window.scrollTo(0, 0);
+    if (v === "home") { applyUiText(); renderHeader(); renderHome(); } else renderAll();
+  }
+  function seriesProgress(sr) { let d = 0, n = 0; sr.exercises.forEach((e) => (e.questions || []).forEach((_, i) => { n++; if (S.progress.done[`${sr.id}|${e.id}|${i}`]) d++; })); return { d, n }; }
+  function renderLibrary() {
+    const grid = $("libGrid"); grid.replaceChildren();
+    allSeries().forEach((sr) => {
+      const c = el("div", "scard"); const top = el("div", "scard-top"); const bd = el("div", "badge-sub"); setBadge(bd, sr.badge || sr.subject);
+      const tt = el("div"); tt.style.minWidth = "0"; tt.append(el("h4", null, sr.title), el("div", "sub", sr.subtitle || "")); top.append(bd, tt); c.append(top);
+      const { d, n } = seriesProgress(sr); const meter = el("div", "meter"); const fill = el("i"); fill.style.width = (n ? (d / n) * 100 : 0) + "%"; meter.append(fill); c.append(meter);
+      const row = el("div", "row"); const info = el("span", null, `${t("exCount", { n: sr.exercises.length })} · ${t("qsCount", { n })}`); row.append(info);
+      if (sr.builtin) row.append(el("span", "ex-tag", t("exampleTag")));
+      else if (sr.exercises.some((e) => e.pending)) row.append(el("span", "spin"));
+      c.append(row);
+      const acts = el("div", "mk-row"); const o = el("button", "btn sm primary", t("open")); o.type = "button"; o.onclick = () => openSeries(sr.id); acts.append(o);
+      if (!sr.builtin) { const del = el("button", "btn sm ghost", "✕"); del.type = "button"; del.setAttribute("aria-label", t("deleteSeries")); del.onclick = () => { if (del.dataset.armed) { S.library = S.library.filter((x) => x.id !== sr.id); delete S.extra[sr.id]; store.set("pdp.extra", S.extra); saveLibrary(); renderLibrary(); } else { del.dataset.armed = "1"; del.textContent = t("confirmDel"); } }; acts.append(del); }
+      c.append(acts); grid.append(c);
+    });
+  }
+  function renderHome() {
+    const h = $("heroTitle"); h.replaceChildren(document.createTextNode(t("heroA")), el("em", null, t("heroB")));
+    const flow = $("flow"); flow.replaceChildren(); ["flow1", "flow2", "flow3", "flow4"].forEach((k, i) => { if (i) flow.append(el("b", null, ui === "ar" ? "←" : "→")); flow.append(el("span", null, t(k))); });
+    const lv = $("mkLevel"), lvVal = lv.value || "auto"; lv.replaceChildren(...LEVELS.map(([v, k]) => { const o = el("option", null, t(k)); o.value = v; return o; })); lv.value = lvVal;
+    const lg = $("mkLang"), lgVal = lg.value || "auto"; lg.replaceChildren(...[["auto", "plAuto"], ["fr", "lFr"], ["ar", "lAr"], ["en", "lEn"]].map(([v, k]) => { const o = el("option", null, t(k)); o.value = v; return o; })); lg.value = lgVal;
+    const seg = $("mkModel"); seg.replaceChildren(...Object.entries(MODELS).map(([k, m]) => { const b = el("button", null, m.name); b.type = "button"; b.setAttribute("aria-pressed", String(S.settings.model === k)); b.onclick = () => { S.settings.model = k; saveSettings(); renderHome(); $("modelChip").textContent = modelName(); }; return b; }));
+    $("mkModelNote").textContent = t((MODELS[S.settings.model] || MODELS.haiku).desc);
+    $("mkEffort").value = String(S.settings.effort); $("mkEffortLbl").textContent = t(EFF_KEYS[S.settings.effort]);
+    $("mkFiles").replaceChildren(...S.mk.files.map((f, i) => { const d = el("div", "thumb"); if (/^image\//.test(f.type)) { const im = el("img"); im.src = f._url || (f._url = URL.createObjectURL(f)); im.alt = ""; d.append(im); } else { d.style.display = "grid"; d.style.placeItems = "center"; d.append(el("span", "mono", (f.name.split(".").pop() || "").toUpperCase().slice(0, 4))); } const x = el("button", null, "✕"); x.type = "button"; x.setAttribute("aria-label", f.name); x.onclick = () => { S.mk.files.splice(i, 1); renderHome(); }; d.append(x); return d; }));
+    const feats = $("feats"); feats.replaceChildren(...[["f1", "✓"], ["f2", "◭"], ["f3", "✦"], ["f4", "◉"], ["f5", "★"]].map(([k, g]) => { const f = el("div", "feat"); f.append(el("span", "fi", g), el("h4", null, t(k + "t")), el("p", null, t(k + "d"))); return f; }));
+    renderStages(); renderLibrary();
+  }
+  const addMk = (list) => { S.mk.files.push(...Array.from(list || []).slice(0, 20)); renderHome(); };
+  $("mkPick").onclick = () => $("mkFile").click(); $("mkCam").onclick = () => $("mkCamIn").click();
+  $("mkFile").onchange = (e) => { addMk(e.target.files); e.target.value = ""; }; $("mkCamIn").onchange = (e) => { addMk(e.target.files); e.target.value = ""; };
+  ["dragenter", "dragover"].forEach((ev) => $("mkDrop").addEventListener(ev, (e) => { e.preventDefault(); $("mkDrop").classList.add("over"); }));
+  ["dragleave", "drop"].forEach((ev) => $("mkDrop").addEventListener(ev, (e) => { e.preventDefault(); $("mkDrop").classList.remove("over"); }));
+  $("mkDrop").addEventListener("drop", (e) => addMk(e.dataTransfer && e.dataTransfer.files));
+  document.addEventListener("paste", (e) => { if (S.view !== "home") return; const fl = Array.from((e.clipboardData && e.clipboardData.items) || []).filter((it) => it.kind === "file").map((it) => it.getAsFile()).filter(Boolean); if (fl.length) { e.preventDefault(); addMk(fl); } });
+  $("mkEffort").addEventListener("input", (e) => { S.settings.effort = +e.target.value; saveSettings(); $("mkEffortLbl").textContent = t(EFF_KEYS[S.settings.effort]); $("modelChip").textContent = modelName(); });
+  $("mkGo").onclick = makeSeries;
+  async function makeSimilar() {
+    const b = $("similarBtn"); b.disabled = true; toast(t("simBuilding"));
+    try {
+      const e = ex(); const src = JSON.stringify({ title: e.title, statement: e.statement, figure: e.figure && e.figure.base ? e.figure : null, questions: e.questions.map((q) => ({ label: q.label, title: q.title, steps: q.steps.map((s) => s.text) })) });
+      const data = await ai(`Create ONE new exercise of the same type and difficulty as this one, with different points/coefficients so the student can practise the same method. Solve it fully and correctly; double-check every vector computation. Keep the language "${series().lang}". Give it a fun nickname.\nOriginal exercise:\n${src}\n${EX_SCHEMA}\nReply ONLY with the Exercise JSON.`, { json: true });
+      const x = normEx(data, series().exercises.length);
+      if (!x) throw { code: "bad_shape" };
+      x.ai = true; x.title = `${x.title.replace(/\s*✦$/, "")}`;
+      const list = S.extra[S.seriesId] || []; list.push(x); S.extra[S.seriesId] = list.slice(-6); store.set("pdp.extra", S.extra);
+      S.exIdx = series().exercises.length - 1; S.qIdx = 0; renderAll(); toast(t("simDone"));
+    } catch (er) { toast(errText(er)); } finally { b.disabled = false; }
+  }
+
+  /* ============ Theme, language, wiring ============ */
+  function applyTheme() {
+    const th = S.settings.theme; if (th) document.documentElement.dataset.theme = th; else delete document.documentElement.dataset.theme;
+    const dark = th ? th === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    $("themeBtn").replaceChildren(icon(dark ? "sun" : "moon"));
+  }
+  $("themeBtn").onclick = () => { const dark = S.settings.theme ? S.settings.theme === "dark" : !matchMedia("(prefers-color-scheme: light)").matches; S.settings.theme = dark ? "light" : "dark"; saveSettings(); applyTheme(); };
+  $("uiSeg").addEventListener("click", (e) => { const b = e.target.closest("button[data-l]"); if (!b) return; ui = b.dataset.l; store.set("pdp.ui", ui); renderAll(); renderLogIntro(); });
+  $("settingsBtn").onclick = openSettings;
+  $("summaryBtn").onclick = openSummary;
+  $("importBtn").onclick = () => setView("home");
+  $("homeBtn").onclick = () => setView("home");
+  $("regenBtn").onclick = () => regenCurrent();
+  $("similarBtn").onclick = makeSimilar;
+  $("seriesSel").onchange = (e) => openSeries(e.target.value);
+  document.addEventListener("keydown", (e) => {
+    if (S.view !== "study" || e.target.closest("input, textarea, select") || $("overlay").childElementCount) return;
+    if (e.key === "ArrowRight") goQ(S.qIdx + (ui === "ar" ? -1 : 1));
+    if (e.key === "ArrowLeft") goQ(S.qIdx + (ui === "ar" ? 1 : -1));
+  });
+  function applyUiText() {
+    document.documentElement.lang = ui; $("app").dir = ui === "ar" ? "rtl" : "ltr"; document.querySelector(".top-in").dir = ui === "ar" ? "rtl" : "ltr";
+    document.querySelectorAll("[data-t]").forEach((n) => { n.textContent = t(n.dataset.t); });
+    document.querySelectorAll("[data-tp]").forEach((n) => { n.placeholder = t(n.dataset.tp); });
+    $("uiSeg").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.l === ui)));
+    $("modelChip").textContent = lastServed || modelName();
+  }
+  function renderAll() {
+    if (S.view === "home") { applyUiText(); renderHeader(); renderHome(); return; }
+    if (S.exIdx >= series().exercises.length) S.exIdx = 0;
+    applyUiText(); renderHeader(); renderTabs(); renderNav(); renderStatement(); renderBoard(); renderQuestion(); renderChips();
+    const sr = S.library.find((x) => x.id === S.seriesId); $("regenBtn").hidden = !(sr && S.exIdx < sr.exercises.length && !ex().pending);
+  }
+
+  let backendReady;
+  async function detectBackend() {
+    if (window.claude && typeof window.claude.use === "function") {
+      let sample = null; try { sample = await window.claude.use("sample"); } catch {}
+      if (sample) { S.backend = "claude"; S.sample = sample; try { const lim = await sample.limits(); S.imagesOk = !!(lim && lim.images); if (lim && lim.images) S.maxImages = lim.images.maxCount || 10; } catch {} }
+      else S.backend = "none";
+    } else S.backend = "api";
+    if (S.backend !== "claude") renderQuestion();
+  }
+
+  /* ============ Boot ============ */
+  const savedUi = store.get("pdp.ui", ""); ui = ULANGS.includes(savedUi) ? savedUi : ((navigator.language || "").startsWith("ar") ? "ar" : (navigator.language || "").startsWith("en") ? "en" : "fr");
+  if (!allSeries().some((s) => s.id === S.seriesId)) S.seriesId = SERIES1.id;
+  applyTheme(); setView("home"); renderLogIntro();
+  backendReady = detectBackend();
+  window.__pdp = { S, computeFigure, runCheck, normEx, parseJsonLoose, series, goQ, renderAll, SERIES1, compileExpr, setView, openSeries };
+})();
+</script>
