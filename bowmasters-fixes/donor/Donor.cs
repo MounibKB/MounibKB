@@ -102,11 +102,19 @@ public static class Donor
             // not from where the victim stood before the hit.
             self.directionMultiplier = ((self.footballerCharacter.transform.position.x > self.affectedCharacter.transform.position.x) ? (-1f) : 1f);
             self.xStartPosition = self.affectedCharacter.transform.position.x - self.directionMultiplier * self.xStartDistance;
-            if (ballBone != null)
+            // Design: the VICTIM holds the ball (ball_catch -> ball_panic), Mike runs in empty-handed and the
+            // touchdown tackle takes the ball (FootballerCollide parents it to Mike's ball_idle_out).  The port
+            // instead teleported the ball into Mike's hand.  Attach it to the victim's weapon-hand anchor exactly
+            // like Level.CreateWeapon attaches a weapon to a character.
+            Character victim = self.affectedCharacter as Character;
+            Transform anchor = (victim != null) ? victim.WeaponAnchorTransform : null;
+            if (anchor != null)
             {
-                self.burningBall.transform.parent = ballBone.gameObject.transform;
-                self.burningBall.transform.localPosition = Vector3.zero;
+                anchor.localRotation = Quaternion.Euler(0f, 0f, self.burningBall.BoneAngle);
+                self.burningBall.transform.parent = anchor;
+                self.burningBall.transform.localPosition = self.burningBall.AnchorPointOffset;
                 self.burningBall.transform.localRotation = Quaternion.identity;
+                self.burningBall.transform.localScale = Vector3.one;
             }
             CameraController cameraController = self.CachedCameraController;
             cameraController.SetScaleWithDuration(self.cameraZoom, self.timeForCameraChangePosition);
