@@ -525,6 +525,15 @@ canvas#confetti { position: fixed; inset: 0; z-index: 70; pointer-events: none; 
 .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
 .fact b { display: block; font-family: var(--font-display); font-size: 30px; color: hsl(var(--th) 75% 65%); line-height: 1.1; }
 .fact span { font-size: 13px; color: var(--muted); }
+.qc #boardCard { border: 0; background: transparent; margin: -4px -6px 0; }
+.qc #boardCard .board-head { padding: 0 6px; } .qc #boardCard .board { margin: 6px 0 0; } .qc #boardCard .board-foot { padding: 6px 6px 0; }
+.mini { border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: var(--paper); }
+.mini svg { display: block; width: 100%; height: auto; max-height: 230px; }
+.ans-line { margin: 0; font-size: 15.5px; }
+details.why summary { cursor: pointer; color: var(--muted); font-size: 13px; font-weight: 700; list-style: none; }
+details.why summary::-webkit-details-marker { display: none; }
+details.why[open] summary { margin-bottom: 4px; }
+.answer { gap: 8px; }
 mjx-container { color: inherit; }
 mjx-container:not([display="true"]) { display: inline-block; max-width: 100%; overflow-x: auto; overflow-y: hidden; vertical-align: middle; }
 mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
@@ -1517,8 +1526,8 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
   }
   function goQ(i, scroll) {
     S.qIdx = Math.max(0, Math.min(ex().questions.length - 1, i)); activeStepOverride = null; clearInterval(animTimer);
-    renderNav(); renderBoard(); renderChips();
-    document.querySelectorAll(".qc").forEach((c, j) => c.classList.toggle("active", j === S.qIdx));
+    renderNav(); renderChips();
+    renderBoard(); renderQuestion();
     if (scroll) { const c = document.querySelectorAll(".qc")[S.qIdx]; if (c) c.scrollIntoView({ behavior: "smooth", block: "start" }); }
   }
   let stmtOpen = false;
@@ -1535,7 +1544,7 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
   const qKind = (q) => q.kind || (/^\s*(construire|tracer|placer|construct|draw|أنشئ|ارسم)/i.test(q.title) ? "direct" : "try");
   const qAnswer = (q) => q.answer || (q.steps.length ? q.steps[q.steps.length - 1].text : "");
   function renderQuestion() {
-    const e = ex(), box = $("qcard"); box.replaceChildren(); box.classList.remove("card", "pad");
+    const e = ex(), box = $("qcard"); const bc = $("boardCard"); if (bc && box.contains(bc)) box.before(bc); box.replaceChildren(); box.classList.remove("card", "pad");
     const lang = series().lang === "ar" ? "rtl" : "ltr";
     if (e.pending || e.error) {
       const pb = el("div", "pending-box card pad");
@@ -1545,11 +1554,17 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
     }
     const flow = el("div", "qflow"); flow.dir = lang;
     e.questions.forEach((q, i) => flow.append(renderQCard(e, q, i)));
-    box.append(flow);
+    box.append(flow); placeBoard();
     const { d, n } = exProgress(e);
     if (d === n) box.append(renderFinale(e));
     else { const g = el("button", "btn ghost"); g.type = "button"; g.style.justifySelf = "start"; g.style.marginTop = "10px"; g.append(icon("camera"), el("span", null, t("gradeCopy"))); g.onclick = () => { S.panel = S.panel === "grade" ? null : "grade"; renderQuestion(); }; box.append(g); if (S.panel === "grade") box.append(renderVerify(qq())); }
     typeset([box]);
+  }
+  function placeBoard() {
+    const card = $("boardCard"), act = document.querySelectorAll(".qc")[S.qIdx];
+    if (!card) return;
+    if (act && !card.hidden) { const head = act.querySelector(".qc-head"); head.after(card); }
+    else if (card.parentElement !== document.querySelector(".main")) $("qcard").before(card);
   }
   function markSolved(e, i, how) {
     const k = qKey(e, i); solveState[k] = Object.assign(solveState[k] || {}, { status: how }); saveSolve();
@@ -1592,16 +1607,24 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
       acts.append(rv); box.append(acts); c.append(box);
     }
     if (done) {
+      if (st.verdict === "correct" || (q.options && q.options.length && st.picked === q.correct)) { const f = el("div", "fb ok"); f.append(el("b", null, t("nice"))); c.append(f); }
       const a = el("div", "answer");
-      if (st.verdict === "correct" || (q.options && q.options.length && st.picked === q.correct)) { const f = el("div", "fb ok"); f.append(el("b", null, t("nice")), rich(el("span"), st.feedback || "")); c.append(f); }
-      a.append(el("span", "ans-k", t("answerK")));
-      if (q.options && q.options.length) a.append(richEl("p", null, `**${"ABCDE"[q.correct]}** — ${q.options[q.correct]}`));
-      else if (q.answer) a.append(richEl("p", null, q.answer));
-      if (q.steps.length && !(q.steps.length === 1 && q.steps[0].text === q.answer)) { const ol = el("ol", "steps"); q.steps.forEach((s2, j) => ol.append(renderStep(s2, j, false))); a.append(ol); }
+      const short = q.options && q.options.length ? `**${"ABCDE"[q.correct]}** — ${q.options[q.correct]}` : qKind(q) === "direct" && !q.answer ? "" : qAnswer(q).replace(/^(Donc|Donc,|Alors|So|إذن)\s*/i, "");
+      if (short) a.append(richEl("p", "ans-line", short));
+      if (i !== S.qIdx) { const m = miniFigure(e, i); if (m) a.append(m); }
+      if (q.visual) { const vb = el("div"); TB.render(vb, [q.visual]); a.append(vb); }
+      if (q.steps.length > (short ? 1 : 0)) { const det = el("details", "why"); det.append(el("summary", null, t("stWhy") + " ▾")); const ol = el("ol", "steps"); q.steps.forEach((s2, j) => ol.append(renderStep(s2, j, false))); det.append(ol); det.addEventListener("toggle", () => typeset([det]), { once: true }); a.append(det); }
       c.append(a);
       if (q.tip) { const tp = el("div", "tip"); tp.append(el("span", "ti", "💡"), rich(el("span"), q.tip)); c.append(tp); }
     }
     return c;
+  }
+  function miniFigure(e, i) {
+    const fig = e.figure; if (!fig || !fig.base) return null;
+    const saved = S.qIdx, savedO = activeStepOverride; S.qIdx = i; activeStepOverride = null;
+    const svg = sv("svg", { viewBox: `0 0 ${W} ${H}`, class: "fig no-tex", role: "img" });
+    try { paintFigure(svg, e, fig); } finally { S.qIdx = saved; activeStepOverride = savedO; }
+    const d = el("div", "mini"); d.append(svg); return d;
   }
   function renderFinale(e) {
     const f = el("section", "finale"); f.append(el("h3", null, t("finaleT")));
@@ -1987,7 +2010,8 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
   { "label": "1" (or "2a"…), "title": "the question as asked", "goal": "what we aim to show, short",
     "kind": "direct" (obvious or pure-construction: just show it) | "try" (worth thinking about: the student attempts first),
     "options": ["only if the sheet itself gives choices (MCQ, true/false)"], "correct": index of the right option (with options),
-    "answer": "the final answer, short and natural (1–2 sentences or a value)",
+    "answer": "the final answer in ONE line (max ~20 words or a value) — this is what the student sees first",
+    "visual": optional ONE teaching block (svg, table, formula, graph or model — see vocabulary) that shows the answer at a glance; include one for most non-trivial questions when a picture or table says it faster than words,
     "tip": "an optional clever memory trick, shortcut or 'aha' shown right after the answer — only when genuinely useful",
     "steps": [ { "text": "one reasoning move, short; **bold** the conclusion", "note": "≤4 words shown on the figure", "show": { "vectors": [["A","B","blue","AB"]], "lines": [["A","B"]] } } ],
     "show": { "vectors": [...] },
@@ -2033,6 +2057,7 @@ Vector colours for "show": blue, green, orange, purple, red, pink, teal, amber (
       const quiz = q.quiz && Array.isArray(q.quiz.options) && q.quiz.options.length >= 2 ? { q: str(q.quiz.q), options: q.quiz.options.slice(0, 4).map((o) => str(o, 400)), answer: Math.max(0, Math.min(q.quiz.options.length - 1, +q.quiz.answer || 0)), why: str(q.quiz.why) } : null;
       const options = (Array.isArray(q.options) ? q.options : []).map((o) => str(o, 300)).filter(Boolean).slice(0, 5);
       return { label: str(q.label || qi + 1, 6), title: str(q.title), goal: str(q.goal, 400), steps, show: showOf(q.show), hint: str(q.hint, 600), quiz,
+        visual: q.visual && typeof q.visual === "object" ? TB.normalize([q.visual]).filter((b) => b.type !== "followups" && b.type !== "question")[0] || null : null,
         kind: q.kind === "direct" ? "direct" : "try", answer: str(q.answer, 600), tip: str(q.tip, 400), options: options.length >= 2 ? options : [], correct: Math.max(0, Math.min(options.length - 1, +q.correct || 0)) };
     }).filter((q) => q.title && q.steps.length);
     if (!questions.length) return null;
@@ -2087,7 +2112,7 @@ summary: 3–7 items, correct and useful for this sheet.${text ? `\n\n<source>\n
 Build the interactive, step-by-step solution of ONE exercise from the series "${s.title}" (${s.subject || ""}, level: ${s.level || "lycée"}).
 Exercise (keep title, statement, question labels and titles exactly; you may only fix obvious typos):
 ${JSON.stringify({ title: stub.title, name: stub.name, statement: stub.statement, figure_hint: stub.figureHint || "", questions: stub.questions.map((q) => ({ label: q.label, title: q.title })) })}
-Solve every question yourself, correctly and completely, at the student's level; double-check every computation. Write in ${s.lang === "ar" ? "Arabic" : s.lang === "en" ? "English" : "French"}. You are designing how the student SOLVES this, like an exceptional, creative teacher: mark obvious items "direct", keep "try" for questions worth thinking about; give a hint that nudges without giving it away; steps explain the answer so it clicks. Steps are short (one move each, 1–2 sentences) and friendly; **bold** each conclusion. 2–4 steps per question. Step "blocks" are rare: only when a step truly needs a picture or a quick prediction question. Each question gets a hint (no answer) and a 3-option quiz on its key idea.
+Solve every question yourself, correctly and completely, at the student's level; double-check every computation. Write in ${s.lang === "ar" ? "Arabic" : s.lang === "en" ? "English" : "French"}. You are designing how the student SOLVES this, like an exceptional, creative teacher: mark obvious items "direct", keep "try" for questions worth thinking about; give a hint that nudges without giving it away; steps explain the answer so it clicks. BE BRIEF: the answer line says it all; "steps" are the optional "why" (1–3 steps, each ≤ 15 words). Never pad. Steps are short and friendly; **bold** each conclusion. 1–3 steps per question. Step "blocks" are rare: only when a step truly needs a picture or a quick prediction question. Each question gets a hint (no answer) and a 3-option quiz on its key idea.
 ${exSchema()}
 Reply ONLY with the Exercise JSON.`;
   }
