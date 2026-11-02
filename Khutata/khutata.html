@@ -319,6 +319,7 @@ textarea#lessonText { width: 100%; min-height: 130px; resize: vertical; border: 
 .sec-blocks { margin-top: 12px; }
 .msg.ai { max-width: 100%; }
 .aiopts { font-size: 13px; color: var(--muted); } .aiopts summary { cursor: pointer; } .aiopts[open] { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; } .aiopts[open] summary { width: 100%; }
+details.ex-more summary { cursor: pointer; color: var(--muted); font-weight: 700; font-size: 14px; list-style: none; } details.ex-more[open] summary { margin-bottom: 12px; }
 .ex-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; border-top: 1px solid var(--line); padding-top: 14px; }
 .ex-tools .lbl { font-size: 13px; color: var(--muted); font-weight: 600; }
 .ex-out:empty { display: none; }
@@ -458,6 +459,7 @@ mjx-container[display="true"] { margin: .3em 0 !important; }
     level: ["مستوى الشرح", "Niveau d'explication", "Explanation level"],
     aiOpts: ["خيارات الذكاء الاصطناعي", "Options IA", "AI options"], aiModel: ["النموذج", "Modèle", "Model"], aiEffort: ["التفكير", "Réflexion", "Effort"],
     eLow: ["سريع", "Rapide", "Quick"], eMed: ["متوازن", "Équilibré", "Balanced"], eHigh: ["معمّق", "Approfondi", "Deep"],
+    exMore: ["مثال محلول، أخطاء شائعة وأسئلة", "Exemple résolu, erreurs et questions", "Worked example, mistakes & questions"],
     exTools: ["لم تتضح الفكرة؟", "Pas encore clair ?", "Still unclear?"], exStuck: ["لم أفهم", "Je ne comprends pas", "I don't get it"], exSimpler: ["أبسط", "Plus simple", "Simpler"], exExample: ["بمثال من الحياة", "Avec un exemple concret", "With a real example"], exWhy: ["لماذا؟", "Pourquoi ?", "Why?"], exVisual: ["أرني ذلك", "Montre-moi", "Show me"],
     lvSimple: ["سهل جدًا", "Très simple", "Very simple"],
     lvStd: ["عادي", "Normal", "Normal"],
@@ -1134,8 +1136,8 @@ REPLY with ONLY one JSON object, no prose before or after:
   "evidence": [ { "kind": "quran" | "hadith" | "quote" | "text", "label": "e.g. الشاهد القرآني", "text": "exact text", "source": "", "translation": "", "significance": "what it shows, one sentence" } ],
   "memoryKey": { "label": "e.g. مفتاح الحفظ والفهم", "chips": [ { "text": "2–3 words", "icon": "<icon>" } ] },
   "explanation": {
-    "simple": "the core idea in 2–4 short sentences, starting from something familiar",
-    "analogy": "one comparison with everyday life that makes the main idea obvious",
+    "simple": "the core idea in 1–2 short sentences, starting from something familiar",
+    "analogy": "one short comparison with everyday life (one sentence)",
     "points": ["2–4 key ideas, one short sentence each"],
     "worked": { "problem": "a short exercise", "steps": ["one action per step", "..."], "answer": "..." },
     "example": "one concrete example, only if \"analogy\" doesn't already do the job; else empty",
@@ -1145,7 +1147,8 @@ REPLY with ONLY one JSON object, no prose before or after:
   "notes": "unreadable or uncertain parts; empty string if none"
 }
 
-TEACHING CHOICES (keep it lean: 2–4 sections, at most one block per section, many sections need none): the lesson's nature decides the shape. Use the fixed section types below when they fit; any section may also carry "blocks" (teaching blocks, vocabulary below) placed right where they explain the idea, and a section may be {"heading":"...","type":"free","blocks":[...]} when the idea needs something else: a "timeline" and "causal" chain for history, "relations" for actors and influences, a "model" when changing a quantity teaches the law, an "svg" diagram or "formula" next to the idea it shows, a "question" that makes the student predict. A simple lesson may need no blocks at all. Put visuals INSIDE the sections they explain; leave the top-level "visuals" array empty unless a visual concerns the whole lesson (e.g. a "figure" cropped from the photos). Never add blocks just to fill space.
+BE BRIEF AND VISUAL: every item text ≤ 12 words; definitions one short line. Show, don't tell: give most sections ONE visual block (svg diagram, table, formula, graph, timeline, causal chain or model) that makes the idea visible at a glance; text-only sections are the exception.
+TEACHING CHOICES (2–4 sections, at most one block per section): the lesson's nature decides the shape. Use the fixed section types below when they fit; any section may also carry "blocks" (teaching blocks, vocabulary below) placed right where they explain the idea, and a section may be {"heading":"...","type":"free","blocks":[...]} when the idea needs something else: a "timeline" and "causal" chain for history, "relations" for actors and influences, a "model" when changing a quantity teaches the law, an "svg" diagram or "formula" next to the idea it shows, a "question" that makes the student predict. A simple lesson may need no blocks at all. Put visuals INSIDE the sections they explain; leave the top-level "visuals" array empty unless a visual concerns the whole lesson (e.g. a "figure" cropped from the photos). Never add blocks just to fill space.
 BLOCK VOCABULARY (for "blocks"; never "followups" here):
 ${TB.GUIDE.replace(/^HOW TO TEACH[\s\S]*?using any of these, in any order:\n/, "").replace(/\{"type":"followups"[^\n]*\n/, "")}
 SECTIONS: 2–4, in the lesson's order. "pillars" = parallel parts/types/conditions (2–6, coloured cards). "checklist" = explanations, effects, rules (2–5 rows). "steps" = a process, a method or a chronology (dates as titles). "compare" = 2–3 things contrasted. Keep every text SHORT: the schematic must be much easier than the lesson.
@@ -1608,20 +1611,23 @@ ${JSON.stringify(stripForModel(d))}`;
     if (x.simple) nodes.push(el("p", "simple", x.simple));
     if (x.analogy) { const s = el("div", "analogy"); s.append(h3("sun", t.analogy), el("p", null, x.analogy)); nodes.push(s); }
     if (x.points.length) { const s = el("div"); const ul = el("ul"); x.points.forEach((p) => ul.append(el("li", null, p))); s.append(h3("list", t.points), ul); nodes.push(s); }
+    const more = el("details", "ex-more"); const moreBody = el("div"); moreBody.style.display = "grid"; moreBody.style.gap = "14px"; more.append(el("summary", null, tl("exMore") + " ▾"), moreBody);
+    const pushMore = (n) => moreBody.append(n);
     if (x.worked) {
       const s = el("div", "worked"); s.append(h3("calc", t.worked));
       if (x.worked.problem) s.append(el("p", null, x.worked.problem));
       if (x.worked.steps.length) { const ol = el("ol"); x.worked.steps.forEach((p) => ol.append(el("li", null, p))); s.append(ol); }
       if (x.worked.answer) s.append(el("p", "ans", `${t.answer} ${x.worked.answer}`));
-      nodes.push(s);
+      pushMore(s);
     }
-    if (x.example) { const s = el("div", "example"); s.append(h3("users", t.example), el("p", null, x.example)); nodes.push(s); }
-    if (x.mistakes.length) { const s = el("div", "mistakes"); const ul = el("ul"); x.mistakes.forEach((p) => ul.append(el("li", null, p))); s.append(h3("warn", t.mistakes), ul); nodes.push(s); }
+    if (x.example) { const s = el("div", "example"); s.append(h3("users", t.example), el("p", null, x.example)); pushMore(s); }
+    if (x.mistakes.length) { const s = el("div", "mistakes"); const ul = el("ul"); x.mistakes.forEach((p) => ul.append(el("li", null, p))); s.append(h3("warn", t.mistakes), ul); pushMore(s); }
     if (x.questions.length) {
       const s = el("div", "qa"); s.append(h3("key", t.qs));
       x.questions.forEach((q) => { const det = el("details"); det.append(el("summary", null, q.q)); if (q.a) { const p = el("p"); p.append(el("b", null, t.ans + ": "), document.createTextNode(q.a)); det.append(p); } s.append(det); });
-      nodes.push(s);
+      pushMore(s);
     }
+    if (moreBody.childElementCount) { more.addEventListener("toggle", () => typeset([more]), { once: true }); nodes.push(more); }
     if (d.notes) nodes.push(el("p", "note", `${t.notes} ${d.notes}`));
     const tools = el("div", "ex-tools"); tools.append(el("span", "lbl", tl("exTools")));
     const out = el("div", "ex-out");

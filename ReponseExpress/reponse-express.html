@@ -1,0 +1,558 @@
+<title>Réponse Express</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=JetBrains+Mono:wght@600&display=swap">
+<style>
+/* Layout: one narrow column — drop the homework, get a clean answer sheet: answer first, one-line reason, a picture only when it is the answer. */
+:root {
+  --bg: #0c0f15; --surface: #141923; --surface-2: #1b2130; --line: #283043; --fg: #eaeef5; --muted: #8f99ae;
+  --accent: #6ee7b7; --accent-ink: #062b1d; --bad: #ff7b72; --blue: #7aa7ff; --red: #ff7b72; --green: #5fd08a; --orange: #ffa45c; --purple: #b59cff; --ok: #5fd08a;
+  --d-ink: #e5e7eb; --d-blue: #7aa7ff; --d-red: #ff7b72; --d-green: #5fd08a; --d-orange: #ffa45c; --d-purple: #b59cff; --d-grey: #6b7280;
+  --font-display: "Bricolage Grotesque", "IBM Plex Sans Arabic", system-ui, sans-serif; --font-body: "Atkinson Hyperlegible", "IBM Plex Sans Arabic", system-ui, sans-serif; --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) { --bg: #f4f6fa; --surface: #fff; --surface-2: #f1f4f9; --line: #dde3ec; --fg: #141a26; --muted: #5a6478; --accent: #0f9d6e; --accent-ink: #fff; --bad: #d23c3c; --blue: #2d6ee0; --red: #dc3b3b; --green: #18925a; --orange: #d9700f; --purple: #7547de; --ok: #18925a; --d-ink: #1f2937; --d-blue: #2563eb; --d-red: #dc2626; --d-green: #16a34a; --d-orange: #ea580c; --d-purple: #7c3aed; --d-grey: #9ca3af; color-scheme: light; } }
+:root[data-theme="light"] { --bg: #f4f6fa; --surface: #fff; --surface-2: #f1f4f9; --line: #dde3ec; --fg: #141a26; --muted: #5a6478; --accent: #0f9d6e; --accent-ink: #fff; --bad: #d23c3c; --blue: #2d6ee0; --red: #dc3b3b; --green: #18925a; --orange: #d9700f; --purple: #7547de; --ok: #18925a; --d-ink: #1f2937; --d-blue: #2563eb; --d-red: #dc2626; --d-green: #16a34a; --d-orange: #ea580c; --d-purple: #7c3aed; --d-grey: #9ca3af; color-scheme: light; }
+:root { --tb-line: var(--line); --tb-card: var(--surface); --tb-bg2: var(--surface-2); --tb-muted: var(--muted); --tb-fg: var(--fg); --tb-accent: var(--accent); --tb-ok: var(--ok); --tb-bad: var(--bad); --tb-blue: var(--blue); --tb-red: var(--red); --tb-green: var(--green); --tb-purple: var(--purple); }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15.5px; line-height: 1.6; }
+.wrap { max-width: 720px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr); }
+h1, h2, h3 { font-family: var(--font-display); margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.head { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; }
+.head h1 { font-size: 30px; font-weight: 800; } .head h1 span { color: var(--accent); }
+.head p { margin: 2px 0 0; color: var(--muted); font-size: 14px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
+.seg button { border: 0; background: var(--surface); padding: 5px 10px; font-size: 12.5px; font-weight: 700; color: var(--muted); cursor: pointer; }
+.seg button + button { border-inline-start: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: grid; gap: 12px; min-width: 0; }
+.drop { border: 2px dashed var(--line); border-radius: 13px; padding: 18px; text-align: center; color: var(--muted); display: grid; gap: 8px; justify-items: center; }
+.drop.over { border-color: var(--accent); }
+.drop b { color: var(--fg); }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.btn { border: 1px solid var(--line); background: var(--surface-2); border-radius: 10px; padding: 7px 13px; font-weight: 700; font-size: 14px; cursor: pointer; display: inline-flex; gap: 7px; align-items: center; }
+.btn:hover:not(:disabled) { border-color: var(--fg); } .btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn.go { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-size: 16px; padding: 12px; justify-content: center; border-radius: 12px; }
+textarea { width: 100%; min-height: 90px; resize: vertical; border: 1px solid var(--line); background: var(--surface-2); border-radius: 11px; padding: 10px 12px; }
+select { border: 1px solid var(--line); background: var(--surface-2); border-radius: 8px; padding: 4px 8px; font-size: 13.5px; }
+label.opt { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; color: var(--muted); }
+.pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 8px; } .pages:empty { display: none; }
+.pg { position: relative; aspect-ratio: 3 / 4; border-radius: 9px; overflow: hidden; border: 1px solid var(--line); background: var(--surface-2); display: grid; place-items: center; font-family: var(--font-mono); font-size: 12px; color: var(--accent); }
+.pg img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pg button { position: absolute; top: 3px; inset-inline-end: 3px; width: 22px; height: 22px; border-radius: 50%; border: 0; background: rgb(0 0 0 / .6); color: #fff; font-size: 12px; cursor: pointer; }
+.status { display: flex; gap: 10px; align-items: center; color: var(--muted); font-size: 14px; min-height: 20px; } .status.err { color: var(--bad); }
+.spin { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line); border-top-color: var(--accent); animation: rot .8s linear infinite; flex: none; }
+@keyframes rot { to { transform: rotate(360deg); } }
+.sheet { display: grid; gap: 4px; }
+.sheet-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+.sheet-head h2 { font-size: 20px; }
+.ex-t { font-family: var(--font-display); font-size: 15px; color: var(--muted); margin: 14px 0 4px; }
+.item { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; padding: 12px 0; border-top: 1px solid var(--line); }
+.item:first-of-type { border-top: 0; }
+.lbl { min-width: 30px; height: 26px; padding: 0 6px; border-radius: 8px; background: var(--surface-2); display: grid; place-items: center; font-family: var(--font-mono); font-size: 12.5px; color: var(--accent); }
+.q { margin: 0; color: var(--muted); font-size: 13.5px; overflow-wrap: anywhere; }
+.a { margin: 0; font-size: 17px; font-weight: 700; overflow-wrap: anywhere; }
+.why { margin: 0; font-size: 14px; color: var(--muted); overflow-wrap: anywhere; } .why b { color: var(--fg); }
+.item .vis { grid-column: 2; margin-top: 6px; }
+.note { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; }
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--fg); color: var(--bg); border-radius: 999px; padding: 8px 16px; font-weight: 700; font-size: 14px; z-index: 50; }
+/* ---- teaching blocks (shared engine) ---- */
+.tb { display: grid; gap: 10px; min-width: 0; }
+.tb-text { margin: 0; line-height: 1.75; overflow-wrap: anywhere; }
+.tb-card { border: 1px solid var(--tb-line); border-radius: 12px; background: transparent; padding: 10px 12px; display: grid; gap: 8px; min-width: 0; margin: 0; }
+.tb-title { font-size: 15px; }
+.tb-muted { color: var(--tb-muted); }
+.tb-cap { margin: 0; font-size: 13.5px; color: var(--tb-muted); }
+.tb-kicker { font-size: 12px; font-weight: 600; color: var(--tb-muted); }
+.tb-callout { border-radius: 10px; padding: 8px 12px; border: 0; border-inline-start: 3px solid var(--tb-line); display: grid; gap: 2px; background: transparent !important; }
+.tb-key { border-color: var(--tb-accent); }
+.tb-tip { border-color: var(--tb-ok); } .tb-tip > b { color: var(--tb-ok); }
+.tb-warn { border-color: var(--tb-bad); } .tb-warn > b { color: var(--tb-bad); }
+.tb-qq { margin: 0; font-weight: 700; }
+.tb-opts { display: grid; gap: 8px; }
+.tb-opt { text-align: start; border: 1px solid var(--tb-line); background: var(--tb-bg2); color: inherit; border-radius: 11px; padding: 8px 12px; display: flex; gap: 10px; align-items: center; cursor: pointer; font: inherit; }
+.tb-opt:hover:not(:disabled) { border-color: var(--tb-fg); }
+.tb-opt.ok { border-color: var(--tb-ok); background: color-mix(in srgb, var(--tb-ok) 14%, transparent); }
+.tb-opt.bad { border-color: var(--tb-bad); background: color-mix(in srgb, var(--tb-bad) 14%, transparent); }
+.tb-k { width: 22px; height: 22px; border-radius: 6px; background: var(--tb-card); display: grid; place-items: center; font-size: 12px; font-weight: 700; flex: none; }
+.tb-fb p { margin: 4px 0 0; }
+.tb-svg svg, .tb-fig svg { width: 100%; max-width: 640px; height: auto; display: block; margin: 0 auto; direction: ltr; }
+.tb-math { text-align: center; overflow-x: auto; direction: ltr; font-size: 18px; }
+.tb-legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; font-size: 13.5px; justify-items: center; }
+.tb-legend li { display: flex; gap: 8px; }
+.tb-steps { display: grid; gap: 6px; } .tb-steps ol { margin: 0; padding-inline-start: 22px; display: grid; gap: 6px; }
+.tb-table { overflow-x: auto; } .tb-table table { border-collapse: collapse; width: 100%; font-size: 14px; } .tb-table th, .tb-table td { border: 1px solid var(--tb-line); padding: 6px 10px; text-align: center; } .tb-table th { background: var(--tb-bg2); }
+.tb-tl-tabs { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(64px, 1fr); gap: 6px; overflow-x: auto; }
+.tb-tl-tabs button { border: 0; border-radius: 9px; padding: 7px 6px; background: transparent; color: inherit; font: inherit; font-weight: 700; cursor: pointer; }
+.tb-tl-tabs button[aria-selected="true"] { background: var(--tb-ok); color: #fff; }
+.tb-tl-body { display: grid; gap: 2px; } .tb-tl-body p { margin: 4px 0 0; }
+.tb-tl-date { font-size: 26px; font-weight: 800; color: var(--tb-ok); line-height: 1.1; }
+.tb-tl-nav { display: flex; justify-content: space-between; gap: 8px; }
+.tb-btn { border: 1px solid var(--tb-line); background: var(--tb-bg2); color: inherit; border-radius: 999px; padding: 5px 14px; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; justify-self: center; }
+.tb-btn:disabled { opacity: .45; cursor: default; }
+.tb-strong { background: var(--tb-fg); color: var(--tb-card); border-color: var(--tb-fg); }
+.tb-arrow { text-align: center; color: var(--tb-muted); font-size: 13px; }
+.tb-link, .tb-node { border: 1px solid var(--tb-line); border-radius: 11px; padding: 8px 12px; text-align: center; display: grid; gap: 2px; background: var(--tb-bg2); }
+.tb-link small, .tb-node small { color: var(--tb-muted); font-size: 12px; }
+.tb-direct { border-color: color-mix(in srgb, var(--tb-accent) 55%, var(--tb-line)); }
+.tb-possible { border-style: dashed; }
+.tb-rel-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+.tb-tag { justify-self: center; font-size: 11px; font-weight: 700; color: var(--tb-ok); border: 1px solid color-mix(in srgb, var(--tb-ok) 45%, transparent); border-radius: 6px; padding: 0 6px; }
+.tb-model-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.tb-live { font-size: 10.5px; font-weight: 800; letter-spacing: .06em; color: var(--tb-ok); border: 1px solid color-mix(in srgb, var(--tb-ok) 45%, transparent); border-radius: 6px; padding: 1px 7px; }
+.tb-fig { border-radius: 10px; background: var(--tb-bg2); padding: 6px; }
+.tb-ctrls { display: grid; gap: 10px; }
+.tb-var { display: grid; gap: 2px; font-size: 14px; } .tb-var-top { display: flex; justify-content: space-between; gap: 8px; } .tb-var input { width: 100%; accent-color: var(--tb-accent); }
+.tb-lim { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--tb-muted); }
+.tb-outs { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }
+.tb-out { display: grid; gap: 2px; background: var(--tb-bg2); border-radius: 10px; padding: 8px 10px; font-size: 13px; color: var(--tb-muted); } .tb-out b { color: var(--tb-fg); font-size: 18px; }
+.tb-num { font-variant-numeric: tabular-nums; }
+.tb-plot { width: 100%; height: auto; direction: ltr; } .tb-plot .g { stroke: var(--tb-line); } .tb-plot .ax { stroke: var(--tb-muted); } .tb-plot text { fill: var(--tb-muted); font-size: 12px; }
+.tb-plot .c { fill: none; stroke-width: 2.6; } .tb-plot .c0, .tb-keys .c0 { stroke: var(--tb-blue); color: var(--tb-blue); } .tb-plot .c1, .tb-keys .c1 { stroke: var(--tb-red); color: var(--tb-red); } .tb-plot .c2, .tb-keys .c2 { stroke: var(--tb-green); color: var(--tb-green); } .tb-plot .c3, .tb-keys .c3 { stroke: var(--tb-purple); color: var(--tb-purple); }
+.tb-keys { display: flex; flex-wrap: wrap; gap: 6px 14px; justify-content: center; font-size: 13px; } .tb-keys span { display: inline-flex; gap: 6px; align-items: center; } .tb-keys i { width: 16px; height: 3px; background: currentColor; display: inline-block; border-radius: 2px; } .tb-keys span span { color: var(--tb-fg); }
+.tb-follow { display: grid; gap: 6px; } .tb-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.tb-chip { border: 1px solid var(--tb-line); background: transparent; color: inherit; border-radius: 999px; padding: 3px 11px; font: inherit; font-size: 12.5px; cursor: pointer; text-align: start; }
+.tb-chip:hover { border-color: var(--tb-accent); }
+
+mjx-container { color: inherit; } mjx-container:not([display="true"]) { display: inline-block; max-width: 100%; overflow-x: auto; vertical-align: middle; }
+</style>
+
+<div class="wrap" id="app">
+  <header class="head">
+    <div><h1>Réponse <span>Express</span></h1><p data-t="sub"></p></div>
+    <div class="seg" id="uiSeg"><button type="button" data-l="fr">FR</button><button type="button" data-l="ar">ع</button><button type="button" data-l="en">EN</button></div>
+  </header>
+  <section class="card" id="input">
+    <div class="drop" id="drop"><b data-t="drop"></b><span data-t="types" style="font-size:13px"></span>
+      <div class="row" style="justify-content:center"><button class="btn" type="button" id="pick" data-t="choose"></button><button class="btn" type="button" id="cam" data-t="photo"></button></div>
+      <input type="file" id="file" multiple hidden accept="image/*,.pdf,.txt"><input type="file" id="camIn" hidden accept="image/*" capture="environment">
+    </div>
+    <div class="pages" id="pages"></div>
+    <textarea id="text" data-tp="paste"></textarea>
+    <div class="row">
+      <label class="opt"><span data-t="model"></span><select id="model"><option value="haiku">Haiku 5.5</option><option value="sonnet">Sonnet 5.5</option><option value="opus">Opus 5.5</option></select></label>
+      <label class="opt"><span data-t="effort"></span><select id="effort"><option value="low" data-t="eLow"></option><option value="medium" data-t="eMed" selected></option><option value="high" data-t="eHigh"></option></select></label>
+    </div>
+    <button class="btn go" type="button" id="go" data-t="go"></button>
+    <div class="status" id="status" aria-live="polite"></div>
+  </section>
+  <section class="card" id="out" hidden></section>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const UI = {
+    sub: ["Ton devoir, résolu de la façon la plus simple. Réponse d'abord, une ligne d'explication.", "واجبك محلول بأبسط طريقة. الجواب أولًا، ثم سطر شرح.", "Your homework, solved the simplest way. Answer first, one line of why."],
+    drop: ["Glisse la photo de ton devoir ici", "اسحب صورة واجبك هنا", "Drop a photo of your homework here"], types: ["Photos · PDF · texte · Ctrl+V pour coller", "صور · PDF · نص · Ctrl+V للصق", "Photos · PDF · text · Ctrl+V to paste"],
+    choose: ["Choisir", "اختيار", "Choose"], photo: ["Prendre une photo", "التقاط صورة", "Take a photo"], paste: ["…ou colle l'énoncé ici", "…أو الصق النص هنا", "…or paste the questions here"],
+    model: ["Modèle", "النموذج", "Model"], effort: ["Réflexion", "التفكير", "Effort"], eLow: ["Rapide", "سريع", "Quick"], eMed: ["Équilibré", "متوازن", "Balanced"], eHigh: ["Approfondi", "معمّق", "Deep"],
+    go: ["Répondre", "أجب", "Answer"], working: ["Je résous…", "أحلّ…", "Solving…"], need: ["Ajoute une photo, un PDF ou du texte.", "أضف صورة أو PDF أو نصًا.", "Add a photo, a PDF or text."],
+    answers: ["Réponses", "الأجوبة", "Answers"], copy: ["Copier", "نسخ", "Copy"], copied: ["Copié", "نُسخ", "Copied"], again: ["Nouveau devoir", "واجب جديد", "New homework"],
+    noAI: ["Claude n'est pas disponible ici. Ouvre la page dans Claude.", "Claude غير متاح هنا. افتح الصفحة داخل Claude.", "Claude isn't available here. Open the page in Claude."],
+    err: ["Ça n'a pas marché. Réessaie (ou augmente la réflexion).", "لم ينجح ذلك. أعد المحاولة (أو ارفع مستوى التفكير).", "That didn't work. Try again (or raise the effort)."],
+    denied: ["La page n'a pas l'autorisation d'utiliser Claude.", "لم يُسمح للصفحة باستعمال Claude.", "This page isn't allowed to use Claude."], limited: ["Trop de demandes, patiente un peu.", "طلبات كثيرة، انتظر قليلًا.", "Too many requests, wait a bit."],
+    key: ["Clé Anthropic API (hors Claude)", "مفتاح Anthropic API (خارج Claude)", "Anthropic API key (outside Claude)"],
+  };
+  const LANGS = ["fr", "ar", "en"]; let ui = "fr";
+  const t = (k) => (UI[k] ? UI[k][LANGS.indexOf(ui)] || UI[k][0] : k);
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null && text !== "") e.textContent = text; return e; };
+  const rich = (node, text) => { String(text || "").split(/(\*\*[^*]+\*\*)/).forEach((p) => { if (/^\*\*[^*]+\*\*$/.test(p)) node.append(el("b", null, p.slice(2, -2))); else if (p) node.append(document.createTextNode(p)); }); return node; };
+  const store = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} } };
+  const toast = (m) => { const d = el("div", "toast", m); document.body.append(d); setTimeout(() => d.remove(), 1800); };
+  const LIB = { mathjax: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js", pdf: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js", pdfWorker: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js" };
+  const loaded = {};
+  const loadScript = (u) => loaded[u] || (loaded[u] = new Promise((res, rej) => { const s = document.createElement("script"); s.src = u; s.onload = res; s.onerror = () => { delete loaded[u]; rej(); }; document.head.append(s); }));
+  let mj = null;
+  function loadMath() { if (!mj) { window.MathJax = { tex: { inlineMath: [["$", "$"]], displayMath: [["$$", "$$"]], processEscapes: true, macros: { vect: ["\\overrightarrow{#1}", 1] } }, svg: { fontCache: "local" }, options: { ignoreHtmlClass: "no-tex" }, startup: { typeset: false } }; mj = loadScript(LIB.mathjax).then(() => window.MathJax.startup.promise).catch((e) => { mj = null; throw e; }); } return mj; }
+  async function typeset(nodes) { const l = nodes.filter((n) => n && n.isConnected && n.textContent.includes("$")); if (!l.length) return; try { await loadMath(); window.MathJax.typesetClear(l); await window.MathJax.typesetPromise(l); } catch {} }
+  const SVG_TAGS = new Set(["svg", "g", "path", "line", "polyline", "polygon", "rect", "circle", "ellipse", "text", "tspan", "defs", "marker", "title"]);
+  const SVG_ATTRS = new Set(["viewBox", "width", "height", "x", "y", "x1", "y1", "x2", "y2", "cx", "cy", "r", "rx", "ry", "d", "points", "transform", "fill", "stroke", "stroke-width", "stroke-dasharray", "stroke-linecap", "stroke-linejoin", "fill-opacity", "stroke-opacity", "opacity", "font-size", "font-weight", "font-style", "text-anchor", "dominant-baseline", "id", "marker-end", "marker-start", "refX", "refY", "markerWidth", "markerHeight", "orient", "markerUnits", "dx", "dy", "xmlns"]);
+  const PAL = { "#1f2937": "fg", "#000": "fg", "#000000": "fg", black: "fg", "#ffffff": "fg", "#fff": "fg", white: "fg", "#2563eb": "blue", blue: "blue", "#dc2626": "red", red: "red", "#16a34a": "green", green: "green", "#ea580c": "orange", orange: "orange", "#7c3aed": "purple", purple: "purple", "#9ca3af": "muted", grey: "muted", gray: "muted", "#f59e0b": "accent" };
+  let sid = 0;
+  function sanitizeSvg(src) {
+    const start = String(src).indexOf("<svg"); if (start < 0) return null;
+    let code = String(src).slice(start); if (!/^<svg[^>]*\sxmlns=/.test(code)) code = code.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+    const doc = new DOMParser().parseFromString(code, "image/svg+xml"); const root = doc.documentElement;
+    if (!root || root.localName !== "svg" || doc.getElementsByTagName("parsererror").length) return null;
+    const pre = `s${++sid}-`; const ids = new Set();
+    const walk = (n) => {
+      for (const ch of Array.from(n.children)) { if (!SVG_TAGS.has(ch.localName)) ch.remove(); else walk(ch); }
+      for (const a of Array.from(n.attributes)) if (!SVG_ATTRS.has(a.name) || /javascript:/i.test(a.value) || (/url\(/i.test(a.value) && !/^url\(#[\w-]+\)$/.test(a.value.trim()))) n.removeAttribute(a.name);
+      if (n.id) { ids.add(n.id); n.id = pre + n.id; }
+      const css = []; for (const p of ["fill", "stroke"]) { const v = (n.getAttribute(p) || "").toLowerCase().trim(); if (PAL[v]) { n.removeAttribute(p); css.push(`${p}:var(--${PAL[v]})`); } }
+      if (css.length) n.setAttribute("style", css.join(";"));
+    };
+    walk(root);
+    root.querySelectorAll("*").forEach((n) => { for (const a of ["marker-end", "marker-start"]) { const m = (n.getAttribute(a) || "").match(/^url\(#([\w-]+)\)$/); if (m && ids.has(m[1])) n.setAttribute(a, `url(#${pre}${m[1]})`); } });
+    root.removeAttribute("width"); root.removeAttribute("height"); root.setAttribute("style", "fill:var(--fg);font-family:var(--font-body)");
+    return document.importNode(root, true);
+  }
+
+  function repairJson(s) {
+    let out = "", inStr = false;
+    for (let i = 0; i < s.length; i++) {
+      const c = s[i];
+      if (!inStr) { if (c === '"') inStr = true; out += c; continue; }
+      if (c === '"') { inStr = false; out += c; continue; }
+      if (c === "\n") { out += "\\n"; continue; } if (c === "\r") continue; if (c === "\t") { out += "\\t"; continue; }
+      if (c === "\\") {
+        const n = s[i + 1] || "";
+        if (n === '"' || n === "\\" || n === "/") { out += c + n; i++; continue; }
+        if (n === "u" && /^[0-9a-fA-F]{4}$/.test(s.substr(i + 2, 4))) { out += c + n; i++; continue; }
+        if (n && "bfnrt".includes(n)) { const w = (s.slice(i + 1).match(/^[a-zA-Z]+/) || [""])[0]; out += w.length > 1 && !(n === "n" && /^n[A-Z]/.test(w)) ? "\\\\" : "\\"; continue; }
+        out += "\\\\"; continue;
+      }
+      out += c;
+    }
+    return out;
+  }
+  function parseJsonLoose(text) {
+    const tr = text.trim(); const tries = [tr];
+    const f = tr.match(/```(?:json)?\s*([\s\S]*?)```/); if (f) tries.push(f[1]);
+    const a = tr.indexOf("{"), b = tr.lastIndexOf("}"); if (a >= 0 && b > a) tries.push(tr.slice(a, b + 1));
+    for (const c of tries) { try { return JSON.parse(repairJson(c)); } catch {} }
+    for (const c of tries) { try { return JSON.parse(c); } catch {} }
+    throw { code: "invalid_json" };
+  }
+  /* ================= Teaching engine (shared by Khutata and Prof de Poche) =================
+     Claude composes an answer from an open vocabulary of blocks; nothing is mandatory and the
+     order is Claude's choice. This code only validates and renders what arrives. */
+  function makeTeach(deps) {
+    const L = {
+      fr: { think: "Réfléchis d'abord", right: "Exactement !", wrong: "Pas tout à fait.", more: "Pour aller plus loin", reset: "Réinitialiser", direct: "cause directe", contributing: "facteur parmi d'autres", possible: "lien possible, débattu", live: "MODÈLE VIVANT", broken: "Ce modèle n'a pas pu être calculé de façon fiable ; il n'est pas affiché.", prev: "Précédent", next: "Suivant" },
+      ar: { think: "فكّر أولًا", right: "بالضبط!", wrong: "ليس تمامًا.", more: "للتعمق أكثر", reset: "إعادة", direct: "سبب مباشر", contributing: "عامل من بين عوامل", possible: "صلة محتملة ومختلف فيها", live: "نموذج حي", broken: "تعذر حساب هذا النموذج بشكل موثوق؛ لذلك لم يُعرض.", prev: "السابق", next: "التالي" },
+      en: { think: "Think first", right: "Exactly!", wrong: "Not quite.", more: "Go further", reset: "Reset", direct: "direct cause", contributing: "one factor among others", possible: "possible, debated link", live: "LIVE MODEL", broken: "This model could not be computed reliably, so it is not shown.", prev: "Previous", next: "Next" },
+    };
+    const lab = (k) => (L[deps.lang()] || L.fr)[k];
+    const h = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null && text !== "") e.textContent = text; return e; };
+    const rich = (node, text) => { String(text || "").split(/\n/).forEach((line, i) => { if (i) node.append(document.createElement("br")); line.split(/(\*\*[^*]+\*\*)/).forEach((p) => { if (/^\*\*[^*]+\*\*$/.test(p)) node.append(h("strong", null, p.slice(2, -2))); else if (p) node.append(document.createTextNode(p)); }); }); return node; };
+    const S = (v, m = 1500) => (typeof v === "string" ? v.slice(0, m) : v == null || typeof v === "object" ? "" : String(v).slice(0, m));
+    const N = (v) => (typeof v === "number" && isFinite(v) ? v : typeof v === "string" && v.trim() !== "" && isFinite(+v) ? +v : null);
+    const A = (v, m) => (Array.isArray(v) ? v.slice(0, m) : []);
+
+    /* ---- safe multi-variable expression compiler (no eval) ---- */
+    const F1 = { sin: Math.sin, cos: Math.cos, tan: Math.tan, asin: Math.asin, acos: Math.acos, atan: Math.atan, sqrt: Math.sqrt, abs: Math.abs, ln: Math.log, log: Math.log10, exp: Math.exp, floor: Math.floor, round: Math.round,
+      sind: (d) => Math.sin(d * Math.PI / 180), cosd: (d) => Math.cos(d * Math.PI / 180), tand: (d) => Math.tan(d * Math.PI / 180), rad: (d) => d * Math.PI / 180, deg: (r) => r * 180 / Math.PI };
+    const F2 = { min: Math.min, max: Math.max, atan2: Math.atan2, pow: Math.pow };
+    function compile(src, names) {
+      const known = new Set(names);
+      const s = String(src).replace(/\*\*/g, "^").replace(/π/g, "pi").replace(/×|·/g, "*").replace(/−/g, "-");
+      const toks = []; let i = 0;
+      while (i < s.length) {
+        const c = s[i]; if (/\s/.test(c)) { i++; continue; }
+        const m = s.slice(i).match(/^(\d+\.?\d*|\.\d+)(e[+-]?\d+)?/i); if (m) { toks.push({ k: "n", v: parseFloat(m[0]) }); i += m[0].length; continue; }
+        const w = s.slice(i).match(/^[A-Za-z_][A-Za-z0-9_]*/);
+        if (w) { const id = w[0]; i += id.length; if (F1[id] || F2[id]) toks.push({ k: "f", v: id }); else if (known.has(id) || id === "pi" || id === "e") toks.push({ k: "v", v: id }); else throw new Error("unknown " + id); continue; }
+        if ("+-*/^(),".includes(c)) { toks.push({ k: c }); i++; continue; }
+        throw new Error("char " + c);
+      }
+      const tk = []; for (const x of toks) { const p = tk[tk.length - 1]; if (p && (p.k === "n" || p.k === "v" || p.k === ")") && (x.k === "n" || x.k === "v" || x.k === "f" || x.k === "(")) tk.push({ k: "*" }); tk.push(x); }
+      let pos = 0; const peek = () => tk[pos]; const eat = (k) => { if (!tk[pos] || tk[pos].k !== k) throw new Error("syntax"); pos++; };
+      const expr = () => { let a = term(); while (peek() && (peek().k === "+" || peek().k === "-")) { const op = tk[pos++].k, l = a, r = term(); a = op === "+" ? (E) => l(E) + r(E) : (E) => l(E) - r(E); } return a; };
+      const term = () => { let a = unary(); while (peek() && (peek().k === "*" || peek().k === "/")) { const op = tk[pos++].k, l = a, r = unary(); a = op === "*" ? (E) => l(E) * r(E) : (E) => l(E) / r(E); } return a; };
+      const unary = () => { if (peek() && peek().k === "-") { pos++; const u = unary(); return (E) => -u(E); } if (peek() && peek().k === "+") { pos++; return unary(); } return power(); };
+      const power = () => { const b = primary(); if (peek() && peek().k === "^") { pos++; const e = unary(); return (E) => Math.pow(b(E), e(E)); } return b; };
+      const primary = () => {
+        const x = tk[pos++]; if (!x) throw new Error("end");
+        if (x.k === "n") return () => x.v;
+        if (x.k === "v") return x.v === "pi" ? () => Math.PI : x.v === "e" && !known.has("e") ? () => Math.E : (E) => E[x.v];
+        if (x.k === "f") { eat("("); const a = expr(); if (F2[x.v]) { eat(","); const b = expr(); eat(")"); const f = F2[x.v]; return (E) => f(a(E), b(E)); } eat(")"); const f = F1[x.v]; return (E) => f(a(E)); }
+        if (x.k === "(") { const e = expr(); eat(")"); return e; }
+        throw new Error("syntax");
+      };
+      const f = expr(); if (pos !== tk.length) throw new Error("trailing"); return f;
+    }
+    const fmt = (v, d) => { if (!isFinite(v)) return "—"; const dd = d == null ? (Math.abs(v) >= 100 ? 1 : 2) : d; return (+v.toFixed(dd)).toLocaleString(deps.lang() === "en" ? "en" : "fr", { maximumFractionDigits: dd }); };
+
+    /* ---- validation of what Claude sends ---- */
+    const TYPES = ["text", "question", "svg", "model", "timeline", "relations", "causal", "table", "steps", "formula", "graph", "followups", "callout"];
+    function normalize(raw) {
+      const list = Array.isArray(raw) ? raw : raw && Array.isArray(raw.blocks) ? raw.blocks : [];
+      return list.slice(0, 5).map((b) => {
+        if (!b || !TYPES.includes(b.type)) return null;
+        const o = { type: b.type };
+        switch (b.type) {
+          case "text": o.text = S(b.text, 3000); return o.text ? o : null;
+          case "callout": o.text = S(b.text, 800); o.tone = ["key", "warn", "tip"].includes(b.tone) ? b.tone : "key"; o.title = S(b.title, 80); return o.text ? o : null;
+          case "question": o.q = S(b.q, 600); o.options = A(b.options, 5).map((x) => S(x, 300)); o.answer = Math.max(0, Math.min(o.options.length - 1, N(b.answer) || 0)); o.why = S(b.why, 900);
+            o.branches = A(b.branches, 5).map((x) => S(x, 600)); return o.q && o.options.length >= 2 ? o : null;
+          case "svg": o.svg = S(b.svg, 40000); o.caption = S(b.caption, 300); return o.svg.includes("<svg") ? o : null;
+          case "formula": o.latex = S(b.latex, 500).replace(/^\$+|\$+$/g, ""); o.legend = A(b.legend, 10).map((l) => ({ symbol: S(l && l.symbol, 60), meaning: S(l && l.meaning, 160), unit: S(l && l.unit, 30) })); o.caption = S(b.caption, 300); return o.latex ? o : null;
+          case "table": o.headers = A(b.headers, 8).map((x) => S(x, 120)); o.rows = A(b.rows, 25).map((r) => A(r, 8).map((x) => S(x, 300))); o.caption = S(b.caption, 300); return o.rows.length ? o : null;
+          case "steps": o.title = S(b.title, 120); o.steps = A(b.steps, 12).map((x) => S(x, 600)).filter(Boolean); return o.steps.length ? o : null;
+          case "followups": o.items = A(b.items, 4).map((x) => S(x, 140)).filter(Boolean); return o.items.length ? o : null;
+          case "timeline": o.title = S(b.title, 120); o.events = A(b.events, 12).map((e) => ({ date: S(e && e.date, 30), title: S(e && e.title, 120), text: S(e && e.text, 600) })).filter((e) => e.date && e.title); return o.events.length ? o : null;
+          case "causal": o.title = S(b.title, 120); o.chain = A(b.chain, 8).map((c) => ({ text: S(c && c.text, 300), level: ["direct", "contributing", "possible"].includes(c && c.level) ? c.level : "direct" })).filter((c) => c.text); o.note = S(b.note, 400); return o.chain.length ? o : null;
+          case "relations": o.title = S(b.title, 120); o.nodes = A(b.nodes, 12).map((n) => ({ id: S(n && n.id, 40), label: S(n && n.label, 80), sub: S(n && n.sub, 160), tag: S(n && n.tag, 40) })).filter((n) => n.id && n.label);
+            o.edges = A(b.edges, 20).map((e) => ({ from: S(e && e.from, 40), to: S(e && e.to, 40), label: S(e && e.label, 80) })).filter((e) => o.nodes.some((n) => n.id === e.from) && o.nodes.some((n) => n.id === e.to)); return o.nodes.length ? o : null;
+          case "graph": o.title = S(b.title, 120); o.functions = A(b.functions, 4).map((f) => ({ expr: S(f && f.expr, 200), label: S(f && f.label, 120) })).filter((f) => f.expr);
+            o.xRange = Array.isArray(b.xRange) && N(b.xRange[0]) != null && N(b.xRange[1]) > N(b.xRange[0]) ? [N(b.xRange[0]), N(b.xRange[1])] : [-5, 5];
+            o.yRange = Array.isArray(b.yRange) && N(b.yRange[0]) != null && N(b.yRange[1]) > N(b.yRange[0]) ? [N(b.yRange[0]), N(b.yRange[1])] : null; o.caption = S(b.caption, 300); return o.functions.length ? o : null;
+          case "model": {
+            o.title = S(b.title, 120); o.caption = S(b.caption, 400); o.svg = S(b.svg, 40000);
+            o.vars = A(b.vars, 5).map((v) => ({ name: S(v && v.name, 24), label: S(v && v.label, 80), unit: S(v && v.unit, 16), min: N(v && v.min), max: N(v && v.max), step: N(v && v.step), value: N(v && v.value) }))
+              .filter((v) => /^[A-Za-z_]\w*$/.test(v.name) && v.min != null && v.max != null && v.max > v.min).map((v) => ({ ...v, step: v.step && v.step > 0 ? v.step : (v.max - v.min) / 100, value: v.value != null ? Math.min(v.max, Math.max(v.min, v.value)) : v.min }));
+            o.outputs = A(b.outputs, 8).map((x) => ({ name: S(x && x.name, 24), label: S(x && x.label, 80), expr: S(x && x.expr, 300), unit: S(x && x.unit, 16), digits: N(x && x.digits) })).filter((x) => x.expr && x.label);
+            return o.vars.length ? o : null;
+          }
+        }
+        return null;
+      }).filter(Boolean);
+    }
+
+    /* ---- the guide Claude follows ---- */
+    const GUIDE = String.raw`HOW TO TEACH — like a patient teacher in a real conversation, not a textbook.
+One question → one useful explanation → one step forward.
+- Answer ONLY the current question, at the depth it needs. Usually 1–2 blocks, at most 3. About 40–90 words of text in total. No headings, no recap, no repetition.
+- Explain ONE step at a time. If the topic has several steps, give the first one and stop; let the learner continue ("followups"). Never reveal a whole solution or chapter at once unless explicitly asked.
+- Add a diagram, formula, example or interactive model ONLY if it makes this specific point clearer than words. Most answers need none.
+- If the learner did not understand, re-explain that exact point differently (simpler words, a concrete case, or a small visual) — do not restate the same thing.
+- A short "question" block is welcome when checking understanding helps before moving on; keep it to one.
+- End with "followups": 2–3 very short next questions the learner might naturally ask (skip if nothing useful).
+ACCURACY: never invent facts, dates, numbers or relationships; separate facts from interpretation; in causal chains mark each link "direct", "contributing" or "possible"; check every computation; say so if unsure.
+REPLY with ONLY JSON: {"blocks":[ ... ]} using any of these, in any order:
+{"type":"text","text":"short paragraph; **bold** allowed; math in $…$"}
+{"type":"callout","tone":"key|tip|warn","title":"optional","text":"the rule or warning to remember"}
+{"type":"question","q":"…","options":["…","…","…"],"answer":1,"why":"why the right answer is right","branches":["note if they pick option 0","…"]}
+{"type":"svg","svg":"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 240'>…</svg>","caption":"what to notice"}
+{"type":"formula","latex":"F = m\\,a","legend":[{"symbol":"$F$","meaning":"force","unit":"N"}]}
+{"type":"steps","title":"optional","steps":["one move per step"]}
+{"type":"table","headers":["…"],"rows":[["…"]]}
+{"type":"timeline","title":"…","events":[{"date":"1453","title":"…","text":"…"}]}
+{"type":"relations","title":"…","nodes":[{"id":"a","label":"…","sub":"short role","tag":"optional badge"}],"edges":[{"from":"a","to":"b","label":"how they relate"}]}
+{"type":"causal","title":"…","chain":[{"text":"…","level":"direct|contributing|possible"}],"note":"nuance"}
+{"type":"graph","title":"…","functions":[{"expr":"x^2-4","label":"$f(x)$"}],"xRange":[-4,4]}
+{"type":"model","title":"…","vars":[{"name":"alpha","label":"Angle α","unit":"°","min":0,"max":60,"step":1,"value":30}],"outputs":[{"name":"T","label":"Tension","expr":"k*m*g/(cosd(alpha)+k*sind(alpha))","unit":"N","digits":2}],"svg":"<svg …> uses {{expr}} placeholders, e.g. x2='{{200+120*cosd(alpha)}}' </svg>","caption":"what to try"}
+{"type":"followups","items":["2–3 very short next questions"]}
+SVG rules (svg and model): viewBox about 520×260; only svg, g, path, line, polyline, polygon, rect, circle, ellipse, text, tspan, defs, marker; no style, script, image, classes or links; colours only #1f2937 (lines/text), #2563eb, #dc2626, #16a34a, #ea580c, #7c3aed, #9ca3af or "none"; arrowheads with <marker>; single-quoted attributes; keep everything inside the viewBox; physically and geometrically correct.
+Model rules: variable and output names are identifiers; expressions use + - * / ^ ( ), sin cos tan (radians), sind cosd tand (degrees), sqrt abs ln log exp min max atan2 pow, pi; outputs may use earlier outputs; constants go inside expressions or as outputs. Placeholders {{expr}} may appear in attribute values and text.
+JSON: double every backslash inside strings (\\frac, \\vec).`;
+
+    /* ---- rendering ---- */
+    function plot(b) {
+      const W = 600, H = 340, m = { l: 44, r: 14, t: 14, b: 30 }, pw = W - m.l - m.r, ph = H - m.t - m.b;
+      const fns = b.functions.map((f) => { try { return { ...f, fn: compile(f.expr, ["x"]) }; } catch { return null; } }).filter(Boolean);
+      if (!fns.length) return null;
+      const [x0, x1] = b.xRange; const pts = fns.map((f) => Array.from({ length: 401 }, (_, i) => { const x = x0 + (x1 - x0) * i / 400; let y; try { y = f.fn({ x }); } catch { y = NaN; } return [x, y]; }));
+      let [y0, y1] = b.yRange || (() => { const ys = pts.flat().map((p) => p[1]).filter(isFinite).sort((a, c) => a - c); if (!ys.length) return [-5, 5]; let a = ys[Math.floor(ys.length * .02)], c = ys[Math.max(0, Math.ceil(ys.length * .98) - 1)]; if (c - a < 1e-9) { a -= 1; c += 1; } const p = (c - a) * .1; return [a - p, c + p]; })();
+      const sx = (x) => m.l + (x - x0) / (x1 - x0) * pw, sy = (y) => m.t + (y1 - y) / (y1 - y0) * ph;
+      const NS = "http://www.w3.org/2000/svg"; const sv = (t, a, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (p) p.append(e); return e; };
+      const svg = sv("svg", { viewBox: `0 0 ${W} ${H}`, class: "tb-plot" });
+      const step = (span) => { const r = span / 7, p = Math.pow(10, Math.floor(Math.log10(r))), f = r / p; return (f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10) * p; };
+      const xs = step(x1 - x0), ys = step(y1 - y0);
+      for (let x = Math.ceil(x0 / xs - 1e-9) * xs; x <= x1 + 1e-9; x += xs) { sv("line", { x1: sx(x), x2: sx(x), y1: m.t, y2: m.t + ph, class: "g" }, svg); sv("text", { x: sx(x), y: H - 8, "text-anchor": "middle" }, svg).textContent = fmt(x, 2); }
+      for (let y = Math.ceil(y0 / ys - 1e-9) * ys; y <= y1 + 1e-9; y += ys) { sv("line", { x1: m.l, x2: m.l + pw, y1: sy(y), y2: sy(y), class: "g" }, svg); sv("text", { x: m.l - 6, y: sy(y) + 4, "text-anchor": "end" }, svg).textContent = fmt(y, 2); }
+      if (y0 <= 0 && y1 >= 0) sv("line", { x1: m.l, x2: m.l + pw, y1: sy(0), y2: sy(0), class: "ax" }, svg);
+      if (x0 <= 0 && x1 >= 0) sv("line", { x1: sx(0), x2: sx(0), y1: m.t, y2: m.t + ph, class: "ax" }, svg);
+      pts.forEach((p, i) => { let d = "", pen = false, prev = null; for (const [x, y] of p) { if (!isFinite(y)) { pen = false; continue; } if (prev != null && Math.abs(y - prev) > (y1 - y0) * 3) pen = false; d += (pen ? "L" : "M") + sx(x).toFixed(1) + " " + Math.max(-1e3, Math.min(1e3, sy(y))).toFixed(1); pen = true; prev = y; } sv("path", { d, class: "c c" + (i % 4) }, svg); });
+      return { svg, labels: fns.map((f, i) => [f.label || f.expr, i % 4]) };
+    }
+    function modelBlock(b) {
+      const card = h("div", "tb-card tb-model");
+      const head = h("div", "tb-model-head"); head.append(h("b", null, b.title || ""), h("span", "tb-live", lab("live"))); card.append(head);
+      const names = b.vars.map((v) => v.name); let outs;
+      try { const nm = [...names]; outs = b.outputs.map((o) => { const f = compile(o.expr, nm); if (o.name && /^[A-Za-z_]\w*$/.test(o.name)) nm.push(o.name); return { ...o, f }; }); } catch { card.append(h("p", "tb-muted", lab("broken"))); return card; }
+      let tpl = null; const allNames = [...names, ...outs.filter((o) => o.name).map((o) => o.name)];
+      if (b.svg) { const parts = []; let ok = true; b.svg.replace(/\{\{([^}]+)\}\}/g, (_, e) => { try { parts.push(compile(e, allNames)); } catch { ok = false; } return ""; }); tpl = ok ? parts : null; }
+      const env = {}; b.vars.forEach((v) => { env[v.name] = v.value; });
+      const evalAll = (E) => { const r = { ...E }; outs.forEach((o) => { const v = o.f(r); if (o.name) r[o.name] = v; o.val = v; }); return r; };
+      const probe = [env, ...b.vars.flatMap((v) => [{ ...env, [v.name]: v.min }, { ...env, [v.name]: v.max }])];
+      const sane = probe.every((E) => { try { evalAll(E); return outs.every((o) => isFinite(o.val)); } catch { return false; } });
+      if (!sane) { card.append(h("p", "tb-muted", lab("broken"))); return card; }
+      const fig = h("div", "tb-fig"); card.append(fig);
+      const ctrls = h("div", "tb-ctrls"); const outBox = h("div", "tb-outs");
+      const paint = () => {
+        const E = evalAll(env);
+        if (b.svg && tpl) { let k = 0; const code = b.svg.replace(/\{\{([^}]+)\}\}/g, () => { const v = tpl[k++](E); return isFinite(v) ? String(+v.toFixed(3)) : "0"; }); const node = deps.sanitizeSvg(code); fig.replaceChildren(); if (node) fig.append(node); }
+        outBox.replaceChildren(...outs.map((o) => { const d = h("div", "tb-out"); d.append(h("span", null, o.label), h("b", "tb-num", `${fmt(o.val, o.digits)}${o.unit ? " " + o.unit : ""}`)); return d; }));
+        b.vars.forEach((v) => { const s = ctrls.querySelector(`[data-v="${v.name}"]`); if (s) s.textContent = `${fmt(env[v.name], 2)}${v.unit ? " " + v.unit : ""}`; });
+      };
+      b.vars.forEach((v) => {
+        const row = h("label", "tb-var"); const top = h("span", "tb-var-top"); top.append(h("span", null, v.label || v.name)); const val = h("b", "tb-num"); val.dataset.v = v.name; top.append(val);
+        const r = h("input"); r.type = "range"; r.min = v.min; r.max = v.max; r.step = v.step; r.value = v.value; r.setAttribute("aria-label", v.label || v.name);
+        r.oninput = () => { env[v.name] = +r.value; paint(); };
+        const lim = h("span", "tb-lim"); lim.append(h("span", null, `${fmt(v.min, 2)}`), h("span", null, `${fmt(v.max, 2)}`));
+        row.append(top, r, lim); ctrls.append(row);
+      });
+      card.append(ctrls, outBox);
+      const reset = h("button", "tb-btn", lab("reset")); reset.type = "button"; reset.onclick = () => { b.vars.forEach((v) => { env[v.name] = v.value; const r = ctrls.querySelector(`input[aria-label="${CSS.escape(v.label || v.name)}"]`); if (r) r.value = v.value; }); paint(); };
+      card.append(reset); if (b.caption) card.append(rich(h("p", "tb-cap"), b.caption));
+      paint(); return card;
+    }
+    function render(box, blocks, opts = {}) {
+      box.classList.add("tb");
+      blocks.forEach((b) => {
+        let n = null;
+        if (b.type === "text") n = rich(h("p", "tb-text"), b.text);
+        else if (b.type === "callout") { n = h("div", "tb-callout tb-" + b.tone); if (b.title) n.append(h("b", null, b.title)); n.append(rich(h("div"), b.text)); }
+        else if (b.type === "question") {
+          n = h("div", "tb-card tb-q"); n.append(h("span", "tb-kicker", lab("think")), rich(h("p", "tb-qq"), b.q));
+          const opts2 = h("div", "tb-opts"); const fb = h("div", "tb-fb"); fb.hidden = true;
+          b.options.forEach((o, i) => { const bt = h("button", "tb-opt"); bt.type = "button"; bt.append(h("span", "tb-k", "ABCDE"[i]), rich(h("span"), o));
+            bt.onclick = () => { opts2.querySelectorAll("button").forEach((x, j) => { x.disabled = true; if (j === b.answer) x.classList.add("ok"); else if (j === i) x.classList.add("bad"); });
+              const ok = i === b.answer; fb.hidden = false; fb.replaceChildren(h("b", null, ok ? lab("right") : lab("wrong")));
+              if (!ok && b.branches[i]) fb.append(rich(h("p"), b.branches[i])); if (b.why) fb.append(rich(h("p"), b.why)); deps.typeset([fb]); opts.onAnswer && opts.onAnswer({ q: b.q, chosen: o, correct: ok, right: b.options[b.answer] }); };
+            opts2.append(bt); });
+          n.append(opts2, fb);
+        } else if (b.type === "svg") { n = h("figure", "tb-card tb-svg"); const node = deps.sanitizeSvg(b.svg); if (!node) return; n.append(node); if (b.caption) n.append(rich(h("figcaption", "tb-cap"), b.caption)); }
+        else if (b.type === "formula") { n = h("div", "tb-card tb-formula"); n.append(h("div", "tb-math", `$$${b.latex}$$`)); if (b.legend.length) { const ul = h("ul", "tb-legend"); b.legend.forEach((l) => { const li = h("li"); li.append(h("b", null, l.symbol), h("span", null, l.meaning)); if (l.unit) li.append(h("span", "tb-muted", `(${l.unit})`)); ul.append(li); }); n.append(ul); } if (b.caption) n.append(rich(h("p", "tb-cap"), b.caption)); }
+        else if (b.type === "steps") { n = h("div", "tb-steps"); if (b.title) n.append(h("b", null, b.title)); const ol = h("ol"); b.steps.forEach((s) => ol.append(rich(h("li"), s))); n.append(ol); }
+        else if (b.type === "table") { n = h("div", "tb-table"); const tb = h("table"); if (b.headers.some(Boolean)) { const tr = h("tr"); b.headers.forEach((x) => tr.append(rich(h("th"), x))); const th = h("thead"); th.append(tr); tb.append(th); } const bd = h("tbody"); b.rows.forEach((r) => { const tr = h("tr"); r.forEach((x) => tr.append(rich(h("td"), x))); bd.append(tr); }); tb.append(bd); n.append(tb); if (b.caption) n.append(rich(h("p", "tb-cap"), b.caption)); }
+        else if (b.type === "timeline") {
+          n = h("div", "tb-card tb-tl"); if (b.title) n.append(h("b", "tb-title", b.title)); let cur = 0;
+          const tabs = h("div", "tb-tl-tabs"); const body = h("div", "tb-tl-body"); const nav = h("div", "tb-tl-nav");
+          const show = (i) => { cur = i; tabs.querySelectorAll("button").forEach((x, j) => x.setAttribute("aria-selected", String(j === i))); const e = b.events[i]; body.replaceChildren(h("b", null, e.title), h("span", "tb-tl-date", e.date)); if (e.text) body.append(rich(h("p"), e.text)); prev.disabled = i === 0; next.disabled = i === b.events.length - 1; deps.typeset([body]); };
+          b.events.forEach((e, i) => { const bt = h("button", null, e.date); bt.type = "button"; bt.onclick = () => show(i); tabs.append(bt); });
+          const prev = h("button", "tb-btn", lab("prev")); prev.type = "button"; prev.onclick = () => show(Math.max(0, cur - 1));
+          const next = h("button", "tb-btn tb-strong", lab("next")); next.type = "button"; next.onclick = () => show(Math.min(b.events.length - 1, cur + 1));
+          nav.append(prev, next); n.append(tabs, body, nav); show(0);
+        } else if (b.type === "causal") {
+          n = h("div", "tb-card tb-causal"); if (b.title) n.append(h("b", "tb-title", b.title));
+          b.chain.forEach((c, i) => { if (i) n.append(h("div", "tb-arrow", "↓")); const d = h("div", "tb-link tb-" + c.level); d.append(rich(h("span"), c.text)); if (i) d.append(h("small", null, lab(c.level))); n.append(d); });
+          if (b.note) n.append(rich(h("p", "tb-cap"), b.note));
+        } else if (b.type === "relations") {
+          n = h("div", "tb-card tb-rel"); if (b.title) n.append(h("b", "tb-title", b.title));
+          const level = {}; b.nodes.forEach((x) => (level[x.id] = 0));
+          for (let k = 0; k < b.nodes.length; k++) b.edges.forEach((e) => { if (level[e.to] < level[e.from] + 1 && level[e.from] + 1 < b.nodes.length) level[e.to] = level[e.from] + 1; });
+          const maxL = Math.max(...Object.values(level));
+          for (let l = 0; l <= maxL; l++) {
+            const row = b.nodes.filter((x) => level[x.id] === l); if (!row.length) continue;
+            if (l) { const labels = b.edges.filter((e) => level[e.to] === l).map((e) => e.label).filter(Boolean); const ar = h("div", "tb-arrow", "↓"); if (labels.length) ar.append(h("small", null, " " + [...new Set(labels)].join(" · "))); n.append(ar); }
+            const r = h("div", "tb-rel-row"); row.forEach((x) => { const c = h("div", "tb-node"); c.append(h("b", null, x.label)); if (x.tag) c.append(h("span", "tb-tag", x.tag)); if (x.sub) c.append(h("small", null, x.sub)); r.append(c); }); n.append(r);
+          }
+        } else if (b.type === "graph") { const p = plot(b); if (!p) return; n = h("figure", "tb-card tb-graph"); if (b.title) n.append(h("b", "tb-title", b.title)); n.append(p.svg); const k = h("div", "tb-keys"); p.labels.forEach(([lbl, i]) => { const s = h("span", "c" + i); s.append(h("i"), h("span", null, lbl)); k.append(s); }); n.append(k); if (b.caption) n.append(rich(h("figcaption", "tb-cap"), b.caption)); }
+        else if (b.type === "model") n = modelBlock(b);
+        else if (b.type === "followups") { if (!opts.onFollowup) return; n = h("div", "tb-follow"); const row = h("div", "tb-chips"); b.items.forEach((q) => { const bt = h("button", "tb-chip", q); bt.type = "button"; bt.onclick = () => opts.onFollowup(q); row.append(bt); }); n.append(row); }
+        if (n) box.append(n);
+      });
+      deps.typeset([box]);
+    }
+    const plain = (blocks) => blocks.map((b) => b.text || b.q || (b.steps && b.steps.join(" ")) || (b.chain && b.chain.map((c) => c.text).join(" → ")) || (b.events && b.events.map((e) => e.date + " " + e.title).join("; ")) || b.title || "").filter(Boolean).join("\n").slice(0, 2500);
+    return { GUIDE, normalize, render, plain, compile };
+  }
+
+  const TB = makeTeach({ sanitizeSvg, typeset, lang: () => (last && last.lang) || ui });
+
+  /* ---- input ---- */
+  const files = [];
+  function paintPages() { $("pages").replaceChildren(...files.map((f, i) => { const d = el("div", "pg"); if (/^image\//.test(f.type)) { const im = el("img"); im.src = f._u || (f._u = URL.createObjectURL(f)); im.alt = ""; d.append(im); } else d.append(document.createTextNode((f.name.split(".").pop() || "").toUpperCase())); const x = el("button", null, "✕"); x.type = "button"; x.setAttribute("aria-label", f.name); x.onclick = () => { files.splice(i, 1); paintPages(); }; d.append(x); return d; })); }
+  const add = (l) => { files.push(...Array.from(l || []).slice(0, 12)); paintPages(); };
+  $("pick").onclick = () => $("file").click(); $("cam").onclick = () => $("camIn").click();
+  $("file").onchange = (e) => { add(e.target.files); e.target.value = ""; }; $("camIn").onchange = (e) => { add(e.target.files); e.target.value = ""; };
+  ["dragenter", "dragover"].forEach((v) => $("drop").addEventListener(v, (e) => { e.preventDefault(); $("drop").classList.add("over"); }));
+  ["dragleave", "drop"].forEach((v) => $("drop").addEventListener(v, (e) => { e.preventDefault(); $("drop").classList.remove("over"); }));
+  $("drop").addEventListener("drop", (e) => add(e.dataTransfer.files));
+  document.addEventListener("paste", (e) => { const f = Array.from((e.clipboardData && e.clipboardData.items) || []).filter((it) => it.kind === "file").map((it) => it.getAsFile()).filter(Boolean); if (f.length) { e.preventDefault(); add(f); } });
+  async function readAll() {
+    const images = [], texts = [];
+    for (const f of files) {
+      if (/\.pdf$/i.test(f.name) || f.type === "application/pdf") {
+        await loadScript(LIB.pdf); await loadScript(LIB.pdfWorker); window.pdfjsLib.GlobalWorkerOptions.workerSrc = LIB.pdfWorker;
+        const pdf = await window.pdfjsLib.getDocument({ data: new Uint8Array(await f.arrayBuffer()), isEvalSupported: false }).promise;
+        for (let i = 1; i <= Math.min(pdf.numPages, 6); i++) { const pg = await pdf.getPage(i); const v1 = pg.getViewport({ scale: 1 }); const vp = pg.getViewport({ scale: Math.min(2.5, 1400 / v1.width) }); const c = document.createElement("canvas"); c.width = vp.width; c.height = vp.height; const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); await pg.render({ canvasContext: g, viewport: vp }).promise; const b = await new Promise((r) => c.toBlob(r, "image/jpeg", 0.85)); if (b) images.push(b); }
+      } else if (/^image\//.test(f.type)) images.push(f);
+      else if (/^text\//.test(f.type) || /\.txt$/i.test(f.name)) texts.push(await f.text());
+    }
+    return { images, text: texts.join("\n\n") };
+  }
+
+  /* ---- AI ---- */
+  const MODELS = { haiku: { id: "claude-haiku-5-5", tier: "quick" }, sonnet: { id: "claude-sonnet-5-5", tier: "default" }, opus: { id: "claude-opus-5-5", tier: "complex" } };
+  let backend = "wait", sample = null, imagesOk = false, maxImg = 10;
+  const ready = (async () => {
+    if (window.claude && typeof window.claude.use === "function") { try { sample = await window.claude.use("sample"); } catch {} if (sample) { backend = "claude"; try { const l = await sample.limits(); imagesOk = !!(l && l.images); if (l && l.images) maxImg = l.images.maxCount || 10; } catch {} } else backend = "none"; }
+    else { backend = "api"; const box = el("label", "opt"); box.append(el("span", null, t("key"))); const k = el("input"); k.type = "password"; k.value = store.get("rx.key", ""); k.style.cssText = "border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:4px 8px;direction:ltr"; k.onchange = () => store.set("rx.key", k.value.trim()); box.append(k); $("go").before(box); }
+  })();
+  async function toB64(blob) { const bmp = await createImageBitmap(blob); const sc = Math.min(1, 1568 / Math.max(bmp.width, bmp.height)); const c = document.createElement("canvas"); c.width = Math.round(bmp.width * sc); c.height = Math.round(bmp.height * sc); const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); g.drawImage(bmp, 0, 0, c.width, c.height); const u = c.toDataURL("image/jpeg", 0.88); return u.slice(u.indexOf(",") + 1); }
+  async function ask(prompt, images) {
+    const m = MODELS[$("model").value] || MODELS.haiku, effort = $("effort").value;
+    if (backend === "claude") { const o = { model: m.id, modelTier: m.tier, effort, cache: false, onText: ({ text }) => setStatus(`${t("working")} ${text.length}`, true) }; if (images.length) o.images = images; return (await sample(prompt, o)).text; }
+    if (backend === "api") {
+      const key = store.get("rx.key", ""); if (!key) throw { code: "key" };
+      const content = []; for (const b of images) content.push({ type: "image", source: { type: "base64", media_type: "image/jpeg", data: await toB64(b) } }); content.push({ type: "text", text: prompt });
+      const body = { model: m.id, max_tokens: 16000, output_config: { effort }, messages: [{ role: "user", content }] }; const headers = { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2026-10-21", "anthropic-dangerous-direct-browser-access": "true" };
+      if (m.id !== "claude-haiku-5-5") { body.fallbacks = "default"; headers["anthropic-beta"] = "server-side-fallback-2026-07-01"; }
+      const r = await fetch("https://api.anthropic.com/v1/messages", { method: "POST", headers, body: JSON.stringify(body) }); const j = await r.json().catch(() => null);
+      if (!r.ok) throw { code: r.status === 429 ? "rate_limited" : "x" }; if (j.stop_reason === "refusal") throw { code: "refused" };
+      return (j.content || []).filter((b) => b.type === "text").map((b) => b.text).join("");
+    }
+    throw { code: "none" };
+  }
+  const prompt = (n, text) => String.raw`You solve a student's homework. Source: ${n ? n + " page image(s)" : ""}${n && text ? " + " : ""}${text ? "the text below" : ""}.
+Answer EVERY question in order, with the SIMPLEST correct method a student at that level would use.
+For each question:
+- "answer": the final answer, ONE line (a value, a word, a short sentence, the right option). This is what matters.
+- "why": the simplest justification or method in ≤ 20 words (a key formula, the rule, the clue in the text). No padding.
+- "visual": ONLY if the answer itself is a figure/construction/table/graph (e.g. "construire", "tracer", "complete the table"): ONE block {"type":"svg"|"table"|"formula"|"graph",...}; otherwise omit.
+Be correct: check every computation. Quote texts faithfully. If something is unreadable, say so in "note" instead of guessing.
+Write in the language of the homework. Math in LaTeX between $…$ (double backslashes in JSON; vectors \\vect{AB}).
+SVG rules: viewBox about 520×260; only svg,g,path,line,polyline,polygon,rect,circle,ellipse,text,defs,marker; colours #1f2937,#2563eb,#dc2626,#16a34a,#ea580c,#7c3aed,#9ca3af; single quotes.
+Reply ONLY with JSON: {"title":"short title of the homework","lang":"fr|ar|en","parts":[{"title":"Exercice 1 (or empty)","items":[{"label":"1","question":"the question, shortened to ≤ 12 words","answer":"…","why":"…","visual":null}]}],"note":""}${text ? "\n\n<homework>\n" + text.slice(0, 60000) + "\n</homework>" : ""}`;
+
+  /* ---- render ---- */
+  let last = store.get("rx.last", null);
+  function setStatus(msg, busy, err) { const s = $("status"); s.replaceChildren(); s.className = "status" + (err ? " err" : ""); if (busy) s.append(el("span", "spin")); if (msg) s.append(document.createTextNode(msg)); }
+  function render(d) {
+    const out = $("out"); out.hidden = false; out.replaceChildren(); out.dir = d.lang === "ar" ? "rtl" : "ltr";
+    const head = el("div", "sheet-head"); head.append(el("h2", null, d.title || t("answers")));
+    const acts = el("div", "row"); const cp = el("button", "btn", t("copy")); cp.type = "button"; cp.onclick = () => { const txt = d.parts.map((p) => (p.title ? p.title + "\n" : "") + p.items.map((it) => `${it.label}. ${it.answer}${it.why ? " — " + it.why : ""}`).join("\n")).join("\n\n"); const ok = () => toast(t("copied")); try { navigator.clipboard.writeText(txt).then(ok, () => {}); } catch {} };
+    const nw = el("button", "btn", t("again")); nw.type = "button"; nw.onclick = () => { out.hidden = true; files.length = 0; paintPages(); $("text").value = ""; window.scrollTo({ top: 0, behavior: "smooth" }); };
+    acts.append(cp, nw); head.append(acts); out.append(head);
+    const sheet = el("div", "sheet");
+    d.parts.forEach((p) => {
+      if (p.title) sheet.append(el("div", "ex-t", p.title));
+      p.items.forEach((it) => {
+        const row = el("div", "item"); row.append(el("span", "lbl", it.label));
+        const body = el("div"); body.style.display = "grid"; body.style.gap = "2px"; body.style.minWidth = "0";
+        if (it.question) body.append(rich(el("p", "q"), it.question));
+        body.append(rich(el("p", "a"), it.answer));
+        if (it.why) body.append(rich(el("p", "why"), it.why));
+        row.append(body);
+        if (it.visual) { const v = el("div", "vis"); TB.render(v, [it.visual]); row.append(v); }
+        sheet.append(row);
+      });
+    });
+    out.append(sheet);
+    if (d.note) out.append(rich(el("p", "note"), d.note));
+    typeset([out]);
+  }
+  function normalize(raw) {
+    const S = (v, m = 600) => (typeof v === "string" ? v.slice(0, m) : v == null || typeof v === "object" ? "" : String(v).slice(0, m));
+    const parts = (Array.isArray(raw.parts) ? raw.parts : Array.isArray(raw.items) ? [{ title: "", items: raw.items }] : []).map((p) => ({ title: S(p && p.title, 80), items: (Array.isArray(p && p.items) ? p.items : []).map((it, i) => ({ label: S(it && it.label, 8) || String(i + 1), question: S(it && it.question, 200), answer: S(it && it.answer, 600), why: S(it && it.why, 300), visual: it && it.visual && typeof it.visual === "object" ? TB.normalize([it.visual]).filter((b) => ["svg", "table", "formula", "graph"].includes(b.type))[0] || null : null })).filter((it) => it.answer) })).filter((p) => p.items.length);
+    if (!parts.length) throw { code: "x" };
+    return { title: S(raw.title, 120), lang: LANGS.includes(raw.lang) ? raw.lang : "fr", parts, note: S(raw.note, 400) };
+  }
+  $("go").onclick = async () => {
+    await ready;
+    if (backend === "none") { setStatus(t("noAI"), false, true); return; }
+    const typed = $("text").value.trim(); if (!files.length && !typed) { setStatus(t("need"), false, true); return; }
+    $("go").disabled = true; setStatus(t("working"), true);
+    try {
+      let { images, text } = await readAll(); text = [typed, text].filter(Boolean).join("\n\n");
+      if (backend === "claude" && !imagesOk) images = []; images = images.slice(0, maxImg);
+      const raw = await ask(prompt(images.length, text), images);
+      last = normalize(parseJsonLoose(raw)); store.set("rx.last", last); setStatus(""); render(last);
+      $("out").scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch (e) { const c = e && e.code; setStatus(c === "not_granted" ? t("denied") : c === "rate_limited" ? t("limited") : c === "none" ? t("noAI") : c === "key" ? t("key") : t("err"), false, true); }
+    finally { $("go").disabled = false; }
+  };
+
+  /* ---- language & boot ---- */
+  function applyUi() {
+    $("app").dir = ui === "ar" ? "rtl" : "ltr"; document.documentElement.lang = ui;
+    document.querySelectorAll("[data-t]").forEach((n) => { n.textContent = t(n.dataset.t); }); document.querySelectorAll("[data-tp]").forEach((n) => { n.placeholder = t(n.dataset.tp); });
+    $("uiSeg").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.l === ui)));
+  }
+  $("uiSeg").onclick = (e) => { const b = e.target.closest("button[data-l]"); if (!b) return; ui = b.dataset.l; store.set("rx.ui", ui); applyUi(); };
+  const sv0 = store.get("rx.ui", ""); ui = LANGS.includes(sv0) ? sv0 : (navigator.language || "").startsWith("ar") ? "ar" : (navigator.language || "").startsWith("en") ? "en" : "fr";
+  const ms = store.get("rx.ai", {}); if (MODELS[ms.model]) $("model").value = ms.model; if (ms.effort) $("effort").value = ms.effort;
+  [$("model"), $("effort")].forEach((x) => x.onchange = () => store.set("rx.ai", { model: $("model").value, effort: $("effort").value }));
+  applyUi(); if (last) render(last);
+  window.__rx = { render, normalize };
+})();
+</script>
