@@ -234,7 +234,7 @@ details[open] > summary .chev { transform: rotate(180deg); }
 
 /* tutor */
 .tutor { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-height: 0; overflow: hidden; position: fixed; z-index: 40; transition: transform .28s ease; box-shadow: 0 -12px 50px rgb(0 0 0 / .45); }
-@media (min-width: 760px) { .tutor { inset: 0 0 0 auto; width: min(420px, 100%); border-radius: 0; border-width: 0 0 0 1px; transform: translateX(105%); padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); padding-right: env(safe-area-inset-right, 0px); } [dir="rtl"] .tutor { inset: 0 auto 0 0; transform: translateX(-105%); } }
+@media (min-width: 760px) { .tutor { inset: 0 0 0 auto; width: min(420px, 100%); border-radius: 0; border-width: 0 0 0 1px; transform: translateX(105%); padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); padding-right: env(safe-area-inset-right, 0px); } #app[dir="rtl"] .tutor { inset: 0 auto 0 0; transform: translateX(-105%); } }
 .tutor-head { padding: 13px 14px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .tutor-head h2 { font-size: 16px; display: flex; align-items: center; gap: 8px; }
 .avatar { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--purple), var(--blue)); display: grid; place-items: center; color: #fff; font-size: 15px; }
@@ -428,6 +428,66 @@ canvas#confetti { position: fixed; inset: 0; z-index: 70; pointer-events: none; 
 .gen-row.ok .gi { background: var(--ok); color: var(--bg); } .gen-row.err .gi { background: var(--bad); color: var(--bg); }
 .gen-row .gt { min-width: 0; flex: 1; display: grid; } .gen-row .gt b { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .gen-row .gt small { color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .gen-actions { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+:root { --tb-line: var(--line-2); --tb-card: var(--surface); --tb-bg2: var(--surface-2); --tb-muted: var(--muted); --tb-fg: var(--fg); --tb-accent: var(--accent); --tb-ok: var(--ok); --tb-bad: var(--bad); --tb-blue: var(--blue); --tb-red: var(--red); --tb-green: var(--green); --tb-purple: var(--purple); }
+/* ---- teaching blocks (shared engine) ---- */
+.tb { display: grid; gap: 12px; min-width: 0; }
+.tb-text { margin: 0; line-height: 1.75; overflow-wrap: anywhere; }
+.tb-card { border: 1px solid var(--tb-line); border-radius: 14px; background: var(--tb-card); padding: 12px 14px; display: grid; gap: 10px; min-width: 0; margin: 0; }
+.tb-title { font-size: 15px; }
+.tb-muted { color: var(--tb-muted); }
+.tb-cap { margin: 0; font-size: 13.5px; color: var(--tb-muted); }
+.tb-kicker { font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--tb-accent); }
+.tb-callout { border-radius: 12px; padding: 10px 14px; border: 1px solid var(--tb-line); display: grid; gap: 4px; }
+.tb-key { border-color: color-mix(in srgb, var(--tb-accent) 50%, transparent); background: color-mix(in srgb, var(--tb-accent) 10%, transparent); }
+.tb-tip { border-color: color-mix(in srgb, var(--tb-ok) 50%, transparent); background: color-mix(in srgb, var(--tb-ok) 10%, transparent); }
+.tb-warn { border-color: color-mix(in srgb, var(--tb-bad) 50%, transparent); background: color-mix(in srgb, var(--tb-bad) 10%, transparent); }
+.tb-qq { margin: 0; font-weight: 700; }
+.tb-opts { display: grid; gap: 8px; }
+.tb-opt { text-align: start; border: 1px solid var(--tb-line); background: var(--tb-bg2); color: inherit; border-radius: 11px; padding: 8px 12px; display: flex; gap: 10px; align-items: center; cursor: pointer; font: inherit; }
+.tb-opt:hover:not(:disabled) { border-color: var(--tb-fg); }
+.tb-opt.ok { border-color: var(--tb-ok); background: color-mix(in srgb, var(--tb-ok) 14%, transparent); }
+.tb-opt.bad { border-color: var(--tb-bad); background: color-mix(in srgb, var(--tb-bad) 14%, transparent); }
+.tb-k { width: 22px; height: 22px; border-radius: 6px; background: var(--tb-card); display: grid; place-items: center; font-size: 12px; font-weight: 700; flex: none; }
+.tb-fb p { margin: 4px 0 0; }
+.tb-svg svg, .tb-fig svg { width: 100%; max-width: 640px; height: auto; display: block; margin: 0 auto; direction: ltr; }
+.tb-math { text-align: center; overflow-x: auto; direction: ltr; font-size: 18px; }
+.tb-legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; font-size: 13.5px; justify-items: center; }
+.tb-legend li { display: flex; gap: 8px; }
+.tb-steps { display: grid; gap: 6px; } .tb-steps ol { margin: 0; padding-inline-start: 22px; display: grid; gap: 6px; }
+.tb-table { overflow-x: auto; } .tb-table table { border-collapse: collapse; width: 100%; font-size: 14px; } .tb-table th, .tb-table td { border: 1px solid var(--tb-line); padding: 6px 10px; text-align: center; } .tb-table th { background: var(--tb-bg2); }
+.tb-tl-tabs { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(64px, 1fr); gap: 6px; overflow-x: auto; }
+.tb-tl-tabs button { border: 0; border-radius: 9px; padding: 7px 6px; background: transparent; color: inherit; font: inherit; font-weight: 700; cursor: pointer; }
+.tb-tl-tabs button[aria-selected="true"] { background: var(--tb-ok); color: #fff; }
+.tb-tl-body { display: grid; gap: 2px; } .tb-tl-body p { margin: 4px 0 0; }
+.tb-tl-date { font-size: 26px; font-weight: 800; color: var(--tb-ok); line-height: 1.1; }
+.tb-tl-nav { display: flex; justify-content: space-between; gap: 8px; }
+.tb-btn { border: 1px solid var(--tb-line); background: var(--tb-bg2); color: inherit; border-radius: 999px; padding: 5px 14px; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; justify-self: center; }
+.tb-btn:disabled { opacity: .45; cursor: default; }
+.tb-strong { background: var(--tb-fg); color: var(--tb-card); border-color: var(--tb-fg); }
+.tb-arrow { text-align: center; color: var(--tb-muted); font-size: 13px; }
+.tb-link, .tb-node { border: 1px solid var(--tb-line); border-radius: 11px; padding: 8px 12px; text-align: center; display: grid; gap: 2px; background: var(--tb-bg2); }
+.tb-link small, .tb-node small { color: var(--tb-muted); font-size: 12px; }
+.tb-direct { border-color: color-mix(in srgb, var(--tb-accent) 55%, var(--tb-line)); }
+.tb-possible { border-style: dashed; }
+.tb-rel-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+.tb-tag { justify-self: center; font-size: 11px; font-weight: 700; color: var(--tb-ok); border: 1px solid color-mix(in srgb, var(--tb-ok) 45%, transparent); border-radius: 6px; padding: 0 6px; }
+.tb-model-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.tb-live { font-size: 10.5px; font-weight: 800; letter-spacing: .06em; color: var(--tb-ok); border: 1px solid color-mix(in srgb, var(--tb-ok) 45%, transparent); border-radius: 6px; padding: 1px 7px; }
+.tb-fig { border-radius: 10px; background: var(--tb-bg2); padding: 6px; }
+.tb-ctrls { display: grid; gap: 10px; }
+.tb-var { display: grid; gap: 2px; font-size: 14px; } .tb-var-top { display: flex; justify-content: space-between; gap: 8px; } .tb-var input { width: 100%; accent-color: var(--tb-accent); }
+.tb-lim { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--tb-muted); }
+.tb-outs { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }
+.tb-out { display: grid; gap: 2px; background: var(--tb-bg2); border-radius: 10px; padding: 8px 10px; font-size: 13px; color: var(--tb-muted); } .tb-out b { color: var(--tb-fg); font-size: 18px; }
+.tb-num { font-variant-numeric: tabular-nums; }
+.tb-plot { width: 100%; height: auto; direction: ltr; } .tb-plot .g { stroke: var(--tb-line); } .tb-plot .ax { stroke: var(--tb-muted); } .tb-plot text { fill: var(--tb-muted); font-size: 12px; }
+.tb-plot .c { fill: none; stroke-width: 2.6; } .tb-plot .c0, .tb-keys .c0 { stroke: var(--tb-blue); color: var(--tb-blue); } .tb-plot .c1, .tb-keys .c1 { stroke: var(--tb-red); color: var(--tb-red); } .tb-plot .c2, .tb-keys .c2 { stroke: var(--tb-green); color: var(--tb-green); } .tb-plot .c3, .tb-keys .c3 { stroke: var(--tb-purple); color: var(--tb-purple); }
+.tb-keys { display: flex; flex-wrap: wrap; gap: 6px 14px; justify-content: center; font-size: 13px; } .tb-keys span { display: inline-flex; gap: 6px; align-items: center; } .tb-keys i { width: 16px; height: 3px; background: currentColor; display: inline-block; border-radius: 2px; } .tb-keys span span { color: var(--tb-fg); }
+.tb-follow { display: grid; gap: 6px; } .tb-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.tb-chip { border: 1px solid var(--tb-line); background: var(--tb-bg2); color: inherit; border-radius: 999px; padding: 4px 12px; font: inherit; font-size: 13px; cursor: pointer; text-align: start; }
+.tb-chip:hover { border-color: var(--tb-accent); }
+.msg.ai .tb-card { background: var(--surface); } .msg.ai { max-width: 100%; }
+.step-blocks { margin-inline-start: 40px; }
 mjx-container { color: inherit; }
 mjx-container:not([display="true"]) { display: inline-block; max-width: 100%; overflow-x: auto; overflow-y: hidden; vertical-align: middle; }
 mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
@@ -558,6 +618,7 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
     verify: ["Vérifier ma réponse", "صحّح جوابي", "Check my answer"],
     explainOther: ["Autrement", "بطريقة أخرى", "Another way"],
     listen: ["Écouter", "استمع", "Listen"],
+    stStuck: ["Je bloque ici", "لم أفهم هنا", "I'm stuck here"],
     stSimple: ["Plus simple", "أبسط", "Simpler"],
     stLife: ["Image de la vie", "مثال من الحياة", "Real-life picture"],
     stStory: ["En histoire", "كقصة", "As a story"],
@@ -1039,7 +1100,7 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
     progress: Object.assign({ xp: 0, streak: 0, done: {}, quiz: {} }, store.get("pdp.progress", {})),
     seriesId: store.get("pdp.series", SERIES1.id), exIdx: 0, qIdx: 0,
     revealed: {}, base: {}, showNames: true, showGrid: true, panel: null, chat: [], backend: "wait", sample: null, imagesOk: false, maxImages: 10,
-    view: "home", src: {}, mk: { files: [], busy: false, stages: [] },
+    view: "home", src: {}, mk: { files: [], busy: false, stages: [] }, learn: store.get("pdp.learn", {}),
   };
   const saveSettings = () => store.set("pdp.settings", S.settings);
   const saveProgress = () => store.set("pdp.progress", S.progress);
@@ -1197,13 +1258,15 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
       const node = sanitizeSvg(fig.svg);
       const wrap = el("div", "static no-tex"); if (node) wrap.append(node); board.append(wrap); card.append(board);
       card.append(el("div", "board-foot", t("staticHint")));
+    } else if (fig && fig.model) {
+      const wrap = el("div"); wrap.style.padding = "10px"; TB.render(wrap, [fig.model]); board.append(wrap); card.append(board);
     } else if (fig && fig.graph) {
       const { svg, keys } = plotGraph(fig.graph);
       const wrap = el("div", "plot no-tex"); wrap.append(svg); board.append(wrap); card.append(board);
       if (keys) card.append(keys);
       card.append(el("div", "board-foot", t("graphHint")));
     }
-    card.hidden = !(fig && (fig.base || fig.svg || fig.graph));
+    card.hidden = !(fig && (fig.base || fig.svg || fig.graph || fig.model));
     if (!card.hidden) typeset([card]);
   }
   function getBase(e) { const k = `${S.seriesId}|${e.id}`; if (!S.base[k]) S.base[k] = JSON.parse(JSON.stringify(e.figure.base)); return S.base[k]; }
@@ -1457,9 +1520,10 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
     const row = el("div", "step-row"); row.append(el("span", "step-n", String(i + 1)), richEl("div", "step-body", st.text));
     const more = el("button", "step-more", "✦"); more.type = "button"; more.setAttribute("aria-label", t("stepTools")); more.setAttribute("aria-expanded", "false");
     row.append(more); li.append(row);
+    if (st.blocks && st.blocks.length) { const sb = el("div", "step-blocks"); TB.render(sb, st.blocks, { onAnswer: recordAnswer }); li.append(sb); }
     const menu = el("div", "menu"); menu.hidden = true;
     more.onclick = () => { menu.hidden = !menu.hidden; more.setAttribute("aria-expanded", String(!menu.hidden)); };
-    [["stSimple", "simple"], ["stLife", "life"], ["stStory", "story"], ["stWhy", "why"], ["stDarija", "darija"], ["stFlash", "flash"]].forEach(([k, style]) => {
+    [["stStuck", "stuck"], ["stSimple", "simple"], ["stLife", "life"], ["stStory", "story"], ["stWhy", "why"], ["stDarija", "darija"], ["stFlash", "flash"]].forEach(([k, style]) => {
       const b = el("button", "mini ai"); b.type = "button"; b.textContent = t(k); b.onclick = () => explainStep(st, i, style, li, menu); menu.append(b);
     });
     if ("speechSynthesis" in window) { const sp = el("button", "mini"); sp.type = "button"; sp.append(icon("speaker"), el("span", null, t("listen"))); sp.onclick = () => speak(st.text, series().lang); menu.append(sp); }
@@ -1488,7 +1552,7 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
     inner.classList.remove("panel"); inner.style.display = "grid"; inner.style.gap = "10px"; wrap.append(inner);
     return wrap;
   }
-  const quizState = {};
+  const quizState = store.get("pdp.quizState", {}); const saveQuiz = () => store.set("pdp.quizState", quizState);
   function renderQuiz(q) {
     const key = qKey(); const p = el("div", "panel");
     const list = [q.quiz, ...(quizState[key + "|ai"] || [])].filter(Boolean);
@@ -1501,7 +1565,7 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
         const data = await ai(`${context()}\nCreate 3 NEW multiple-choice questions that test understanding of this question's key ideas (not the same as the official one). Each has 3 options, exactly one correct, plausible distractors based on typical student mistakes, and a one-sentence explanation. Write math in LaTeX between $…$, vectors as \\vect{AB} (double the backslashes in JSON). ${langRule()}\nReply ONLY with JSON: {"questions":[{"q":"...","options":["...","...","..."],"answer":0,"why":"..."}]}`, { json: true });
         const qs = (Array.isArray(data.questions) ? data.questions : []).map((x) => ({ q: String(x.q || ""), options: (x.options || []).map(String).slice(0, 4), answer: +x.answer || 0, why: String(x.why || "") })).filter((x) => x.q && x.options.length >= 2 && x.answer < x.options.length);
         if (!qs.length) throw { code: "invalid_json" };
-        quizState[key + "|ai"] = [...(quizState[key + "|ai"] || []), ...qs]; renderQuestion();
+        quizState[key + "|ai"] = [...(quizState[key + "|ai"] || []), ...qs]; saveQuiz(); renderQuestion();
       } catch (e) { status.className = "status err"; status.textContent = errText(e); more.disabled = false; }
     };
     p.append(more, status); return p;
@@ -1514,7 +1578,7 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
       const b = el("button", "opt"); b.type = "button"; b.append(el("span", "k", "ABCD"[i]), richEl("span", null, o));
       if (st != null) { b.disabled = true; if (i === item.answer) b.classList.add("right"); else if (i === st) b.classList.add("wrong"); }
       b.onclick = () => {
-        quizState[id] = i; const ok = i === item.answer;
+        quizState[id] = i; saveQuiz(); const ok = i === item.answer; recordAnswer({ q: item.q, chosen: item.options[i], right: item.options[item.answer], correct: ok });
         if (ok) { S.progress.streak++; gainXP(S.progress.quiz[id] ? 3 : 15); S.progress.quiz[id] = 1; confetti(); toast(t("right")); }
         else { S.progress.streak = 0; S.progress.quiz[id] = 1; saveProgress(); renderHeader(); }
         renderQuestion();
@@ -1525,31 +1589,32 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
     if (st != null) { why.append(el("b", null, (st === item.answer ? t("right") : t("wrongTry")) + " ")); why.append(rich(el("span"), item.why || "")); wrap.append(why); }
     return wrap;
   }
-  const verifyState = { images: [], text: "", result: null };
+  const verifyStates = {};
   function renderVerify(q) {
+    const vs = verifyStates[qKey()] || (verifyStates[qKey()] = { images: [], text: "", result: null });
     const p = el("div", "panel verify");
-    const ta = el("textarea"); ta.id = "verifyText"; ta.placeholder = t("verifyPh"); ta.value = verifyState.text; ta.oninput = () => { verifyState.text = ta.value; }; p.append(ta);
+    const ta = el("textarea"); ta.id = "verifyText"; ta.placeholder = t("verifyPh"); ta.value = vs.text; ta.oninput = () => { vs.text = ta.value; }; p.append(ta);
     const thumbs = el("div", "thumbs");
-    verifyState.images.forEach((im, i) => { const d = el("div", "thumb"); const img = el("img"); img.src = im.url; img.alt = ""; const x = el("button", null, "✕"); x.type = "button"; x.onclick = () => { URL.revokeObjectURL(im.url); verifyState.images.splice(i, 1); renderQuestion(); }; d.append(img, x); thumbs.append(d); });
+    vs.images.forEach((im, i) => { const d = el("div", "thumb"); const img = el("img"); img.src = im.url; img.alt = ""; const x = el("button", null, "✕"); x.type = "button"; x.onclick = () => { URL.revokeObjectURL(im.url); vs.images.splice(i, 1); renderQuestion(); }; d.append(img, x); thumbs.append(d); });
     const row = el("div", "step-actions");
     const fi = el("input"); fi.type = "file"; fi.accept = "image/*"; fi.multiple = true; fi.hidden = true; fi.setAttribute("capture", "environment");
-    fi.onchange = () => { Array.from(fi.files).slice(0, 4).forEach((f) => verifyState.images.push({ blob: f, url: URL.createObjectURL(f) })); renderQuestion(); };
+    fi.onchange = () => { Array.from(fi.files).slice(0, 4).forEach((f) => vs.images.push({ blob: f, url: URL.createObjectURL(f) })); renderQuestion(); };
     const ph = el("button", "btn sm"); ph.type = "button"; ph.append(icon("camera"), el("span", null, t("addPhoto"))); ph.onclick = () => fi.click();
     if (S.backend === "claude" && !S.imagesOk) ph.hidden = true;
     const go = el("button", "btn sm accent"); go.type = "button"; go.textContent = t("correct");
     const status = el("div", "status"); const out = el("div");
     go.onclick = async () => {
-      if (!verifyState.text.trim() && !verifyState.images.length) { status.className = "status err"; status.textContent = t("needInput"); return; }
+      if (!vs.text.trim() && !vs.images.length) { status.className = "status err"; status.textContent = t("needInput"); return; }
       go.disabled = true; status.className = "status"; status.replaceChildren(el("span", "spin"), document.createTextNode(t("thinking")));
       try {
-        const data = await ai(`${persona()}\n${context()}\nThe student submitted their own solution for this question${verifyState.images.length ? " (photos of their notebook are attached; read the handwriting carefully)" : ""}:\n<student>\n${verifyState.text}\n</student>\nGrade it like a kind but rigorous teacher. Accept any correct method, not only the official one. Point to the exact line of each error and how to fix it. ${langRule()} Math in LaTeX between $…$, vectors as \\vect{AB} (double backslashes in JSON).\nReply ONLY with JSON: {"verdict":"correct"|"partial"|"wrong","score":0-100,"summary":"one encouraging sentence","good":["..."],"errors":[{"where":"...","fix":"..."}],"next":"one concrete next step"}`, { json: true, images: verifyState.images });
-        verifyState.result = data; status.replaceChildren();
+        const data = await ai(`${persona()}\n${context()}\nThe student submitted their own solution for this question${vs.images.length ? " (photos of their notebook are attached; read the handwriting carefully)" : ""}:\n<student>\n${vs.text}\n</student>\nGrade it like a kind but rigorous teacher. Accept any correct method, not only the official one. Point to the exact line of each error and how to fix it. ${langRule()} Math in LaTeX between $…$, vectors as \\vect{AB} (double backslashes in JSON).\nReply ONLY with JSON: {"verdict":"correct"|"partial"|"wrong","score":0-100,"summary":"one encouraging sentence","good":["..."],"errors":[{"where":"...","fix":"..."}],"next":"one concrete next step"}`, { json: true, images: vs.images });
+        vs.result = data; status.replaceChildren(); learnOf().verify = { score: Math.round(+data.score || 0), verdict: String(data.verdict || ""), errors: (Array.isArray(data.errors) ? data.errors : []).map((x) => String((x && x.fix) || "").slice(0, 140)).slice(0, 4) }; store.set("pdp.learn", S.learn);
         const sc = Math.max(0, Math.min(100, +data.score || 0)); gainXP(Math.round(sc / 5)); if (sc >= 80) confetti();
         renderVerdict(out, data); typeset([out]);
       } catch (e) { status.className = "status err"; status.textContent = errText(e); } finally { go.disabled = false; }
     };
     row.append(fi, ph, go); p.append(thumbs, row, status, out);
-    if (verifyState.result) renderVerdict(out, verifyState.result);
+    if (vs.result) renderVerdict(out, vs.result);
     return p;
   }
   function renderVerdict(out, d) {
@@ -1604,7 +1669,28 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
   }
   function context() {
     const s = series(), e = ex(), q = qq(), n = S.revealed[qKey()] || 0;
-    return `Series: ${s.title} — ${s.subtitle || ""}\nExercise: ${e.title}${e.name ? " (" + e.name + ")" : ""}\nStatement: ${e.statement}\nCurrent question ${q.label}: ${q.title}\nOfficial solution steps (the student has revealed ${n} of ${q.steps.length}):\n${q.steps.map((st, i) => `${i + 1}. ${st.text}`).join("\n")}\nNotation: $\\vect{AB}$ means vector AB.${s.level ? "\nLevel: " + s.level : ""}`;
+    return learnerContext().replace(/^/, "") + `\nSeries: ${s.title} — ${s.subtitle || ""}\nExercise: ${e.title}${e.name ? " (" + e.name + ")" : ""}\nStatement: ${e.statement}\nCurrent question ${q.label}: ${q.title}\nOfficial solution steps (the student has revealed ${n} of ${q.steps.length}):\n${q.steps.map((st, i) => `${i + 1}. ${st.text}`).join("\n")}\nNotation: $\\vect{AB}$ means vector AB.${s.level ? "\nLevel: " + s.level : ""}`;
+  }
+  function learnOf(k = qKey()) { return S.learn[k] || (S.learn[k] = { wrong: [], right: 0 }); }
+  function recordAnswer(a) { const L = learnOf(); if (a.correct) L.right++; else { L.wrong.push({ q: String(a.q).slice(0, 200), chosen: String(a.chosen).slice(0, 120), right: String(a.right).slice(0, 120) }); L.wrong = L.wrong.slice(-6); } store.set("pdp.learn", S.learn); }
+  function learnerContext() {
+    const L = S.learn[qKey()]; if (!L) return "";
+    const parts = [];
+    if (L.wrong.length) parts.push("Recent mistakes on this question: " + L.wrong.map((w) => `«${w.q}» answered «${w.chosen}» instead of «${w.right}»`).join("; "));
+    if (L.right) parts.push(`${L.right} correct answer(s) so far.`);
+    if (L.verify) parts.push(`Their own written solution was graded ${L.verify.score}/100 (${L.verify.verdict}); issues: ${L.verify.errors.join("; ") || "none"}.`);
+    return parts.length ? "\nWhat we know about this learner: " + parts.join(" ") + " Adapt to this (address the misconception directly, don't repeat what they already master)." : "";
+  }
+  async function aiBlocks(input, box, { cache, signal, onDone } = {}) {
+    box.replaceChildren(typingDots());
+    const raw = await ai(input, { json: false, signal, cache, onText: ({ text: s2 }) => { const tp = box.querySelector(".typing"); if (tp) tp.title = s2.length + ""; } });
+    let blocks = [];
+    try { blocks = TB.normalize(parseJsonLoose(raw)); } catch {}
+    box.replaceChildren();
+    if (!blocks.length) { mdBlock(box, raw.replace(/```[\s\S]*?```/g, "")); typeset([box]); return raw; }
+    TB.render(box, blocks, { onFollowup: (q) => { $("tutor").classList.add("open"); sendChat(q); }, onAnswer: recordAnswer });
+    onDone && onDone(blocks);
+    return TB.plain(blocks);
   }
   function modelName() { const m = MODELS[S.settings.model] || MODELS.haiku; return `${m.name} · ${t(EFF_KEYS[S.settings.effort])}`; }
   let lastServed = "";
@@ -1686,19 +1772,19 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
   async function explainStep(st, i, style, li, menu) {
     menu.hidden = true;
     let box = li.querySelector(".aibox"); if (!box) { box = el("div", "aibox"); li.append(box); }
-    box.dir = "auto"; box.replaceChildren(typingDots());
-    const styles = {
-      simple: "Re-explain this step much more simply, as if to a 12-year-old: 3–5 very short sentences.",
-      life: "Re-explain this step with ONE vivid real-life picture (a trip, a taxi route, a football pass, a recipe…), then link it back to the maths in one sentence.",
-      story: "Tell this step as a tiny story (4–6 sentences) where the points are characters travelling along the vectors.",
-      why: "Explain WHY this step is allowed and why it is a good idea here (what it prepares for). 3–5 short sentences.",
-      darija: "Re-explain this step in Moroccan Darija (Arabic script), friendly, 3–5 short sentences, keeping LaTeX for the maths.",
-      flash: "Summarise this step in ONE punchy sentence a student can memorise.",
+    box.dir = "auto";
+    const asks = {
+      stuck: "The learner says they are stuck on this step. First work out the most likely misconception (use what we know about them). Then teach exactly that point: short, with a visual if it helps, and possibly a quick question that checks the misconception before explaining.",
+      simple: "Re-explain this step much more simply (very short sentences), with the visual or concrete case that makes it obvious if one helps.",
+      life: "Re-explain this step through ONE concrete real-life situation, then link it back precisely.",
+      story: "Tell this step as a tiny story where the objects are characters, then state the rule.",
+      why: "Explain WHY this step is allowed and why it is a good idea here (what it prepares).",
+      darija: "Re-explain this step in Moroccan Darija (Arabic script), friendly, keeping LaTeX for the maths.",
+      flash: "Give ONE punchy sentence to memorise (a single text or callout block).",
     };
-    const lr = style === "darija" ? "" : langRule();
     try {
-      const text = await ai(`${persona()}\n${context()}\nFocus on step ${i + 1}: ${st.text}\n${styles[style]} ${lr} Math in LaTeX between $…$, vectors as \\vect{AB}. No headings.`, { onText: ({ text: s }) => mdBlock(box, s), cache: true });
-      mdBlock(box, text); addMeta(box); typeset([box]);
+      await aiBlocks(`${persona()}\n${context()}\nFocus on step ${i + 1}: ${st.text}\n${asks[style] || asks.simple} ${style === "darija" ? "" : langRule()} Keep it short: this appears under the step.\n${TB.GUIDE}`, box, { cache: style !== "stuck" });
+      addMeta(box);
     } catch (e) { box.textContent = errText(e); }
   }
 
@@ -1712,15 +1798,15 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
   async function sendChat(text) {
     const q = text.trim(); if (!q) return;
     const log = $("log"); const me = el("div", "msg me"); me.dir = "auto"; me.textContent = q; log.append(me);
-    const out = el("div", "msg ai"); out.dir = "auto"; out.append(typingDots()); log.append(out); log.scrollTop = log.scrollHeight;
+    const out = el("div", "msg ai"); out.dir = "auto"; log.append(out); log.scrollTop = log.scrollHeight;
     S.chat.push({ role: "user", content: q });
-    const rules = `${persona()}\nYou are chatting with a student inside a step-by-step exercise app. Current context:\n${context()}\n\nRules: answer what they ask; be encouraging; prefer guiding questions when they want the answer to a proof, but give it if they insist. Keep answers short (under 150 words) unless they ask for more. Use "- " bullets when listing. Math in LaTeX between $…$, vectors as \\vect{AB}. ${langRule()} If the student writes in another language or in Darija, answer in that language.`;
+    const rules = `${persona()}\nYou are the tutor inside a step-by-step exercise app. Current context:\n${context()}\n\nAnswer the student's latest message. Encourage; when they want a proof's answer, guide with a question first unless they insist. If they write in another language or Darija, answer in that language. ${langRule()}\n${TB.GUIDE}`;
     $("sendBtn").disabled = true; chatCtl = new AbortController();
     try {
-      const reply = await ai([{ role: "user", content: rules }, ...S.chat.slice(-10)], { onText: ({ text: s }) => { mdBlock(out, s); log.scrollTop = log.scrollHeight; }, signal: chatCtl.signal });
-      S.chat.push({ role: "assistant", content: reply }); mdBlock(out, reply); typeset([out]);
+      const reply = await aiBlocks([{ role: "user", content: rules }, ...S.chat.slice(-10)], out, { signal: chatCtl.signal, cache: false });
+      S.chat.push({ role: "assistant", content: reply });
     } catch (e) { S.chat.pop(); out.className = "msg ai err"; out.textContent = errText(e); }
-    finally { $("sendBtn").disabled = false; log.scrollTop = log.scrollHeight; }
+    finally { $("sendBtn").disabled = false; out.scrollIntoView({ block: "nearest" }); }
   }
   $("composer").addEventListener("submit", (e) => { e.preventDefault(); const ta = $("ask"); const v = ta.value; ta.value = ""; ta.style.height = ""; sendChat(v); });
   $("ask").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("composer").requestSubmit(); } });
@@ -1794,7 +1880,7 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; }
   }
 
   /* ============ AI: series import & similar exercise ============ */
-  const EX_SCHEMA = String.raw`Exercise JSON (all text in the series language; math in LaTeX between $…$, vectors written \\vect{AB}; every backslash doubled in JSON):
+  const exSchema = () => String.raw`Exercise JSON (all text in the series language; math in LaTeX between $…$, vectors written \\vect{AB}; every backslash doubled in JSON):
 {
  "id": "short-id", "title": "Exercice 1", "name": "short fun nickname",
  "statement": "exercise statement (faithful to the source)",
@@ -1816,7 +1902,10 @@ FIGURE for vector/geometry exercises (interactive, preferred):
   "polygons": [["A","B","C"]], "segments": [["A","I"], {"a":"E","b":"F","q":3}],
   "checks": [ {"type":"aligned","pts":["C","I","J"],"q":2}, {"type":"midpoint","m":"C","of":["E","F"],"q":3}, {"type":"parallel","l1":["E","F"],"l2":["B","D"],"q":4} ] }
 FIGURE for functions / analysis / statistics curves: { "graph": { "functions": [ { "expr": "x^2-4", "label": "$f(x) = x^2 - 4$" } ], "xRange": [-4, 4], "yRange": [-5, 6], "points": [ { "x": 2, "y": 0, "label": "A" } ] } }  (expr uses x only; + - * / ^, explicit *, sin cos tan sqrt abs ln log exp, pi, e)
+FIGURE as a manipulable model (physics/chemistry situations where changing a quantity teaches something — preferred over a static svg then): { "model": { "title": "...", "vars": [...], "outputs": [...], "svg": "... {{expr}} ...", "caption": "what to try" } } (same rules as the "model" block below)
 FIGURE for other exercises (physics, chemistry, biology, etc.): { "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 300'>…</svg>" } using only svg, g, path, line, polyline, polygon, rect, circle, ellipse, text, defs, marker; colours #1f2937, #2563eb, #dc2626, #16a34a, #ea580c, #7c3aed, #9ca3af; arrowheads via <marker>; single-quoted attributes.
+STEP CONTENT: a step may carry optional "blocks" (teaching blocks, see below) when the plain text is not enough: a "question" that makes the student predict the next move, a small "svg", a "formula", a "callout", a "table" or even a "model". Most steps need none — use them only where they truly help.
+${TB.GUIDE.replace(/^HOW TO TEACH[\s\S]*?REPLY with ONLY JSON: \{"blocks":\[ ... \]\} using any of these, in any order:/, "BLOCK VOCABULARY:")}
 Choose the FIGURE type: vectors/geometry → interactive base/points; functions/analysis → graph; physics, chemistry, biology, geography… → svg; text-only subjects (languages, philosophy, history…) → null.
 Vector colours for "show": blue, green, orange, purple, red, pink, teal, amber ("show" only for interactive figures). Steps must be correct and complete; 2–5 steps per question.`;
   function normEx(x, i) {
@@ -1830,7 +1919,8 @@ Vector colours for "show": blue, green, orange, purple, red, pink, teal, amber (
         const base = {}; Object.entries(f.base).forEach(([k, v]) => { if (Array.isArray(v) && isFinite(+v[0]) && isFinite(+v[1])) base[str(k, 8)] = [+v[0], +v[1]]; });
         const points = (Array.isArray(f.points) ? f.points : []).filter((p) => p && p.name).map((p) => { const o = { name: str(p.name, 8), q: +p.q || 0 }; if (Array.isArray(p.mid)) o.mid = p.mid.slice(0, 2).map((n) => str(n, 8)); else if (Array.isArray(p.inter)) o.inter = p.inter.slice(0, 2).map((l) => (Array.isArray(l) ? l.slice(0, 2).map((n) => str(n, 8)) : [])); else { o.at = str(p.at, 8); o.plus = (Array.isArray(p.plus) ? p.plus : []).filter((tm) => Array.isArray(tm) && tm.length === 3).map((tm) => [fnum(tm[0]), str(tm[1], 8), str(tm[2], 8)]).filter((tm) => tm[0] != null); } return o; });
         if (Object.keys(base).length >= 2) figure = { base, points, polygons: Array.isArray(f.polygons) ? f.polygons : [], segments: Array.isArray(f.segments) ? f.segments : [], checks: (Array.isArray(f.checks) ? f.checks : []).filter((c) => c && ["aligned", "midpoint", "parallel"].includes(c.type)) };
-      } else if (typeof f.svg === "string") figure = { svg: f.svg.slice(0, 40000) };
+      } else if (f.model && typeof f.model === "object") { const mb = TB.normalize([{ ...f.model, type: "model" }])[0]; if (mb) figure = { model: mb }; }
+      else if (typeof f.svg === "string") figure = { svg: f.svg.slice(0, 40000) };
       else if (f.graph && typeof f.graph === "object") {
         const g = f.graph; const rng = (r) => (Array.isArray(r) && r.length === 2 && isFinite(+r[0]) && isFinite(+r[1]) && +r[1] > +r[0] ? [+r[0], +r[1]] : null);
         const fns = (Array.isArray(g.functions) ? g.functions : []).filter((fn) => fn && fn.expr).map((fn) => ({ expr: str(fn.expr, 200), label: str(fn.label, 120) })).slice(0, 4);
@@ -1838,7 +1928,7 @@ Vector colours for "show": blue, green, orange, purple, red, pink, teal, amber (
       }
     }
     const questions = (Array.isArray(x.questions) ? x.questions : []).map((q, qi) => {
-      const steps = (Array.isArray(q.steps) ? q.steps : []).map((s) => (typeof s === "string" ? { text: s } : { text: str(s && s.text), note: str(s && s.note, 40), show: showOf(s && s.show) })).filter((s) => s.text);
+      const steps = (Array.isArray(q.steps) ? q.steps : []).map((s) => (typeof s === "string" ? { text: s } : { text: str(s && s.text), note: str(s && s.note, 40), show: showOf(s && s.show), blocks: TB.normalize(s && s.blocks).filter((b) => b.type !== "followups") })).filter((s) => s.text);
       const quiz = q.quiz && Array.isArray(q.quiz.options) && q.quiz.options.length >= 2 ? { q: str(q.quiz.q), options: q.quiz.options.slice(0, 4).map((o) => str(o, 400)), answer: Math.max(0, Math.min(q.quiz.options.length - 1, +q.quiz.answer || 0)), why: str(q.quiz.why) } : null;
       return { label: str(q.label || qi + 1, 6), title: str(q.title), goal: str(q.goal, 400), steps, show: showOf(q.show), hint: str(q.hint, 600), quiz };
     }).filter((q) => q.title && q.steps.length);
@@ -1893,7 +1983,7 @@ Build the interactive, step-by-step solution of ONE exercise from the series "${
 Exercise (keep title, statement, question labels and titles exactly; you may only fix obvious typos):
 ${JSON.stringify({ title: stub.title, name: stub.name, statement: stub.statement, figure_hint: stub.figureHint || "", questions: stub.questions.map((q) => ({ label: q.label, title: q.title })) })}
 Solve every question yourself, correctly and completely, at the student's level; double-check every computation. Write in ${s.lang === "ar" ? "Arabic" : s.lang === "en" ? "English" : "French"}. Steps are short and friendly; **bold** each conclusion. Each question gets a hint (no answer) and a 3-option quiz on its key idea.
-${EX_SCHEMA}
+${exSchema()}
 Reply ONLY with the Exercise JSON.`;
   }
   function saveLibrary() { let lib = S.library.slice(0, 12); while (lib.length && !store.set("pdp.library", lib)) lib = lib.slice(0, -1); }
@@ -2045,7 +2135,7 @@ Reply ONLY with the Exercise JSON.`;
     toast(t("simBuilding"));
     try {
       const e = ex(); const src = JSON.stringify({ title: e.title, statement: e.statement, figure: e.figure && e.figure.base ? e.figure : null, questions: e.questions.map((q) => ({ label: q.label, title: q.title, steps: q.steps.map((s) => s.text) })) });
-      const data = await ai(`Create ONE new exercise of the same type and difficulty as this one, with different points/coefficients so the student can practise the same method. Solve it fully and correctly; double-check every vector computation. Keep the language "${series().lang}". Give it a fun nickname.\nOriginal exercise:\n${src}\n${EX_SCHEMA}\nReply ONLY with the Exercise JSON.`, { json: true });
+      const data = await ai(`Create ONE new exercise of the same type and difficulty as this one, with different points/coefficients so the student can practise the same method. Solve it fully and correctly; double-check every vector computation. Keep the language "${series().lang}". Give it a fun nickname.\nOriginal exercise:\n${src}\n${exSchema()}\nReply ONLY with the Exercise JSON.`, { json: true });
       const x = normEx(data, series().exercises.length);
       if (!x) throw { code: "bad_shape" };
       x.ai = true; x.title = `${x.title.replace(/\s*✦$/, "")}`;
@@ -2086,6 +2176,220 @@ Reply ONLY with the Exercise JSON.`;
     } else S.backend = "api";
     if (S.backend !== "claude") renderQuestion();
   }
+
+  /* ================= Teaching engine (shared by Khutata and Prof de Poche) =================
+     Claude composes an answer from an open vocabulary of blocks; nothing is mandatory and the
+     order is Claude's choice. This code only validates and renders what arrives. */
+  function makeTeach(deps) {
+    const L = {
+      fr: { think: "Réfléchis d'abord", right: "Exactement !", wrong: "Pas tout à fait.", more: "Pour aller plus loin", reset: "Réinitialiser", direct: "cause directe", contributing: "facteur parmi d'autres", possible: "lien possible, débattu", live: "MODÈLE VIVANT", broken: "Ce modèle n'a pas pu être calculé de façon fiable ; il n'est pas affiché.", prev: "Précédent", next: "Suivant" },
+      ar: { think: "فكّر أولًا", right: "بالضبط!", wrong: "ليس تمامًا.", more: "للتعمق أكثر", reset: "إعادة", direct: "سبب مباشر", contributing: "عامل من بين عوامل", possible: "صلة محتملة ومختلف فيها", live: "نموذج حي", broken: "تعذر حساب هذا النموذج بشكل موثوق؛ لذلك لم يُعرض.", prev: "السابق", next: "التالي" },
+      en: { think: "Think first", right: "Exactly!", wrong: "Not quite.", more: "Go further", reset: "Reset", direct: "direct cause", contributing: "one factor among others", possible: "possible, debated link", live: "LIVE MODEL", broken: "This model could not be computed reliably, so it is not shown.", prev: "Previous", next: "Next" },
+    };
+    const lab = (k) => (L[deps.lang()] || L.fr)[k];
+    const h = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null && text !== "") e.textContent = text; return e; };
+    const rich = (node, text) => { String(text || "").split(/\n/).forEach((line, i) => { if (i) node.append(document.createElement("br")); line.split(/(\*\*[^*]+\*\*)/).forEach((p) => { if (/^\*\*[^*]+\*\*$/.test(p)) node.append(h("strong", null, p.slice(2, -2))); else if (p) node.append(document.createTextNode(p)); }); }); return node; };
+    const S = (v, m = 1500) => (typeof v === "string" ? v.slice(0, m) : v == null || typeof v === "object" ? "" : String(v).slice(0, m));
+    const N = (v) => (typeof v === "number" && isFinite(v) ? v : typeof v === "string" && v.trim() !== "" && isFinite(+v) ? +v : null);
+    const A = (v, m) => (Array.isArray(v) ? v.slice(0, m) : []);
+
+    /* ---- safe multi-variable expression compiler (no eval) ---- */
+    const F1 = { sin: Math.sin, cos: Math.cos, tan: Math.tan, asin: Math.asin, acos: Math.acos, atan: Math.atan, sqrt: Math.sqrt, abs: Math.abs, ln: Math.log, log: Math.log10, exp: Math.exp, floor: Math.floor, round: Math.round,
+      sind: (d) => Math.sin(d * Math.PI / 180), cosd: (d) => Math.cos(d * Math.PI / 180), tand: (d) => Math.tan(d * Math.PI / 180), rad: (d) => d * Math.PI / 180, deg: (r) => r * 180 / Math.PI };
+    const F2 = { min: Math.min, max: Math.max, atan2: Math.atan2, pow: Math.pow };
+    function compile(src, names) {
+      const known = new Set(names);
+      const s = String(src).replace(/\*\*/g, "^").replace(/π/g, "pi").replace(/×|·/g, "*").replace(/−/g, "-");
+      const toks = []; let i = 0;
+      while (i < s.length) {
+        const c = s[i]; if (/\s/.test(c)) { i++; continue; }
+        const m = s.slice(i).match(/^(\d+\.?\d*|\.\d+)(e[+-]?\d+)?/i); if (m) { toks.push({ k: "n", v: parseFloat(m[0]) }); i += m[0].length; continue; }
+        const w = s.slice(i).match(/^[A-Za-z_][A-Za-z0-9_]*/);
+        if (w) { const id = w[0]; i += id.length; if (F1[id] || F2[id]) toks.push({ k: "f", v: id }); else if (known.has(id) || id === "pi" || id === "e") toks.push({ k: "v", v: id }); else throw new Error("unknown " + id); continue; }
+        if ("+-*/^(),".includes(c)) { toks.push({ k: c }); i++; continue; }
+        throw new Error("char " + c);
+      }
+      const tk = []; for (const x of toks) { const p = tk[tk.length - 1]; if (p && (p.k === "n" || p.k === "v" || p.k === ")") && (x.k === "n" || x.k === "v" || x.k === "f" || x.k === "(")) tk.push({ k: "*" }); tk.push(x); }
+      let pos = 0; const peek = () => tk[pos]; const eat = (k) => { if (!tk[pos] || tk[pos].k !== k) throw new Error("syntax"); pos++; };
+      const expr = () => { let a = term(); while (peek() && (peek().k === "+" || peek().k === "-")) { const op = tk[pos++].k, l = a, r = term(); a = op === "+" ? (E) => l(E) + r(E) : (E) => l(E) - r(E); } return a; };
+      const term = () => { let a = unary(); while (peek() && (peek().k === "*" || peek().k === "/")) { const op = tk[pos++].k, l = a, r = unary(); a = op === "*" ? (E) => l(E) * r(E) : (E) => l(E) / r(E); } return a; };
+      const unary = () => { if (peek() && peek().k === "-") { pos++; const u = unary(); return (E) => -u(E); } if (peek() && peek().k === "+") { pos++; return unary(); } return power(); };
+      const power = () => { const b = primary(); if (peek() && peek().k === "^") { pos++; const e = unary(); return (E) => Math.pow(b(E), e(E)); } return b; };
+      const primary = () => {
+        const x = tk[pos++]; if (!x) throw new Error("end");
+        if (x.k === "n") return () => x.v;
+        if (x.k === "v") return x.v === "pi" ? () => Math.PI : x.v === "e" && !known.has("e") ? () => Math.E : (E) => E[x.v];
+        if (x.k === "f") { eat("("); const a = expr(); if (F2[x.v]) { eat(","); const b = expr(); eat(")"); const f = F2[x.v]; return (E) => f(a(E), b(E)); } eat(")"); const f = F1[x.v]; return (E) => f(a(E)); }
+        if (x.k === "(") { const e = expr(); eat(")"); return e; }
+        throw new Error("syntax");
+      };
+      const f = expr(); if (pos !== tk.length) throw new Error("trailing"); return f;
+    }
+    const fmt = (v, d) => { if (!isFinite(v)) return "—"; const dd = d == null ? (Math.abs(v) >= 100 ? 1 : 2) : d; return (+v.toFixed(dd)).toLocaleString(deps.lang() === "en" ? "en" : "fr", { maximumFractionDigits: dd }); };
+
+    /* ---- validation of what Claude sends ---- */
+    const TYPES = ["text", "question", "svg", "model", "timeline", "relations", "causal", "table", "steps", "formula", "graph", "followups", "callout"];
+    function normalize(raw) {
+      const list = Array.isArray(raw) ? raw : raw && Array.isArray(raw.blocks) ? raw.blocks : [];
+      return list.slice(0, 16).map((b) => {
+        if (!b || !TYPES.includes(b.type)) return null;
+        const o = { type: b.type };
+        switch (b.type) {
+          case "text": o.text = S(b.text, 3000); return o.text ? o : null;
+          case "callout": o.text = S(b.text, 800); o.tone = ["key", "warn", "tip"].includes(b.tone) ? b.tone : "key"; o.title = S(b.title, 80); return o.text ? o : null;
+          case "question": o.q = S(b.q, 600); o.options = A(b.options, 5).map((x) => S(x, 300)); o.answer = Math.max(0, Math.min(o.options.length - 1, N(b.answer) || 0)); o.why = S(b.why, 900);
+            o.branches = A(b.branches, 5).map((x) => S(x, 600)); return o.q && o.options.length >= 2 ? o : null;
+          case "svg": o.svg = S(b.svg, 40000); o.caption = S(b.caption, 300); return o.svg.includes("<svg") ? o : null;
+          case "formula": o.latex = S(b.latex, 500).replace(/^\$+|\$+$/g, ""); o.legend = A(b.legend, 10).map((l) => ({ symbol: S(l && l.symbol, 60), meaning: S(l && l.meaning, 160), unit: S(l && l.unit, 30) })); o.caption = S(b.caption, 300); return o.latex ? o : null;
+          case "table": o.headers = A(b.headers, 8).map((x) => S(x, 120)); o.rows = A(b.rows, 25).map((r) => A(r, 8).map((x) => S(x, 300))); o.caption = S(b.caption, 300); return o.rows.length ? o : null;
+          case "steps": o.title = S(b.title, 120); o.steps = A(b.steps, 12).map((x) => S(x, 600)).filter(Boolean); return o.steps.length ? o : null;
+          case "followups": o.items = A(b.items, 4).map((x) => S(x, 140)).filter(Boolean); return o.items.length ? o : null;
+          case "timeline": o.title = S(b.title, 120); o.events = A(b.events, 12).map((e) => ({ date: S(e && e.date, 30), title: S(e && e.title, 120), text: S(e && e.text, 600) })).filter((e) => e.date && e.title); return o.events.length ? o : null;
+          case "causal": o.title = S(b.title, 120); o.chain = A(b.chain, 8).map((c) => ({ text: S(c && c.text, 300), level: ["direct", "contributing", "possible"].includes(c && c.level) ? c.level : "direct" })).filter((c) => c.text); o.note = S(b.note, 400); return o.chain.length ? o : null;
+          case "relations": o.title = S(b.title, 120); o.nodes = A(b.nodes, 12).map((n) => ({ id: S(n && n.id, 40), label: S(n && n.label, 80), sub: S(n && n.sub, 160), tag: S(n && n.tag, 40) })).filter((n) => n.id && n.label);
+            o.edges = A(b.edges, 20).map((e) => ({ from: S(e && e.from, 40), to: S(e && e.to, 40), label: S(e && e.label, 80) })).filter((e) => o.nodes.some((n) => n.id === e.from) && o.nodes.some((n) => n.id === e.to)); return o.nodes.length ? o : null;
+          case "graph": o.title = S(b.title, 120); o.functions = A(b.functions, 4).map((f) => ({ expr: S(f && f.expr, 200), label: S(f && f.label, 120) })).filter((f) => f.expr);
+            o.xRange = Array.isArray(b.xRange) && N(b.xRange[0]) != null && N(b.xRange[1]) > N(b.xRange[0]) ? [N(b.xRange[0]), N(b.xRange[1])] : [-5, 5];
+            o.yRange = Array.isArray(b.yRange) && N(b.yRange[0]) != null && N(b.yRange[1]) > N(b.yRange[0]) ? [N(b.yRange[0]), N(b.yRange[1])] : null; o.caption = S(b.caption, 300); return o.functions.length ? o : null;
+          case "model": {
+            o.title = S(b.title, 120); o.caption = S(b.caption, 400); o.svg = S(b.svg, 40000);
+            o.vars = A(b.vars, 5).map((v) => ({ name: S(v && v.name, 24), label: S(v && v.label, 80), unit: S(v && v.unit, 16), min: N(v && v.min), max: N(v && v.max), step: N(v && v.step), value: N(v && v.value) }))
+              .filter((v) => /^[A-Za-z_]\w*$/.test(v.name) && v.min != null && v.max != null && v.max > v.min).map((v) => ({ ...v, step: v.step && v.step > 0 ? v.step : (v.max - v.min) / 100, value: v.value != null ? Math.min(v.max, Math.max(v.min, v.value)) : v.min }));
+            o.outputs = A(b.outputs, 8).map((x) => ({ name: S(x && x.name, 24), label: S(x && x.label, 80), expr: S(x && x.expr, 300), unit: S(x && x.unit, 16), digits: N(x && x.digits) })).filter((x) => x.expr && x.label);
+            return o.vars.length ? o : null;
+          }
+        }
+        return null;
+      }).filter(Boolean);
+    }
+
+    /* ---- the guide Claude follows ---- */
+    const GUIDE = String.raw`HOW TO TEACH
+Decide what THIS question really needs before writing. A conceptual "why" usually needs a short answer and one visual; a historical question may need context, a timeline, relationships and careful cause-and-effect; a physics or geometry situation may need a diagram, equations, a manipulable model and steps; a quick factual question needs one or two sentences. Never produce a whole lesson when a short answer is enough. No block is ever mandatory; use the fewest blocks that make the idea click, in the order that builds understanding (often intuition or a concrete case before the rule).
+Ask the learner to think ("question" block) before revealing an answer when that helps them reason; give each wrong option a short targeted explanation in "branches".
+Visuals must carry the idea itself, never decorate. Interactive models only when changing a variable reveals a relationship.
+ACCURACY: never invent facts, quotes, dates, numbers or relationships. Separate established facts from interpretation. In causal chains mark each link "direct", "contributing" (one factor among others) or "possible" (debated). Check every computation. If unsure, say so.
+REPLY with ONLY JSON: {"blocks":[ ... ]} using any of these, in any order:
+{"type":"text","text":"short paragraph; **bold** allowed; math in $…$"}
+{"type":"callout","tone":"key|tip|warn","title":"optional","text":"the rule or warning to remember"}
+{"type":"question","q":"…","options":["…","…","…"],"answer":1,"why":"why the right answer is right","branches":["note if they pick option 0","…"]}
+{"type":"svg","svg":"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 240'>…</svg>","caption":"what to notice"}
+{"type":"formula","latex":"F = m\\,a","legend":[{"symbol":"$F$","meaning":"force","unit":"N"}]}
+{"type":"steps","title":"optional","steps":["one move per step"]}
+{"type":"table","headers":["…"],"rows":[["…"]]}
+{"type":"timeline","title":"…","events":[{"date":"1453","title":"…","text":"…"}]}
+{"type":"relations","title":"…","nodes":[{"id":"a","label":"…","sub":"short role","tag":"optional badge"}],"edges":[{"from":"a","to":"b","label":"how they relate"}]}
+{"type":"causal","title":"…","chain":[{"text":"…","level":"direct|contributing|possible"}],"note":"nuance"}
+{"type":"graph","title":"…","functions":[{"expr":"x^2-4","label":"$f(x)$"}],"xRange":[-4,4]}
+{"type":"model","title":"…","vars":[{"name":"alpha","label":"Angle α","unit":"°","min":0,"max":60,"step":1,"value":30}],"outputs":[{"name":"T","label":"Tension","expr":"k*m*g/(cosd(alpha)+k*sind(alpha))","unit":"N","digits":2}],"svg":"<svg …> uses {{expr}} placeholders, e.g. x2='{{200+120*cosd(alpha)}}' </svg>","caption":"what to try"}
+{"type":"followups","items":["2–4 short questions the learner may want to ask next"]}
+SVG rules (svg and model): viewBox about 520×260; only svg, g, path, line, polyline, polygon, rect, circle, ellipse, text, tspan, defs, marker; no style, script, image, classes or links; colours only #1f2937 (lines/text), #2563eb, #dc2626, #16a34a, #ea580c, #7c3aed, #9ca3af or "none"; arrowheads with <marker>; single-quoted attributes; keep everything inside the viewBox; physically and geometrically correct.
+Model rules: variable and output names are identifiers; expressions use + - * / ^ ( ), sin cos tan (radians), sind cosd tand (degrees), sqrt abs ln log exp min max atan2 pow, pi; outputs may use earlier outputs; constants go inside expressions or as outputs. Placeholders {{expr}} may appear in attribute values and text.
+JSON: double every backslash inside strings (\\frac, \\vec).`;
+
+    /* ---- rendering ---- */
+    function plot(b) {
+      const W = 600, H = 340, m = { l: 44, r: 14, t: 14, b: 30 }, pw = W - m.l - m.r, ph = H - m.t - m.b;
+      const fns = b.functions.map((f) => { try { return { ...f, fn: compile(f.expr, ["x"]) }; } catch { return null; } }).filter(Boolean);
+      if (!fns.length) return null;
+      const [x0, x1] = b.xRange; const pts = fns.map((f) => Array.from({ length: 401 }, (_, i) => { const x = x0 + (x1 - x0) * i / 400; let y; try { y = f.fn({ x }); } catch { y = NaN; } return [x, y]; }));
+      let [y0, y1] = b.yRange || (() => { const ys = pts.flat().map((p) => p[1]).filter(isFinite).sort((a, c) => a - c); if (!ys.length) return [-5, 5]; let a = ys[Math.floor(ys.length * .02)], c = ys[Math.max(0, Math.ceil(ys.length * .98) - 1)]; if (c - a < 1e-9) { a -= 1; c += 1; } const p = (c - a) * .1; return [a - p, c + p]; })();
+      const sx = (x) => m.l + (x - x0) / (x1 - x0) * pw, sy = (y) => m.t + (y1 - y) / (y1 - y0) * ph;
+      const NS = "http://www.w3.org/2000/svg"; const sv = (t, a, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (p) p.append(e); return e; };
+      const svg = sv("svg", { viewBox: `0 0 ${W} ${H}`, class: "tb-plot" });
+      const step = (span) => { const r = span / 7, p = Math.pow(10, Math.floor(Math.log10(r))), f = r / p; return (f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10) * p; };
+      const xs = step(x1 - x0), ys = step(y1 - y0);
+      for (let x = Math.ceil(x0 / xs - 1e-9) * xs; x <= x1 + 1e-9; x += xs) { sv("line", { x1: sx(x), x2: sx(x), y1: m.t, y2: m.t + ph, class: "g" }, svg); sv("text", { x: sx(x), y: H - 8, "text-anchor": "middle" }, svg).textContent = fmt(x, 2); }
+      for (let y = Math.ceil(y0 / ys - 1e-9) * ys; y <= y1 + 1e-9; y += ys) { sv("line", { x1: m.l, x2: m.l + pw, y1: sy(y), y2: sy(y), class: "g" }, svg); sv("text", { x: m.l - 6, y: sy(y) + 4, "text-anchor": "end" }, svg).textContent = fmt(y, 2); }
+      if (y0 <= 0 && y1 >= 0) sv("line", { x1: m.l, x2: m.l + pw, y1: sy(0), y2: sy(0), class: "ax" }, svg);
+      if (x0 <= 0 && x1 >= 0) sv("line", { x1: sx(0), x2: sx(0), y1: m.t, y2: m.t + ph, class: "ax" }, svg);
+      pts.forEach((p, i) => { let d = "", pen = false, prev = null; for (const [x, y] of p) { if (!isFinite(y)) { pen = false; continue; } if (prev != null && Math.abs(y - prev) > (y1 - y0) * 3) pen = false; d += (pen ? "L" : "M") + sx(x).toFixed(1) + " " + Math.max(-1e3, Math.min(1e3, sy(y))).toFixed(1); pen = true; prev = y; } sv("path", { d, class: "c c" + (i % 4) }, svg); });
+      return { svg, labels: fns.map((f, i) => [f.label || f.expr, i % 4]) };
+    }
+    function modelBlock(b) {
+      const card = h("div", "tb-card tb-model");
+      const head = h("div", "tb-model-head"); head.append(h("b", null, b.title || ""), h("span", "tb-live", lab("live"))); card.append(head);
+      const names = b.vars.map((v) => v.name); let outs;
+      try { const nm = [...names]; outs = b.outputs.map((o) => { const f = compile(o.expr, nm); if (o.name && /^[A-Za-z_]\w*$/.test(o.name)) nm.push(o.name); return { ...o, f }; }); } catch { card.append(h("p", "tb-muted", lab("broken"))); return card; }
+      let tpl = null; const allNames = [...names, ...outs.filter((o) => o.name).map((o) => o.name)];
+      if (b.svg) { const parts = []; let ok = true; b.svg.replace(/\{\{([^}]+)\}\}/g, (_, e) => { try { parts.push(compile(e, allNames)); } catch { ok = false; } return ""; }); tpl = ok ? parts : null; }
+      const env = {}; b.vars.forEach((v) => { env[v.name] = v.value; });
+      const evalAll = (E) => { const r = { ...E }; outs.forEach((o) => { const v = o.f(r); if (o.name) r[o.name] = v; o.val = v; }); return r; };
+      const probe = [env, ...b.vars.flatMap((v) => [{ ...env, [v.name]: v.min }, { ...env, [v.name]: v.max }])];
+      const sane = probe.every((E) => { try { evalAll(E); return outs.every((o) => isFinite(o.val)); } catch { return false; } });
+      if (!sane) { card.append(h("p", "tb-muted", lab("broken"))); return card; }
+      const fig = h("div", "tb-fig"); card.append(fig);
+      const ctrls = h("div", "tb-ctrls"); const outBox = h("div", "tb-outs");
+      const paint = () => {
+        const E = evalAll(env);
+        if (b.svg && tpl) { let k = 0; const code = b.svg.replace(/\{\{([^}]+)\}\}/g, () => { const v = tpl[k++](E); return isFinite(v) ? String(+v.toFixed(3)) : "0"; }); const node = deps.sanitizeSvg(code); fig.replaceChildren(); if (node) fig.append(node); }
+        outBox.replaceChildren(...outs.map((o) => { const d = h("div", "tb-out"); d.append(h("span", null, o.label), h("b", "tb-num", `${fmt(o.val, o.digits)}${o.unit ? " " + o.unit : ""}`)); return d; }));
+        b.vars.forEach((v) => { const s = ctrls.querySelector(`[data-v="${v.name}"]`); if (s) s.textContent = `${fmt(env[v.name], 2)}${v.unit ? " " + v.unit : ""}`; });
+      };
+      b.vars.forEach((v) => {
+        const row = h("label", "tb-var"); const top = h("span", "tb-var-top"); top.append(h("span", null, v.label || v.name)); const val = h("b", "tb-num"); val.dataset.v = v.name; top.append(val);
+        const r = h("input"); r.type = "range"; r.min = v.min; r.max = v.max; r.step = v.step; r.value = v.value; r.setAttribute("aria-label", v.label || v.name);
+        r.oninput = () => { env[v.name] = +r.value; paint(); };
+        const lim = h("span", "tb-lim"); lim.append(h("span", null, `${fmt(v.min, 2)}`), h("span", null, `${fmt(v.max, 2)}`));
+        row.append(top, r, lim); ctrls.append(row);
+      });
+      card.append(ctrls, outBox);
+      const reset = h("button", "tb-btn", lab("reset")); reset.type = "button"; reset.onclick = () => { b.vars.forEach((v) => { env[v.name] = v.value; const r = ctrls.querySelector(`input[aria-label="${CSS.escape(v.label || v.name)}"]`); if (r) r.value = v.value; }); paint(); };
+      card.append(reset); if (b.caption) card.append(rich(h("p", "tb-cap"), b.caption));
+      paint(); return card;
+    }
+    function render(box, blocks, opts = {}) {
+      box.classList.add("tb");
+      blocks.forEach((b) => {
+        let n = null;
+        if (b.type === "text") n = rich(h("p", "tb-text"), b.text);
+        else if (b.type === "callout") { n = h("div", "tb-callout tb-" + b.tone); if (b.title) n.append(h("b", null, b.title)); n.append(rich(h("div"), b.text)); }
+        else if (b.type === "question") {
+          n = h("div", "tb-card tb-q"); n.append(h("span", "tb-kicker", lab("think")), rich(h("p", "tb-qq"), b.q));
+          const opts2 = h("div", "tb-opts"); const fb = h("div", "tb-fb"); fb.hidden = true;
+          b.options.forEach((o, i) => { const bt = h("button", "tb-opt"); bt.type = "button"; bt.append(h("span", "tb-k", "ABCDE"[i]), rich(h("span"), o));
+            bt.onclick = () => { opts2.querySelectorAll("button").forEach((x, j) => { x.disabled = true; if (j === b.answer) x.classList.add("ok"); else if (j === i) x.classList.add("bad"); });
+              const ok = i === b.answer; fb.hidden = false; fb.replaceChildren(h("b", null, ok ? lab("right") : lab("wrong")));
+              if (!ok && b.branches[i]) fb.append(rich(h("p"), b.branches[i])); if (b.why) fb.append(rich(h("p"), b.why)); deps.typeset([fb]); opts.onAnswer && opts.onAnswer({ q: b.q, chosen: o, correct: ok, right: b.options[b.answer] }); };
+            opts2.append(bt); });
+          n.append(opts2, fb);
+        } else if (b.type === "svg") { n = h("figure", "tb-card tb-svg"); const node = deps.sanitizeSvg(b.svg); if (!node) return; n.append(node); if (b.caption) n.append(rich(h("figcaption", "tb-cap"), b.caption)); }
+        else if (b.type === "formula") { n = h("div", "tb-card tb-formula"); n.append(h("div", "tb-math", `$$${b.latex}$$`)); if (b.legend.length) { const ul = h("ul", "tb-legend"); b.legend.forEach((l) => { const li = h("li"); li.append(h("b", null, l.symbol), h("span", null, l.meaning)); if (l.unit) li.append(h("span", "tb-muted", `(${l.unit})`)); ul.append(li); }); n.append(ul); } if (b.caption) n.append(rich(h("p", "tb-cap"), b.caption)); }
+        else if (b.type === "steps") { n = h("div", "tb-steps"); if (b.title) n.append(h("b", null, b.title)); const ol = h("ol"); b.steps.forEach((s) => ol.append(rich(h("li"), s))); n.append(ol); }
+        else if (b.type === "table") { n = h("div", "tb-table"); const tb = h("table"); if (b.headers.some(Boolean)) { const tr = h("tr"); b.headers.forEach((x) => tr.append(rich(h("th"), x))); const th = h("thead"); th.append(tr); tb.append(th); } const bd = h("tbody"); b.rows.forEach((r) => { const tr = h("tr"); r.forEach((x) => tr.append(rich(h("td"), x))); bd.append(tr); }); tb.append(bd); n.append(tb); if (b.caption) n.append(rich(h("p", "tb-cap"), b.caption)); }
+        else if (b.type === "timeline") {
+          n = h("div", "tb-card tb-tl"); if (b.title) n.append(h("b", "tb-title", b.title)); let cur = 0;
+          const tabs = h("div", "tb-tl-tabs"); const body = h("div", "tb-tl-body"); const nav = h("div", "tb-tl-nav");
+          const show = (i) => { cur = i; tabs.querySelectorAll("button").forEach((x, j) => x.setAttribute("aria-selected", String(j === i))); const e = b.events[i]; body.replaceChildren(h("b", null, e.title), h("span", "tb-tl-date", e.date)); if (e.text) body.append(rich(h("p"), e.text)); prev.disabled = i === 0; next.disabled = i === b.events.length - 1; deps.typeset([body]); };
+          b.events.forEach((e, i) => { const bt = h("button", null, e.date); bt.type = "button"; bt.onclick = () => show(i); tabs.append(bt); });
+          const prev = h("button", "tb-btn", lab("prev")); prev.type = "button"; prev.onclick = () => show(Math.max(0, cur - 1));
+          const next = h("button", "tb-btn tb-strong", lab("next")); next.type = "button"; next.onclick = () => show(Math.min(b.events.length - 1, cur + 1));
+          nav.append(prev, next); n.append(tabs, body, nav); show(0);
+        } else if (b.type === "causal") {
+          n = h("div", "tb-card tb-causal"); if (b.title) n.append(h("b", "tb-title", b.title));
+          b.chain.forEach((c, i) => { if (i) n.append(h("div", "tb-arrow", "↓")); const d = h("div", "tb-link tb-" + c.level); d.append(rich(h("span"), c.text)); if (i) d.append(h("small", null, lab(c.level))); n.append(d); });
+          if (b.note) n.append(rich(h("p", "tb-cap"), b.note));
+        } else if (b.type === "relations") {
+          n = h("div", "tb-card tb-rel"); if (b.title) n.append(h("b", "tb-title", b.title));
+          const level = {}; b.nodes.forEach((x) => (level[x.id] = 0));
+          for (let k = 0; k < b.nodes.length; k++) b.edges.forEach((e) => { if (level[e.to] < level[e.from] + 1 && level[e.from] + 1 < b.nodes.length) level[e.to] = level[e.from] + 1; });
+          const maxL = Math.max(...Object.values(level));
+          for (let l = 0; l <= maxL; l++) {
+            const row = b.nodes.filter((x) => level[x.id] === l); if (!row.length) continue;
+            if (l) { const labels = b.edges.filter((e) => level[e.to] === l).map((e) => e.label).filter(Boolean); const ar = h("div", "tb-arrow", "↓"); if (labels.length) ar.append(h("small", null, " " + [...new Set(labels)].join(" · "))); n.append(ar); }
+            const r = h("div", "tb-rel-row"); row.forEach((x) => { const c = h("div", "tb-node"); c.append(h("b", null, x.label)); if (x.tag) c.append(h("span", "tb-tag", x.tag)); if (x.sub) c.append(h("small", null, x.sub)); r.append(c); }); n.append(r);
+          }
+        } else if (b.type === "graph") { const p = plot(b); if (!p) return; n = h("figure", "tb-card tb-graph"); if (b.title) n.append(h("b", "tb-title", b.title)); n.append(p.svg); const k = h("div", "tb-keys"); p.labels.forEach(([lbl, i]) => { const s = h("span", "c" + i); s.append(h("i"), h("span", null, lbl)); k.append(s); }); n.append(k); if (b.caption) n.append(rich(h("figcaption", "tb-cap"), b.caption)); }
+        else if (b.type === "model") n = modelBlock(b);
+        else if (b.type === "followups") { if (!opts.onFollowup) return; n = h("div", "tb-follow"); n.append(h("span", "tb-kicker", lab("more"))); const row = h("div", "tb-chips"); b.items.forEach((q) => { const bt = h("button", "tb-chip", q); bt.type = "button"; bt.onclick = () => opts.onFollowup(q); row.append(bt); }); n.append(row); }
+        if (n) box.append(n);
+      });
+      deps.typeset([box]);
+    }
+    const plain = (blocks) => blocks.map((b) => b.text || b.q || (b.steps && b.steps.join(" ")) || (b.chain && b.chain.map((c) => c.text).join(" → ")) || (b.events && b.events.map((e) => e.date + " " + e.title).join("; ")) || b.title || "").filter(Boolean).join("\n").slice(0, 2500);
+    return { GUIDE, normalize, render, plain, compile };
+  }
+  const TB = makeTeach({ sanitizeSvg, typeset, lang: () => (S.settings.lang === "darija" ? "ar" : ["fr", "ar", "en"].includes(S.settings.lang) ? S.settings.lang : "fr") });
 
   /* ============ Boot ============ */
   const savedUi = store.get("pdp.ui", ""); ui = ULANGS.includes(savedUi) ? savedUi : ((navigator.language || "").startsWith("ar") ? "ar" : (navigator.language || "").startsWith("en") ? "en" : "fr");
