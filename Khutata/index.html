@@ -238,13 +238,13 @@ textarea#lessonText { width: 100%; min-height: 130px; resize: vertical; border: 
 .explain p { margin: 0; max-width: 68ch; }
 .explain ul, .explain ol { margin: 0; padding-inline-start: 22px; display: grid; gap: 6px; max-width: 68ch; }
 .simple { font-size: 17px; line-height: 2; }
-.analogy { background: var(--p1-bg); border: 1px solid var(--p1-line); border-radius: 12px; padding: 12px 16px; }
+.analogy { border-inline-start: 3px solid var(--p1-line); padding: 2px 14px; }
 .analogy h3 { color: var(--p1-fg); }
 .worked { background: var(--navy-soft); border-radius: 12px; padding: 14px 16px; display: grid; gap: 8px; }
 .worked .ans { font-weight: 700; color: var(--navy); }
-.mistakes { background: var(--p6-bg); border: 1px solid var(--p6-line); border-radius: 12px; padding: 12px 16px; }
+.mistakes { border-inline-start: 3px solid var(--p6-line); padding: 2px 14px; }
 .mistakes h3 { color: var(--p6-fg); }
-.example { background: var(--p2-bg); border: 1px solid var(--p2-line); border-radius: 12px; padding: 12px 16px; }
+.example { border-inline-start: 3px solid var(--p2-line); padding: 2px 14px; }
 .qa { display: grid; gap: 8px; }
 .qa details { border: 1px solid var(--line); border-radius: 10px; padding: 8px 14px; background: var(--surface-2); }
 .qa summary { cursor: pointer; font-weight: 600; }
@@ -268,17 +268,17 @@ textarea#lessonText { width: 100%; min-height: 130px; resize: vertical; border: 
 .wrap > *, #result > *, .poster-inner > *, .visuals > *, .explain > *, .worked > *, .vis > *, .keybox > *, .explain li, .col li, .legend li { min-width: 0; }
 :root { --tb-line: var(--line); --tb-card: var(--surface); --tb-bg2: var(--surface-2); --tb-muted: var(--muted); --tb-fg: var(--fg); --tb-accent: var(--gold); --tb-ok: var(--ok); --tb-bad: var(--danger); --tb-blue: var(--d-blue); --tb-red: var(--d-red); --tb-green: var(--d-green); --tb-purple: var(--d-purple); }
 /* ---- teaching blocks (shared engine) ---- */
-.tb { display: grid; gap: 12px; min-width: 0; }
+.tb { display: grid; gap: 10px; min-width: 0; }
 .tb-text { margin: 0; line-height: 1.75; overflow-wrap: anywhere; }
-.tb-card { border: 1px solid var(--tb-line); border-radius: 14px; background: var(--tb-card); padding: 12px 14px; display: grid; gap: 10px; min-width: 0; margin: 0; }
+.tb-card { border: 1px solid var(--tb-line); border-radius: 12px; background: transparent; padding: 10px 12px; display: grid; gap: 8px; min-width: 0; margin: 0; }
 .tb-title { font-size: 15px; }
 .tb-muted { color: var(--tb-muted); }
 .tb-cap { margin: 0; font-size: 13.5px; color: var(--tb-muted); }
-.tb-kicker { font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--tb-accent); }
-.tb-callout { border-radius: 12px; padding: 10px 14px; border: 1px solid var(--tb-line); display: grid; gap: 4px; }
-.tb-key { border-color: color-mix(in srgb, var(--tb-accent) 50%, transparent); background: color-mix(in srgb, var(--tb-accent) 10%, transparent); }
-.tb-tip { border-color: color-mix(in srgb, var(--tb-ok) 50%, transparent); background: color-mix(in srgb, var(--tb-ok) 10%, transparent); }
-.tb-warn { border-color: color-mix(in srgb, var(--tb-bad) 50%, transparent); background: color-mix(in srgb, var(--tb-bad) 10%, transparent); }
+.tb-kicker { font-size: 12px; font-weight: 600; color: var(--tb-muted); }
+.tb-callout { border-radius: 10px; padding: 8px 12px; border: 0; border-inline-start: 3px solid var(--tb-line); display: grid; gap: 2px; background: transparent !important; }
+.tb-key { border-color: var(--tb-accent); }
+.tb-tip { border-color: var(--tb-ok); } .tb-tip > b { color: var(--tb-ok); }
+.tb-warn { border-color: var(--tb-bad); } .tb-warn > b { color: var(--tb-bad); }
 .tb-qq { margin: 0; font-weight: 700; }
 .tb-opts { display: grid; gap: 8px; }
 .tb-opt { text-align: start; border: 1px solid var(--tb-line); background: var(--tb-bg2); color: inherit; border-radius: 11px; padding: 8px 12px; display: flex; gap: 10px; align-items: center; cursor: pointer; font: inherit; }
@@ -322,10 +322,11 @@ textarea#lessonText { width: 100%; min-height: 130px; resize: vertical; border: 
 .tb-plot .c { fill: none; stroke-width: 2.6; } .tb-plot .c0, .tb-keys .c0 { stroke: var(--tb-blue); color: var(--tb-blue); } .tb-plot .c1, .tb-keys .c1 { stroke: var(--tb-red); color: var(--tb-red); } .tb-plot .c2, .tb-keys .c2 { stroke: var(--tb-green); color: var(--tb-green); } .tb-plot .c3, .tb-keys .c3 { stroke: var(--tb-purple); color: var(--tb-purple); }
 .tb-keys { display: flex; flex-wrap: wrap; gap: 6px 14px; justify-content: center; font-size: 13px; } .tb-keys span { display: inline-flex; gap: 6px; align-items: center; } .tb-keys i { width: 16px; height: 3px; background: currentColor; display: inline-block; border-radius: 2px; } .tb-keys span span { color: var(--tb-fg); }
 .tb-follow { display: grid; gap: 6px; } .tb-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.tb-chip { border: 1px solid var(--tb-line); background: var(--tb-bg2); color: inherit; border-radius: 999px; padding: 4px 12px; font: inherit; font-size: 13px; cursor: pointer; text-align: start; }
+.tb-chip { border: 1px solid var(--tb-line); background: transparent; color: inherit; border-radius: 999px; padding: 3px 11px; font: inherit; font-size: 12.5px; cursor: pointer; text-align: start; }
 .tb-chip:hover { border-color: var(--tb-accent); }
 .sec-blocks { margin-top: 12px; }
 .msg.ai { max-width: 100%; }
+.aiopts { font-size: 13px; color: var(--muted); } .aiopts summary { cursor: pointer; } .aiopts[open] { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; } .aiopts[open] summary { width: 100%; }
 .ex-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; border-top: 1px solid var(--line); padding-top: 14px; }
 .ex-tools .lbl { font-size: 13px; color: var(--muted); font-weight: 600; }
 .ex-out:empty { display: none; }
@@ -390,12 +391,14 @@ mjx-container[display="true"] { margin: .3em 0 !important; }
             <option value="exam" data-t="lvExam"></option>
           </select>
         </label>
+        <details class="aiopts"><summary data-t="aiOpts"></summary>
         <label for="aiModel"><span data-t="aiModel"></span>
           <select id="aiModel"><option value="haiku">Haiku 5.5</option><option value="sonnet">Sonnet 5.5</option><option value="opus">Opus 5.5</option></select>
         </label>
         <label for="aiEffort"><span data-t="aiEffort"></span>
           <select id="aiEffort"><option value="low" data-t="eLow"></option><option value="medium" data-t="eMed" selected></option><option value="high" data-t="eHigh"></option></select>
         </label>
+        </details>
         <label for="outLang"><span data-t="outLang"></span>
           <select id="outLang">
             <option value="auto" data-t="olAuto" selected></option>
@@ -461,7 +464,7 @@ mjx-container[display="true"] { margin: .3em 0 !important; }
     keyNote: ["هذه النسخة تعمل خارج Claude. أدخل مفتاح Anthropic API؛ يُحفظ في متصفحك فقط ويُرسل مباشرة إلى api.anthropic.com.", "Cette version fonctionne hors de Claude. Saisissez une clé Anthropic API : elle reste dans votre navigateur et n'est envoyée qu'à api.anthropic.com.", "This copy runs outside Claude. Enter an Anthropic API key; it stays in your browser and is sent only to api.anthropic.com."],
     save: ["حفظ", "Enregistrer", "Save"],
     level: ["مستوى الشرح", "Niveau d'explication", "Explanation level"],
-    aiModel: ["النموذج", "Modèle", "Model"], aiEffort: ["التفكير", "Réflexion", "Effort"],
+    aiOpts: ["خيارات الذكاء الاصطناعي", "Options IA", "AI options"], aiModel: ["النموذج", "Modèle", "Model"], aiEffort: ["التفكير", "Réflexion", "Effort"],
     eLow: ["سريع", "Rapide", "Quick"], eMed: ["متوازن", "Équilibré", "Balanced"], eHigh: ["معمّق", "Approfondi", "Deep"],
     exTools: ["لم تتضح الفكرة؟", "Pas encore clair ?", "Still unclear?"], exStuck: ["لم أفهم", "Je ne comprends pas", "I don't get it"], exSimpler: ["أبسط", "Plus simple", "Simpler"], exExample: ["بمثال من الحياة", "Avec un exemple concret", "With a real example"], exWhy: ["لماذا؟", "Pourquoi ?", "Why?"], exVisual: ["أرني ذلك", "Montre-moi", "Show me"],
     lvSimple: ["سهل جدًا", "Très simple", "Very simple"],
@@ -1139,31 +1142,31 @@ REPLY with ONLY one JSON object, no prose before or after:
   "evidence": [ { "kind": "quran" | "hadith" | "quote" | "text", "label": "e.g. الشاهد القرآني", "text": "exact text", "source": "", "translation": "", "significance": "what it shows, one sentence" } ],
   "memoryKey": { "label": "e.g. مفتاح الحفظ والفهم", "chips": [ { "text": "2–3 words", "icon": "<icon>" } ] },
   "explanation": {
-    "simple": "the whole lesson explained super simply in 3–6 short sentences, starting from something familiar",
+    "simple": "the core idea in 2–4 short sentences, starting from something familiar",
     "analogy": "one comparison with everyday life that makes the main idea obvious",
-    "points": ["key idea in one short sentence", "..."],
+    "points": ["2–4 key ideas, one short sentence each"],
     "worked": { "problem": "a short exercise", "steps": ["one action per step", "..."], "answer": "..." },
-    "example": "one concrete everyday example (for non-math lessons)",
+    "example": "one concrete example, only if \"analogy\" doesn't already do the job; else empty",
     "mistakes": ["a common student mistake and the fix", "..."],
     "questions": [ { "q": "review question", "a": "short answer from the lesson" } ]
   },
   "notes": "unreadable or uncertain parts; empty string if none"
 }
 
-TEACHING CHOICES: the lesson's nature decides the shape. Use the fixed section types below when they fit; any section may also carry "blocks" (teaching blocks, vocabulary below) placed right where they explain the idea, and a section may be {"heading":"...","type":"free","blocks":[...]} when the idea needs something else: a "timeline" and "causal" chain for history, "relations" for actors and influences, a "model" when changing a quantity teaches the law, an "svg" diagram or "formula" next to the idea it shows, a "question" that makes the student predict. A simple lesson may need no blocks at all. Put visuals INSIDE the sections they explain; leave the top-level "visuals" array empty unless a visual concerns the whole lesson (e.g. a "figure" cropped from the photos). Never add blocks just to fill space.
+TEACHING CHOICES (keep it lean: 2–4 sections, at most one block per section, many sections need none): the lesson's nature decides the shape. Use the fixed section types below when they fit; any section may also carry "blocks" (teaching blocks, vocabulary below) placed right where they explain the idea, and a section may be {"heading":"...","type":"free","blocks":[...]} when the idea needs something else: a "timeline" and "causal" chain for history, "relations" for actors and influences, a "model" when changing a quantity teaches the law, an "svg" diagram or "formula" next to the idea it shows, a "question" that makes the student predict. A simple lesson may need no blocks at all. Put visuals INSIDE the sections they explain; leave the top-level "visuals" array empty unless a visual concerns the whole lesson (e.g. a "figure" cropped from the photos). Never add blocks just to fill space.
 BLOCK VOCABULARY (for "blocks"; never "followups" here):
 ${TB.GUIDE.replace(/^HOW TO TEACH[\s\S]*?using any of these, in any order:\n/, "").replace(/\{"type":"followups"[^\n]*\n/, "")}
 SECTIONS: 2–4, in the lesson's order. "pillars" = parallel parts/types/conditions (2–6, coloured cards). "checklist" = explanations, effects, rules (2–5 rows). "steps" = a process, a method or a chronology (dates as titles). "compare" = 2–3 things contrasted. Keep every text SHORT: the schematic must be much easier than the lesson.
 
 VISUALS (very important — but place them inside the relevant section's "blocks" whenever possible):
-- Maths, physics, chemistry, sciences, economics: ALWAYS include visuals. Every key formula/law → "formula" with every symbol in "legend" (meaning + SI unit). Every function, curve or relationship studied → "graph". Every physical situation, experiment, circuit, force diagram, optics ray diagram, geometric figure, molecule, cycle or cell → "diagram". 3–7 visuals.
+- Visuals only where they make an idea clearer; one well-chosen visual beats several. Maths, physics, chemistry, sciences: include the key formulas and the one graph or diagram that matters. Every key formula/law → "formula" with every symbol in "legend" (meaning + SI unit). Every function, curve or relationship studied → "graph". Every physical situation, experiment, circuit, force diagram, optics ray diagram, geometric figure, molecule, cycle or cell → "diagram". 3–7 visuals.
 - Other subjects: add visuals only when they truly help (a "table" of comparisons, a "diagram" of a process, a "figure" from the photos). 0–3 visuals.
 - "graph": "expr" uses x as the only variable (write time as x and set xLabel "t (s)"); operators + - * / ^ with explicit * between factors; functions sin cos tan asin acos atan sqrt abs ln log exp; constants pi and e. Choose xRange/yRange so the interesting part is visible. Use "series" for measured data. Labels may contain $…$.
 - "diagram": a clean, correct SVG drawn like a textbook figure. Rules: viewBox about 520×260 (height 180–400); only elements svg, g, path, line, polyline, polygon, rect, circle, ellipse, text, tspan, defs, marker; NO style, script, image, foreignObject, CSS classes or external links; colours ONLY #1f2937 (main lines and text), #2563eb (blue), #dc2626 (red), #16a34a (green), #ea580c (orange), #7c3aed (purple), #9ca3af (grey guides) or "none"; light fills with fill-opacity; arrowheads with <marker> in <defs>; font-size 12–16; short labels in the output language; nothing outside the viewBox; physically and geometrically correct (force directions, circuit symbols, angles, ray paths). Use single quotes for SVG attributes so the JSON stays valid.
 - "figure": only when an attached image contains an important figure (diagram, map, chart, experiment photo, table). "image" = its number in the list above; "box" = the figure's bounding box in that image in thousandths of width/height (0–1000), [left, top, right, bottom], with a small margin.
 
 EVIDENCE: 0–3 items, only texts that are in the lesson. MEMORY KEY: 2–4 chips that compress the lesson into a memorable formula (like "القلب يشعر | اللسان يحمد | الجوارح تعمل").
-EXPLANATION: ${LEVELS[level] || LEVELS.simple} "worked" is REQUIRED for maths/physics/chemistry (a short exercise solved step by step, one calculation per step, with units) and null for other subjects. "mistakes": 2–3. "questions": 3–5.
+EXPLANATION: ${LEVELS[level] || LEVELS.simple} "worked" is REQUIRED for maths/physics/chemistry (a short exercise solved step by step, one calculation per step, with units) and null for other subjects. "mistakes": 0–2. "questions": 3. Keep everything short; the student can ask for more.
 <icon> is one of: ${ICON_NAMES.join(", ")}.
 ${text ? `\n<lesson>\n${text}\n</lesson>` : ""}`;
   }
@@ -1637,7 +1640,7 @@ ${JSON.stringify(stripForModel(d))}`;
       exWhy: "Explain WHY the central rule/fact of the lesson is true or matters — the reasoning behind it, not a restatement.",
       exVisual: "Show the core idea visually: choose the representation that makes it click (diagram, model, timeline, relations, causal chain…).",
     };
-    Object.keys(asks).forEach((k) => { const b = el("button", "btn"); b.type = "button"; b.textContent = tl(k); b.onclick = async () => {
+    ["exStuck", "exSimpler", "exVisual"].forEach((k) => { const b = el("button", "btn"); b.type = "button"; b.textContent = tl(k); b.onclick = async () => {
       if (state.backend === "none") return; tools.querySelectorAll("button").forEach((x) => (x.disabled = true));
       const box = el("div", "msg ai"); box.dir = "auto"; out.append(box); box.scrollIntoView({ behavior: "smooth", block: "nearest" });
       try { await aiBlocks(`You are a patient, warm tutor. Lesson schematic (JSON):\n${lessonForModel()}\n\n${asks[k]} Write in the lesson language (${LANG_NAME[d.lang] || "Arabic"}). Stay faithful to the lesson.\n${TB.GUIDE}`, box, { cache: k !== "exStuck" }); }
@@ -1780,7 +1783,7 @@ ${JSON.stringify(stripForModel(d))}`;
     els.askInput.value = ""; els.askBtn.disabled = true;
     const me = el("div", "msg me"); me.dir = "auto"; me.textContent = q; els.askLog.append(me);
     const ai = el("div", "msg ai"); ai.dir = "auto"; els.askLog.append(ai);
-    const rules = `You are a patient, warm tutor helping a school student with this lesson. Lesson schematic (JSON):\n${lessonForModel()}\n\nAnswer the student's latest message: exactly what they ask, at the depth they need. Stay consistent with the lesson; if it doesn't cover something, say so briefly, then help. Reply in the language of the question.\n${TB.GUIDE}`;
+    const rules = `You are a patient, warm tutor helping a school student with this lesson. Lesson schematic (JSON):\n${lessonForModel()}\n\nAnswer the student's latest message like a patient teacher in a conversation: exactly what they ask, one step at a time, short. Stay consistent with the lesson; if it doesn't cover something, say so briefly, then help. Reply in the language of the question.\n${TB.GUIDE}`;
     state.chat.push({ role: "user", content: q });
     try {
       const text = await aiBlocks([{ role: "user", content: rules }, ...state.chat.slice(-8)], ai, { cache: false });
@@ -1914,7 +1917,7 @@ ${JSON.stringify(stripForModel(d))}`;
     const TYPES = ["text", "question", "svg", "model", "timeline", "relations", "causal", "table", "steps", "formula", "graph", "followups", "callout"];
     function normalize(raw) {
       const list = Array.isArray(raw) ? raw : raw && Array.isArray(raw.blocks) ? raw.blocks : [];
-      return list.slice(0, 16).map((b) => {
+      return list.slice(0, 5).map((b) => {
         if (!b || !TYPES.includes(b.type)) return null;
         const o = { type: b.type };
         switch (b.type) {
@@ -1947,11 +1950,15 @@ ${JSON.stringify(stripForModel(d))}`;
     }
 
     /* ---- the guide Claude follows ---- */
-    const GUIDE = String.raw`HOW TO TEACH
-Decide what THIS question really needs before writing. A conceptual "why" usually needs a short answer and one visual; a historical question may need context, a timeline, relationships and careful cause-and-effect; a physics or geometry situation may need a diagram, equations, a manipulable model and steps; a quick factual question needs one or two sentences. Never produce a whole lesson when a short answer is enough. No block is ever mandatory; use the fewest blocks that make the idea click, in the order that builds understanding (often intuition or a concrete case before the rule).
-Ask the learner to think ("question" block) before revealing an answer when that helps them reason; give each wrong option a short targeted explanation in "branches".
-Visuals must carry the idea itself, never decorate. Interactive models only when changing a variable reveals a relationship.
-ACCURACY: never invent facts, quotes, dates, numbers or relationships. Separate established facts from interpretation. In causal chains mark each link "direct", "contributing" (one factor among others) or "possible" (debated). Check every computation. If unsure, say so.
+    const GUIDE = String.raw`HOW TO TEACH — like a patient teacher in a real conversation, not a textbook.
+One question → one useful explanation → one step forward.
+- Answer ONLY the current question, at the depth it needs. Usually 1–2 blocks, at most 3. About 40–90 words of text in total. No headings, no recap, no repetition.
+- Explain ONE step at a time. If the topic has several steps, give the first one and stop; let the learner continue ("followups"). Never reveal a whole solution or chapter at once unless explicitly asked.
+- Add a diagram, formula, example or interactive model ONLY if it makes this specific point clearer than words. Most answers need none.
+- If the learner did not understand, re-explain that exact point differently (simpler words, a concrete case, or a small visual) — do not restate the same thing.
+- A short "question" block is welcome when checking understanding helps before moving on; keep it to one.
+- End with "followups": 2–3 very short next questions the learner might naturally ask (skip if nothing useful).
+ACCURACY: never invent facts, dates, numbers or relationships; separate facts from interpretation; in causal chains mark each link "direct", "contributing" or "possible"; check every computation; say so if unsure.
 REPLY with ONLY JSON: {"blocks":[ ... ]} using any of these, in any order:
 {"type":"text","text":"short paragraph; **bold** allowed; math in $…$"}
 {"type":"callout","tone":"key|tip|warn","title":"optional","text":"the rule or warning to remember"}
@@ -1965,7 +1972,7 @@ REPLY with ONLY JSON: {"blocks":[ ... ]} using any of these, in any order:
 {"type":"causal","title":"…","chain":[{"text":"…","level":"direct|contributing|possible"}],"note":"nuance"}
 {"type":"graph","title":"…","functions":[{"expr":"x^2-4","label":"$f(x)$"}],"xRange":[-4,4]}
 {"type":"model","title":"…","vars":[{"name":"alpha","label":"Angle α","unit":"°","min":0,"max":60,"step":1,"value":30}],"outputs":[{"name":"T","label":"Tension","expr":"k*m*g/(cosd(alpha)+k*sind(alpha))","unit":"N","digits":2}],"svg":"<svg …> uses {{expr}} placeholders, e.g. x2='{{200+120*cosd(alpha)}}' </svg>","caption":"what to try"}
-{"type":"followups","items":["2–4 short questions the learner may want to ask next"]}
+{"type":"followups","items":["2–3 very short next questions"]}
 SVG rules (svg and model): viewBox about 520×260; only svg, g, path, line, polyline, polygon, rect, circle, ellipse, text, tspan, defs, marker; no style, script, image, classes or links; colours only #1f2937 (lines/text), #2563eb, #dc2626, #16a34a, #ea580c, #7c3aed, #9ca3af or "none"; arrowheads with <marker>; single-quoted attributes; keep everything inside the viewBox; physically and geometrically correct.
 Model rules: variable and output names are identifiers; expressions use + - * / ^ ( ), sin cos tan (radians), sind cosd tand (degrees), sqrt abs ln log exp min max atan2 pow, pi; outputs may use earlier outputs; constants go inside expressions or as outputs. Placeholders {{expr}} may appear in attribute values and text.
 JSON: double every backslash inside strings (\\frac, \\vec).`;
@@ -2064,7 +2071,7 @@ JSON: double every backslash inside strings (\\frac, \\vec).`;
           }
         } else if (b.type === "graph") { const p = plot(b); if (!p) return; n = h("figure", "tb-card tb-graph"); if (b.title) n.append(h("b", "tb-title", b.title)); n.append(p.svg); const k = h("div", "tb-keys"); p.labels.forEach(([lbl, i]) => { const s = h("span", "c" + i); s.append(h("i"), h("span", null, lbl)); k.append(s); }); n.append(k); if (b.caption) n.append(rich(h("figcaption", "tb-cap"), b.caption)); }
         else if (b.type === "model") n = modelBlock(b);
-        else if (b.type === "followups") { if (!opts.onFollowup) return; n = h("div", "tb-follow"); n.append(h("span", "tb-kicker", lab("more"))); const row = h("div", "tb-chips"); b.items.forEach((q) => { const bt = h("button", "tb-chip", q); bt.type = "button"; bt.onclick = () => opts.onFollowup(q); row.append(bt); }); n.append(row); }
+        else if (b.type === "followups") { if (!opts.onFollowup) return; n = h("div", "tb-follow"); const row = h("div", "tb-chips"); b.items.forEach((q) => { const bt = h("button", "tb-chip", q); bt.type = "button"; bt.onclick = () => opts.onFollowup(q); row.append(bt); }); n.append(row); }
         if (n) box.append(n);
       });
       deps.typeset([box]);
