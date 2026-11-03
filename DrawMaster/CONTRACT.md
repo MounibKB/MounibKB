@@ -135,3 +135,34 @@ Apply `regionRoles` with `DMEngine.setRole(..., 'ai')` only for ids that exist, 
 ## 4. Testing
 
 A real test image exists at `/home/user/MounibKB/WW3.png` (1672×941). Chromium + Playwright are preinstalled (`require('playwright')`, `chromium.launch()`); load pages via `file://`. Test with `window.claude` mocked in an init script for the studio.
+
+## 5. v2 — "Illustration" step plan (replaces the noisy stages in the UI)
+
+Goal: each step image must look like a clean drawing a person could copy (see reference style: light pencil construction → clean line art → colour applied area by area → shading → final), NOT a raw edge map.
+
+```js
+// Build a clean, area-based plan from an analysis. Deterministic, local, < 1.5 s at 900 px.
+DMEngine.illustrate(analysis, { maxAreas = 7 } = {}) -> Illus {
+  areas: [ {                       // 3–maxAreas meaningful areas, painted in this order (back to front)
+    id, regionIds:[...], bbox:[x0,y0,x1,y1], bbox_pct:[..], centroid_pct:[x,y], area_pct,
+    meanRgb:[r,g,b], hex, colorName, position /* plain words: "top band", "lower left", "centre" */,
+    order, kind /* 'background'|'middle'|'subject'|'detail' */
+  } ],
+  steps: [ { key, kind /* 'sketch'|'lines'|'color'|'shading'|'final' */, areaId? , title /* generic English */ } ]
+}
+// steps = 'sketch', 'lines', one 'color:<areaId>' per area (in order), 'shading', 'final'  → typically 7–11 steps.
+
+DMEngine.renderIllus(analysis, illus, stepIndex, { scale = 1 } = {}) -> HTMLCanvasElement   // cumulative
+DMEngine.renderIllusDelta(analysis, illus, stepIndex) -> HTMLCanvasElement                  // only what this step adds (rest white)
+DMEngine.setAreaOrder(illus, areaId, newOrder)   // re-sorts steps
+DMEngine.mergeAreas(analysis, illus, idA, idB)    // optional
+DMEngine.areaAt(illus, analysis, x, y) -> area|null
+```
+
+Rendering rules (cumulative, same pixel geometry as the original, paper colour #fbf8f1):
+- **sketch**: light graphite (≈#9a948a, 1.2 px, slightly transparent) — horizon / main area boundaries simplified (strong smoothing, Douglas–Peucker style simplification of boundary chains, or boundaries of a heavily smoothed segmentation) + the fitted construction ellipses/rects of the subject. Few clean lines only.
+- **lines**: clean dark outlines (#2b2723, ~1.6 px, anti-aliased) = boundaries between AREAS plus long, strong internal edges of the subject area(s); remove all edge components shorter than ~2.5% of the image diagonal; smooth jaggies (e.g. draw boundary chains as smoothed polylines on canvas). Must look like colouring-book line art, not noise.
+- **color:<area>**: fill that area with a clean colour: its region-mean colours lightly smoothed (median/mode filter within the area to remove speckles), like coloured-pencil base layer; lines stay on top.
+- **shading**: within coloured areas, darken shadow value bands and blend toward `smooth` (soft gradients); lines fade to 40%.
+- **final**: the exact original pixels.
+Area building: merge regions into areas by colour similarity (Lab ΔE) + adjacency + position, preferring large coherent zones (sky, sea, ground, main subject…). Background-ish areas (touching top/border, large, low detail) first; the subject and small details last.

@@ -2,115 +2,115 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Atkinson+Hyperlegible:wght@400;700&family=Readex+Pro:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lalezar&family=Readex+Pro:wght@400;600;700&family=Archivo+Black&display=swap">
 <style>
-/* Layout: one guide sheet, like a printed "how to draw" poster — final result + tools + palette on top,
-   numbered step cards in a grid, tips at the bottom. One viewer opens on click. */
+/* Layout: a dark "how to draw" poster — title ribbons, final result + tools, numbered step panels
+   with ribbon titles and one-line captions, palette, pro secrets, last note. Single dark look by design. */
 :root {
-  --paper: #f7f3ea; --card: #fffdf8; --ink: #22201c; --muted: #6f685c; --line: #e3dccd;
-  --red: #c8323a; --red-ink: #fff; --yellow: #f2c94c; --green: #2f8f5b; --blue: #2f6db3;
-  --font-d: "Fraunces", "Readex Pro", Georgia, serif; --font-b: "Atkinson Hyperlegible", "Readex Pro", system-ui, sans-serif;
-  color-scheme: light;
+  --bg: #0f0f10; --panel: #18181a; --panel-2: #222225; --line: #2c2c30; --fg: #f3efe6; --muted: #a8a299;
+  --red: #d22b35; --yellow: #f4cf3d; --pink: #3a1f26; --paper: #fbf8f1;
+  --font-d: "Archivo Black", "Lalezar", Impact, sans-serif; --font-b: "Readex Pro", system-ui, sans-serif;
+  color-scheme: dark;
 }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --paper: #17150f; --card: #211e17; --ink: #f1ece1; --muted: #a59d8c; --line: #3a3529; --red: #e0545b; --yellow: #e6be4a; --green: #57b884; --blue: #6ea3e0; color-scheme: dark; } }
-:root[data-theme="dark"] { --paper: #17150f; --card: #211e17; --ink: #f1ece1; --muted: #a59d8c; --line: #3a3529; --red: #e0545b; --yellow: #e6be4a; --green: #57b884; --blue: #6ea3e0; color-scheme: dark; }
 * { box-sizing: border-box; }
-body { background: var(--paper); color: var(--ink); font-family: var(--font-b); font-size: 15px; line-height: 1.55; }
-[dir="rtl"] body, [dir="rtl"] { font-family: "Readex Pro", var(--font-b); }
-h1, h2, h3 { font-family: var(--font-d); margin: 0; text-wrap: balance; }
-[dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3 { font-family: "Readex Pro", sans-serif; font-weight: 700; }
+html, body { background: var(--bg); color: var(--fg); }
+body { font-family: var(--font-b); font-size: 15px; line-height: 1.55; }
+[dir="rtl"] .ttl, [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] .rib { font-family: "Lalezar", var(--font-d); letter-spacing: 0; }
 button, select, input { font: inherit; color: inherit; }
-:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
-.wrap { max-width: 1100px; margin: 0 auto; padding-block: 18px 60px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr); }
-.top { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-.logo { font-family: var(--font-d); font-size: 22px; font-weight: 800; } .logo b { color: var(--red); }
-.top-r { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.btn { border: 1px solid var(--line); background: var(--card); border-radius: 10px; padding: 7px 12px; font-weight: 700; font-size: 14px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
-.btn:hover:not(:disabled) { border-color: var(--ink); } .btn:disabled { opacity: .5; cursor: default; }
-.btn.red { background: var(--red); color: var(--red-ink); border-color: var(--red); }
-select { border: 1px solid var(--line); background: var(--card); border-radius: 10px; padding: 6px 8px; font-size: 14px; }
-.settings { position: relative; }
-.settings > summary { list-style: none; cursor: pointer; } .settings > summary::-webkit-details-marker { display: none; }
-.pop { position: absolute; inset-inline-end: 0; top: 44px; z-index: 20; width: 280px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 10px; box-shadow: 0 12px 30px rgb(0 0 0 / .15); }
+:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-block: 16px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+.bar { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.logo { font-family: var(--font-d); font-size: 20px; } .logo b { color: var(--red); }
+.bar-r { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.btn { border: 1px solid var(--line); background: var(--panel); border-radius: 10px; padding: 7px 12px; font-weight: 700; font-size: 14px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; color: var(--fg); }
+.btn:hover:not(:disabled) { border-color: var(--fg); } .btn:disabled { opacity: .45; cursor: default; }
+.btn.red { background: var(--red); border-color: var(--red); color: #fff; }
+select { border: 1px solid var(--line); background: var(--panel); border-radius: 10px; padding: 6px 8px; font-size: 14px; }
+details.ai { position: relative; } details.ai > summary { list-style: none; } details.ai > summary::-webkit-details-marker { display: none; }
+.pop { position: absolute; inset-inline-end: 0; top: 44px; z-index: 30; width: 280px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 10px; box-shadow: 0 14px 34px rgb(0 0 0 / .5); }
 .pop label { display: grid; gap: 4px; font-size: 13px; color: var(--muted); font-weight: 700; }
 .seg { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
 .seg button { border: 0; background: transparent; padding: 6px 4px; font-size: 13px; font-weight: 700; cursor: pointer; color: var(--muted); }
-.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.seg button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
 input[type=range] { width: 100%; accent-color: var(--red); }
 /* upload */
-.drop { border: 2px dashed var(--line); border-radius: 20px; background: var(--card); padding: 42px 20px; display: grid; gap: 12px; justify-items: center; text-align: center; }
-.drop.over { border-color: var(--red); }
-.drop h2 { font-size: clamp(24px, 4vw, 34px); }
-.drop p { margin: 0; color: var(--muted); max-width: 46ch; }
+.drop { border: 2px dashed var(--line); border-radius: 18px; background: var(--panel); padding: 48px 20px; display: grid; gap: 12px; justify-items: center; text-align: center; }
+.drop.over { border-color: var(--yellow); }
+.drop h1 { font-family: var(--font-d); font-size: clamp(26px, 4.6vw, 40px); line-height: 1.1; margin: 0; }
+.drop p { margin: 0; color: var(--muted); max-width: 48ch; }
 .status { display: flex; gap: 10px; align-items: center; justify-content: center; color: var(--muted); min-height: 22px; font-size: 14px; }
-.status.err { color: var(--red); }
-.spin { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line); border-top-color: var(--red); animation: rot .8s linear infinite; }
+.status.err { color: #ff8a8a; }
+.spin { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line); border-top-color: var(--yellow); animation: rot .8s linear infinite; flex: none; }
 @keyframes rot { to { transform: rotate(360deg); } }
-/* sheet */
-.banner { display: inline-block; background: var(--ink); color: var(--paper); font-family: var(--font-d); font-weight: 800; font-size: clamp(22px, 3.6vw, 32px); padding: 4px 16px; border-radius: 6px; transform: rotate(-1deg); }
-.sub { display: inline-block; background: var(--yellow); color: #1d1a12; font-weight: 700; padding: 2px 12px; border-radius: 4px; margin-top: 8px; transform: rotate(.6deg); }
-.hero { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
-@media (min-width: 860px) { .hero { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); align-items: start; } }
-.final { position: relative; border-radius: 14px; overflow: hidden; border: 3px solid var(--ink); background: var(--card); }
+/* poster */
+.poster { display: grid; gap: 14px; }
+.head { display: grid; gap: 8px; justify-items: center; text-align: center; }
+.ttl { font-family: var(--font-d); font-size: clamp(24px, 4.4vw, 40px); line-height: 1.15; margin: 0; background: #050505; color: #fff; padding: 6px 22px 8px; border-radius: 4px 14px 6px 16px; transform: rotate(-1deg); box-shadow: 0 0 0 3px #050505, 0 6px 0 -1px var(--red); }
+.hl { font-family: var(--font-d); font-size: clamp(22px, 3.8vw, 34px); color: #111; background: var(--yellow); padding: 2px 18px 4px; border-radius: 10px 3px 12px 4px; transform: rotate(.8deg); }
+.tag2 { background: #050505; color: #fff; padding: 3px 16px; border-radius: 4px; font-weight: 700; font-size: 15px; transform: rotate(-.6deg); }
+.top { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .top { grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); align-items: start; } }
+.final { position: relative; border: 4px solid #050505; border-radius: 8px; overflow: hidden; background: var(--paper); box-shadow: 0 0 0 1px var(--line); }
 .final img { display: block; width: 100%; height: auto; }
-.tag { position: absolute; top: 10px; inset-inline-start: 10px; background: var(--red); color: var(--red-ink); font-weight: 700; padding: 3px 12px; border-radius: 8px; font-size: 14px; }
-.side { display: grid; gap: 14px; }
-.box { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; display: grid; gap: 8px; }
-.box h3 { font-size: 16px; }
-.kick { display: inline-block; background: var(--red); color: var(--red-ink); font-weight: 700; font-size: 13.5px; padding: 2px 10px; border-radius: 7px; justify-self: start; }
-.tools { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
-.tools label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
-.tools input { accent-color: var(--green); width: 17px; height: 17px; }
-.pal { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.sw { display: grid; justify-items: center; gap: 2px; font-size: 12px; text-align: center; color: var(--muted); }
-.sw i { width: 100%; height: 26px; border-radius: 13px 4px 13px 4px; display: block; border: 1px solid rgb(0 0 0 / .08); }
-.steps { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
-.step { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px; display: grid; gap: 8px; cursor: pointer; text-align: start; position: relative; min-width: 0; }
-.step:hover { border-color: var(--ink); }
-.step-h { display: flex; gap: 8px; align-items: center; }
-.num { width: 30px; height: 30px; border-radius: 50%; background: var(--red); color: var(--red-ink); display: grid; place-items: center; font-weight: 800; flex: none; font-family: var(--font-d); }
-.step-h b { font-size: 15px; }
-.done-t { margin-inline-start: auto; color: var(--green); font-weight: 800; }
-.thumb { border-radius: 8px; overflow: hidden; border: 1px solid var(--line); background: #fff; aspect-ratio: var(--ar, 16 / 9); }
-.thumb canvas { width: 100%; height: 100%; display: block; object-fit: contain; }
-.cap { margin: 0; font-size: 14px; text-align: center; }
-.bottom { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
-@media (min-width: 760px) { .bottom { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); } }
-.tips { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-.tips li::before { content: "✔ "; color: var(--red); font-weight: 800; }
-.note { background: var(--ink); color: var(--paper); border-radius: 14px; padding: 12px 16px; display: grid; gap: 4px; align-content: center; }
-.note b { color: var(--yellow); }
-.links { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
-.honest { font-size: 12.5px; color: var(--muted); text-align: center; margin: 0; }
+.crown { position: absolute; top: 10px; inset-inline-start: 10px; background: var(--red); color: #fff; font-weight: 800; padding: 4px 14px; border-radius: 8px; font-size: 15px; box-shadow: 0 3px 0 rgb(0 0 0 / .4); }
+.box { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 10px; align-content: start; }
+.rib { justify-self: start; background: var(--red); color: #fff; font-weight: 800; font-size: 15px; padding: 3px 14px; border-radius: 8px 3px 8px 3px; }
+[dir="rtl"] .rib { justify-self: start; }
+.tools { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.tools label { display: flex; gap: 10px; align-items: center; cursor: pointer; font-size: 15.5px; }
+.tools input { appearance: none; width: 20px; height: 20px; border: 2px solid var(--muted); border-radius: 5px; display: grid; place-items: center; cursor: pointer; flex: none; }
+.tools input:checked { border-color: #3ccf7a; } .tools input:checked::after { content: "✓"; color: #3ccf7a; font-weight: 900; font-size: 15px; line-height: 1; }
+.steps { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
+.st { position: relative; background: var(--panel); border: 1.5px solid #3550a8; border-radius: 10px; padding: 34px 10px 12px; display: grid; gap: 8px; cursor: pointer; text-align: center; color: var(--fg); min-width: 0; }
+.st:hover { border-color: var(--yellow); }
+.st .n { position: absolute; top: -10px; inset-inline-start: -8px; width: 38px; height: 38px; border-radius: 50%; background: var(--red); color: #fff; border: 3px solid var(--bg); display: grid; place-items: center; font-family: var(--font-d); font-size: 18px; }
+.st .rib { position: absolute; top: 6px; left: 50%; transform: translateX(-50%); white-space: nowrap; max-width: calc(100% - 60px); overflow: hidden; text-overflow: ellipsis; font-size: 14.5px; }
+.st .img { border-radius: 4px; overflow: hidden; background: var(--paper); aspect-ratio: var(--ar, 16/9); border: 1px solid #000; }
+.st canvas { width: 100%; height: 100%; display: block; }
+.st p { margin: 0; font-size: 14px; line-height: 1.5; }
+.st .ok { position: absolute; top: 6px; inset-inline-end: 8px; color: #3ccf7a; font-weight: 900; }
+.bottom { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 760px) { .bottom { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.secrets { background: var(--pink); border-color: #5a2a35; }
+.secrets ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.secrets li { display: flex; gap: 8px; } .secrets li::before { content: "☑"; color: var(--red); font-weight: 900; }
+.pal { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px 8px; }
+.sw { display: grid; justify-items: center; gap: 4px; font-size: 12.5px; color: var(--muted); text-align: center; }
+.sw i { width: 100%; height: 30px; display: block; border-radius: 40% 60% 45% 55% / 60% 40% 60% 40%; transform: rotate(-8deg); box-shadow: inset 0 0 0 3px rgb(255 255 255 / .12); }
+.note { background: #050505; border-radius: 30px; padding: 12px 20px; display: flex; gap: 14px; align-items: center; justify-content: center; text-align: center; border: 1px solid var(--line); }
+.note b { color: var(--yellow); display: block; }
+.links { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.honest { margin: 0; font-size: 12.5px; color: var(--muted); text-align: center; }
 /* viewer */
-.ov { position: fixed; inset: 0; z-index: 50; background: rgb(15 13 9 / .82); display: grid; place-items: center; padding: max(12px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); }
-.vw { width: min(1100px, 100%); max-height: 100%; overflow: auto; background: var(--card); border-radius: 16px; padding: 12px; display: grid; gap: 10px; }
+.ov { position: fixed; inset: 0; z-index: 60; background: rgb(0 0 0 / .85); display: grid; place-items: center; padding: max(12px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); }
+.vw { width: min(1040px, 100%); max-height: 100%; overflow: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 12px; display: grid; gap: 10px; }
 .vw-h { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.vw-h h3 { font-size: 18px; flex: 1; min-width: 0; }
-.stage { position: relative; overflow: hidden; border-radius: 10px; border: 1px solid var(--line); background: #fff; touch-action: none; cursor: grab; }
+.vw-h .n2 { width: 34px; height: 34px; border-radius: 50%; background: var(--red); color: #fff; display: grid; place-items: center; font-family: var(--font-d); flex: none; }
+.vw-h h2 { margin: 0; font-size: 19px; flex: 1; min-width: 0; font-family: var(--font-d); font-weight: 400; }
+.stage { position: relative; overflow: hidden; border-radius: 8px; background: var(--paper); touch-action: none; cursor: grab; }
 .stage canvas { display: block; width: 100%; height: auto; transform-origin: 0 0; }
 .stage .orig { position: absolute; inset: 0; clip-path: inset(0 0 0 var(--cut, 100%)); }
-.cmp-line { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--red); left: var(--cutp, 100%); pointer-events: none; }
+.cmp-line { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--yellow); left: var(--cut, 100%); pointer-events: none; }
 .vw-tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .vw-tools label { display: inline-flex; gap: 6px; align-items: center; font-size: 13.5px; font-weight: 700; }
-.vw-tools input[type=range] { width: 160px; }
-.detail { display: grid; gap: 6px; font-size: 14.5px; }
-.detail p { margin: 0; } .detail b { color: var(--red); }
-.region-chips { display: flex; gap: 6px; flex-wrap: wrap; }
-.region-chips button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.vw-tools input[type=range] { width: 150px; }
+.cap2 { margin: 0; font-size: 16px; font-weight: 600; }
+.det { display: grid; gap: 4px; font-size: 14.5px; color: var(--muted); } .det p { margin: 0; } .det b { color: var(--yellow); }
+.areas { display: flex; gap: 6px; flex-wrap: wrap; }
+.areas button[aria-pressed="true"] { border-color: var(--yellow); }
 @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
 </style>
 
 <div class="wrap" id="app">
-  <header class="top">
+  <header class="bar">
     <div class="logo">✏️ Draw<b>Master</b></div>
-    <div class="top-r">
-      <select id="lang" aria-label="Language"><option value="en">English</option><option value="fr">Français</option><option value="ar">العربية</option></select>
-      <details class="settings"><summary class="btn" id="setBtn">⚙ AI</summary>
+    <div class="bar-r">
+      <select id="lang" aria-label="Language"><option value="ar">العربية</option><option value="fr">Français</option><option value="en">English</option></select>
+      <details class="ai" id="aiBox"><summary class="btn">⚙ AI</summary>
         <div class="pop">
           <label><span data-t="model"></span><div class="seg" id="model"><button type="button" data-m="haiku">Haiku 5.5</button><button type="button" data-m="sonnet">Sonnet 5.5</button><button type="button" data-m="opus">Opus 5.5</button></div></label>
           <label><span><span data-t="effort"></span>: <b id="effLbl"></b></span><input type="range" id="effort" min="0" max="2" step="1"></label>
-          <button class="btn" type="button" id="redo" data-t="redo"></button>
+          <button class="btn" type="button" id="redo" data-t="redo" hidden></button>
           <small id="aiState" style="color:var(--muted)"></small>
         </div>
       </details>
@@ -119,14 +119,14 @@ input[type=range] { width: 100%; accent-color: var(--red); }
   </header>
 
   <section class="drop" id="drop">
-    <h2 data-t="upTitle"></h2>
+    <h1 data-t="upTitle"></h1>
     <p data-t="upText"></p>
     <div class="links"><button class="btn red" type="button" id="pick" data-t="choose"></button><button class="btn" type="button" id="cam" data-t="camera"></button></div>
     <input type="file" id="file" accept="image/*" hidden><input type="file" id="camIn" accept="image/*" capture="environment" hidden>
     <div class="status" id="status" aria-live="polite"></div>
   </section>
 
-  <section id="sheet" hidden style="display:grid;gap:18px"></section>
+  <section class="poster" id="poster" hidden></section>
 </div>
 <div id="ovl"></div>
 
@@ -134,223 +134,227 @@ input[type=range] { width: 100%; accent-color: var(--red); }
 <script>
 (() => {
   "use strict";
-  /* ---------------- text ---------------- */
   const TX = {
-    en: { redo: "Rewrite my guide", model: "Model", effort: "Effort", eff: ["Quick", "Balanced", "Deep"], newImg: "New image", upTitle: "Turn any picture into a drawing guide", upText: "Upload an image. DrawMaster computes every step from it in your browser — sketch, outlines, colours, shading — and explains how to draw each one.", choose: "Choose an image", camera: "Take a photo", working: "Analysing your image…", aiWorking: "Writing your personal guide…", guide: "Step-by-step drawing guide", final: "Final result", tools: "Tools you need", palette: "Suggested colours", tips: "Pro secrets", noteT: "Last note", stepsTitle: "Steps", fix: "Fix subject / background", dlAll: "Download all steps", where: "Where", how: "How", toolsW: "Tools", avoid: "Avoid", compare: "Compare with final", newOnly: "Only what's new", download: "Download", full: "Fullscreen", done: "I drew this", prev: "Previous", next: "Next", close: "Close", honest: "Every step is computed from your picture by code (edge detection, colour clustering, geometry). Lines are extracted edges — a guide to copy, not a hand-made sketch.", generic: "General guidance — AI not available here.", aiBy: "Personalised by", fixHelp: "Tap a part of the picture, then say what it is. The steps update.", roles: { background: "Background", foreground: "Subject", secondary: "Secondary", detail: "Detail" }, err: "Could not analyse the image.", aiErr: "AI guide failed — showing general guidance.",
-      steps: { sketch: ["Light sketch", "Mark the big shapes lightly: horizon, main forms, where the subject sits."], lines: ["Clean outlines", "Go over the lines that matter with a firmer pencil or fine liner."], background: ["Background colours", "Fill the large background areas with light, even layers."], colors: ["Main colours", "Colour the subject and the other areas with their base colours."], shading: ["Shading & depth", "Add the darker tones and soft transitions; build them in layers."], final: ["Final touches", "Lift the highlights and add the small details. Done!"] },
-      det: { sketch: ["Over the whole sheet, following the guide lines.", "Use very light strokes you can erase. Place shapes, not details.", "HB pencil, eraser.", "Pressing hard or drawing details too early."], lines: ["Along the edges shown in the step.", "Trace confidently in one stroke per edge; skip tiny noise.", "2B pencil or 0.3 fine liner.", "Outlining every texture line."], background: ["The biggest areas behind the subject.", "Light pressure, small circles or parallel strokes, same direction.", "Coloured pencils in the background tones.", "Leaving white gaps or pressing too hard early."], colors: ["Inside the subject and the remaining shapes.", "One flat base layer per area, then a second layer to deepen.", "Coloured pencils from the palette.", "Mixing too many colours in one area."], shading: ["On the side away from the light, under objects, in folds.", "Layer a darker tone gradually; blend edges softly.", "Darker pencils, blender or white pencil.", "Using black for every shadow."], final: ["The brightest spots and small details.", "Keep or lift light areas; add tiny accents last.", "White gel pen or white pencil, sharp pencil.", "Over-working — know when to stop."] },
-      materials: ["Drawing paper (A4)", "Light pencil (HB)", "2B pencil", "Eraser", "Coloured pencils", "Sharpener"], tipsList: ["Start light, darken later.", "Work from background to front.", "Build colour in thin layers.", "Squint to see the big values.", "Don't press hard with the pencil."], note: "Simplicity is the secret of a beautiful drawing." },
-    fr: { redo: "Réécrire mon guide", model: "Modèle", effort: "Réflexion", eff: ["Rapide", "Équilibré", "Approfondi"], newImg: "Nouvelle image", upTitle: "Transforme n'importe quelle image en guide de dessin", upText: "Ajoute une image. DrawMaster calcule chaque étape à partir d'elle dans ton navigateur — esquisse, contours, couleurs, ombres — et t'explique comment dessiner chacune.", choose: "Choisir une image", camera: "Prendre une photo", working: "Analyse de l'image…", aiWorking: "Rédaction de ton guide personnel…", guide: "Guide de dessin étape par étape", final: "Résultat final", tools: "Matériel nécessaire", palette: "Couleurs suggérées", tips: "Secrets de pro", noteT: "Dernier conseil", stepsTitle: "Étapes", fix: "Corriger sujet / fond", dlAll: "Télécharger toutes les étapes", where: "Où", how: "Comment", toolsW: "Outils", avoid: "À éviter", compare: "Comparer au final", newOnly: "Seulement le nouveau", download: "Télécharger", full: "Plein écran", done: "J'ai dessiné ça", prev: "Précédente", next: "Suivante", close: "Fermer", honest: "Chaque étape est calculée à partir de ton image par du code (détection de contours, regroupement des couleurs, géométrie). Les traits sont des contours extraits — un guide à copier, pas une esquisse faite à la main.", generic: "Conseils généraux — IA indisponible ici.", aiBy: "Personnalisé par", fixHelp: "Touche une partie de l'image, puis dis ce que c'est. Les étapes se mettent à jour.", roles: { background: "Fond", foreground: "Sujet", secondary: "Secondaire", detail: "Détail" }, err: "Impossible d'analyser l'image.", aiErr: "Le guide IA a échoué — conseils généraux affichés.",
-      steps: { sketch: ["Esquisse légère", "Place légèrement les grandes formes : horizon, volumes, position du sujet."], lines: ["Contours nets", "Repasse les traits importants au crayon plus gras ou au feutre fin."], background: ["Couleurs du fond", "Remplis les grandes zones du fond en couches légères et régulières."], colors: ["Couleurs principales", "Colorie le sujet et les autres zones avec leur couleur de base."], shading: ["Ombres et profondeur", "Ajoute les tons foncés et les transitions douces, couche par couche."], final: ["Touches finales", "Fais ressortir les lumières et ajoute les petits détails. Terminé !"] },
-      det: { sketch: ["Sur toute la feuille, en suivant les lignes guides.", "Traits très légers et effaçables. Place les formes, pas les détails.", "Crayon HB, gomme.", "Appuyer fort ou dessiner les détails trop tôt."], lines: ["Le long des bords montrés dans l'étape.", "Un seul trait sûr par bord ; ignore le bruit.", "Crayon 2B ou feutre 0,3.", "Contourner chaque ligne de texture."], background: ["Les grandes zones derrière le sujet.", "Pression légère, petits cercles ou traits parallèles dans le même sens.", "Crayons de couleur aux tons du fond.", "Laisser des blancs ou appuyer trop tôt."], colors: ["Dans le sujet et les formes restantes.", "Une couche de base par zone, puis une seconde pour foncer.", "Crayons de couleur de la palette.", "Mélanger trop de couleurs dans une zone."], shading: ["Côté opposé à la lumière, sous les objets, dans les creux.", "Fonce progressivement ; adoucis les bords.", "Crayons plus foncés, estompe ou crayon blanc.", "Mettre du noir dans chaque ombre."], final: ["Les points les plus clairs et les petits détails.", "Garde ou ravive les lumières ; ajoute les petits accents à la fin.", "Stylo gel blanc ou crayon blanc, crayon taillé.", "En faire trop — sache t'arrêter."] },
-      materials: ["Papier à dessin (A4)", "Crayon léger (HB)", "Crayon 2B", "Gomme", "Crayons de couleur", "Taille-crayon"], tipsList: ["Commence léger, fonce ensuite.", "Travaille du fond vers l'avant.", "Construis la couleur en couches fines.", "Plisse les yeux pour voir les grandes valeurs.", "N'appuie pas fort avec le crayon."], note: "La simplicité est le secret d'un beau dessin." },
-    ar: { redo: "أعد كتابة دليلي", model: "النموذج", effort: "التفكير", eff: ["سريع", "متوازن", "معمّق"], newImg: "صورة جديدة", upTitle: "حوّل أي صورة إلى دليل رسم", upText: "ارفع صورة. يحسب DrawMaster كل خطوة منها داخل متصفحك — التخطيط، والخطوط، والألوان، والظلال — ويشرح لك كيف ترسم كل واحدة.", choose: "اختر صورة", camera: "التقط صورة", working: "جارٍ تحليل الصورة…", aiWorking: "جارٍ كتابة دليلك الشخصي…", guide: "دليل الرسم خطوة بخطوة", final: "النتيجة النهائية", tools: "الأدوات المطلوبة", palette: "لوحة الألوان المقترحة", tips: "أسرار الاحتراف", noteT: "ملاحظة أخيرة", stepsTitle: "الخطوات", fix: "تصحيح الموضوع / الخلفية", dlAll: "تنزيل كل الخطوات", where: "أين", how: "كيف", toolsW: "الأدوات", avoid: "تجنّب", compare: "قارن بالنتيجة", newOnly: "الجديد فقط", download: "تنزيل", full: "ملء الشاشة", done: "رسمتُ هذه", prev: "السابقة", next: "التالية", close: "إغلاق", honest: "كل خطوة محسوبة من صورتك بواسطة الشيفرة (كشف الحواف، تجميع الألوان، الهندسة). الخطوط حواف مستخرجة — دليل للنسخ، لا تخطيط مرسوم باليد.", generic: "إرشادات عامة — الذكاء الاصطناعي غير متاح هنا.", aiBy: "مخصّص بواسطة", fixHelp: "المس جزءًا من الصورة ثم حدّد ما هو. تتحدث الخطوات تلقائيًا.", roles: { background: "خلفية", foreground: "الموضوع", secondary: "ثانوي", detail: "تفصيل" }, err: "تعذّر تحليل الصورة.", aiErr: "فشل دليل الذكاء الاصطناعي — تُعرض إرشادات عامة.",
-      steps: { sketch: ["التخطيط الأولي", "ارسم الأشكال الكبرى بخطوط خفيفة: الأفق، الكتل، مكان الموضوع."], lines: ["الخطوط النظيفة", "مرّر على الخطوط المهمة بقلم أغمق أو قلم حبر رفيع."], background: ["ألوان الخلفية", "لوّن المساحات الكبيرة في الخلفية بطبقات خفيفة ومتساوية."], colors: ["الألوان الأساسية", "لوّن الموضوع وباقي المساحات بلونها الأساسي."], shading: ["الظلال والعمق", "أضف الدرجات الداكنة والتدرجات الناعمة طبقة بعد طبقة."], final: ["اللمسات الأخيرة", "أبرز مناطق الضوء وأضف التفاصيل الصغيرة. انتهيت!"] },
-      det: { sketch: ["على الورقة كلها، باتباع خطوط الإرشاد.", "خطوط خفيفة جدًا قابلة للمسح. ضع الأشكال لا التفاصيل.", "قلم رصاص HB، ممحاة.", "الضغط بقوة أو رسم التفاصيل مبكرًا."], lines: ["على امتداد الحواف الظاهرة في الخطوة.", "خط واثق واحد لكل حافة؛ تجاهل الضجيج.", "قلم 2B أو قلم حبر 0.3.", "تحديد كل خط من خطوط الملمس."], background: ["المساحات الكبرى خلف الموضوع.", "ضغط خفيف، دوائر صغيرة أو خطوط متوازية في اتجاه واحد.", "أقلام ملونة بدرجات الخلفية.", "ترك فراغات بيضاء أو الضغط مبكرًا."], colors: ["داخل الموضوع وباقي الأشكال.", "طبقة أساس واحدة لكل منطقة، ثم طبقة ثانية للتعميق.", "أقلام ملونة من اللوحة.", "خلط ألوان كثيرة في منطقة واحدة."], shading: ["في الجهة المقابلة للضوء، وتحت الأشياء، وفي الثنايا.", "عمّق تدريجيًا وليّن الحواف.", "أقلام أغمق، أداة دمج أو قلم أبيض.", "استعمال الأسود في كل ظل."], final: ["أكثر النقاط إضاءة والتفاصيل الصغيرة.", "احتفظ بمناطق الضوء أو أبرزها؛ أضف اللمسات الصغيرة في النهاية.", "قلم جل أبيض أو قلم أبيض، قلم مبري.", "المبالغة — اعرف متى تتوقف."] },
-      materials: ["ورقة رسم (A4)", "قلم رصاص خفيف (HB)", "قلم 2B", "ممحاة", "أقلام ملونة", "مبراة"], tipsList: ["ابدأ بخفة ثم عمّق.", "اعمل من الخلفية إلى الأمام.", "ابنِ اللون بطبقات رقيقة.", "ضيّق عينيك لترى الدرجات الكبرى.", "لا تضغط على القلم بقوة."], note: "بساطة الرسم هي سرّ جماله!" },
+    ar: { model: "النموذج", effort: "التفكير", eff: ["سريع", "متوازن", "معمّق"], redo: "أعد كتابة الدليل", newImg: "صورة جديدة",
+      upTitle: "حوّل أي صورة إلى دليل رسم خطوة بخطوة", upText: "ارفع صورة، فيحسب DrawMaster كل مرحلة منها داخل متصفحك: التخطيط، الخطوط، الألوان منطقة بمنطقة، الظلال — مع شرح بسيط لكل خطوة.",
+      choose: "اختر صورة", camera: "التقط صورة", working: "جارٍ تحليل الصورة…", aiWorking: "جارٍ كتابة الدليل…",
+      title: "دليل الرسم خطوة بخطوة", with: "بالأقلام الملونة", final: "النتيجة النهائية", tools: "الأدوات المطلوبة", palette: "لوحة الألوان المقترحة", secrets: "أسرار الاحتراف", noteT: "ملاحظة أخيرة:",
+      fix: "ترتيب المناطق", dlAll: "تنزيل كل الخطوات", compare: "قارن بالنتيجة", newOnly: "الجديد فقط", download: "تنزيل", full: "ملء الشاشة", done: "رسمتها", prev: "السابقة", next: "التالية",
+      where: "أين", how: "كيف", toolsW: "الأدوات", avoid: "تجنّب",
+      honest: "كل خطوة محسوبة من صورتك بالشيفرة (تقسيم المناطق، الحواف، الألوان). الخطوط دليل للنسخ، وليست رسمًا يدويًا.", generic: "إرشادات عامة — الذكاء الاصطناعي غير متاح هنا.", aiBy: "مخصّص بواسطة",
+      fixHelp: "المس منطقة في الصورة، ثم قدّمها أو أخّرها في ترتيب التلوين.", earlier: "قبل", later: "بعد", err: "تعذّر تحليل الصورة.", aiErr: "تعذّر الدليل المخصّص — تُعرض إرشادات عامة.",
+      st: { sketch: ["التخطيط الأولي", "ارسم حدود المشهد بخطوط خفيفة: الأشكال الكبرى فقط.", "على الورقة كلها", "خطوط خفيفة قابلة للمسح", "قلم رصاص HB", "الضغط بقوة"],
+        lines: ["الخطوط النظيفة", "ثبّت الخطوط المهمة بخط واثق وناعم.", "على حدود المناطق", "خط واحد متصل لكل حافة", "قلم 2B أو قلم حبر رفيع", "الخطوط المتقطعة"],
+        color: ["لوّن {area}", "لوّن {area} بـ{color} بطبقة خفيفة ومتساوية.", "{pos}", "ضغط خفيف وخطوط في اتجاه واحد", "قلم ملوّن {color}", "ترك فراغات بيضاء"],
+        shading: ["الظلال والعمق", "أضف درجات أغمق في المناطق المظللة وادمجها بلطف.", "الجهة البعيدة عن الضوء", "طبقات متدرجة", "أقلام أغمق", "استعمال الأسود"],
+        final: ["اللمسات الأخيرة", "أبرز الضوء وأضف التفاصيل الصغيرة. انتهيت!", "النقاط المضيئة والتفاصيل", "لمسات صغيرة في النهاية", "قلم أبيض أو جل أبيض", "المبالغة في التفاصيل"] },
+      materials: ["ورقة رسم (A4 مثلًا)", "قلم رصاص خفيف", "ممحاة", "أقلام ملونة", "مبراة"], tips: ["استخدم طبقات خفيفة من الألوان.", "اعمل من الخلف إلى الأمام.", "أضف الظلال لإحساس بالعمق.", "اجعل التدرج ناعمًا.", "لا تضغط على القلم بقوة."], note: "بساطة الرسم هي سرّ جماله!" },
+    fr: { model: "Modèle", effort: "Réflexion", eff: ["Rapide", "Équilibré", "Approfondi"], redo: "Réécrire le guide", newImg: "Nouvelle image",
+      upTitle: "Transforme n'importe quelle image en guide de dessin", upText: "Ajoute une image : DrawMaster calcule chaque étape dans ton navigateur — esquisse, traits, couleurs zone par zone, ombres — avec une explication simple.",
+      choose: "Choisir une image", camera: "Prendre une photo", working: "Analyse de l'image…", aiWorking: "Rédaction du guide…",
+      title: "Guide de dessin étape par étape", with: "aux crayons de couleur", final: "Résultat final", tools: "Matériel", palette: "Palette suggérée", secrets: "Secrets de pro", noteT: "Dernier mot :",
+      fix: "Ordre des zones", dlAll: "Télécharger toutes les étapes", compare: "Comparer au final", newOnly: "Seulement le nouveau", download: "Télécharger", full: "Plein écran", done: "Fait", prev: "Précédente", next: "Suivante",
+      where: "Où", how: "Comment", toolsW: "Outils", avoid: "À éviter",
+      honest: "Chaque étape est calculée à partir de ton image par du code (zones, contours, couleurs). Les traits sont un guide à copier, pas un dessin fait main.", generic: "Conseils généraux — IA indisponible ici.", aiBy: "Personnalisé par",
+      fixHelp: "Touche une zone de l'image, puis avance-la ou recule-la dans l'ordre de coloriage.", earlier: "Avant", later: "Après", err: "Impossible d'analyser l'image.", aiErr: "Guide personnalisé indisponible — conseils généraux.",
+      st: { sketch: ["Esquisse", "Place les grandes formes du dessin en traits légers.", "Sur toute la feuille", "Traits légers effaçables", "Crayon HB", "Appuyer fort"],
+        lines: ["Traits nets", "Repasse les traits importants d'un geste sûr et souple.", "Aux limites des zones", "Un trait continu par bord", "Crayon 2B ou feutre fin", "Les traits hachés"],
+        color: ["Colorie {area}", "Colorie {area} en {color}, couche légère et régulière.", "{pos}", "Pression légère, même sens", "Crayon {color}", "Laisser des blancs"],
+        shading: ["Ombres et profondeur", "Fonce les zones d'ombre et fonds les passages en douceur.", "Côté opposé à la lumière", "Couches progressives", "Crayons plus foncés", "Le noir partout"],
+        final: ["Touches finales", "Fais ressortir les lumières et ajoute les petits détails. Fini !", "Points lumineux et détails", "Petites touches à la fin", "Crayon ou gel blanc", "Trop en faire"] },
+      materials: ["Papier à dessin (A4)", "Crayon léger", "Gomme", "Crayons de couleur", "Taille-crayon"], tips: ["Colorie en couches légères.", "Travaille du fond vers l'avant.", "Les ombres donnent la profondeur.", "Garde des dégradés doux.", "N'appuie pas fort sur le crayon."], note: "La simplicité fait la beauté du dessin !" },
+    en: { model: "Model", effort: "Effort", eff: ["Quick", "Balanced", "Deep"], redo: "Rewrite the guide", newImg: "New image",
+      upTitle: "Turn any picture into a step-by-step drawing guide", upText: "Upload an image: DrawMaster computes every step in your browser — sketch, lines, colour area by area, shading — with a simple explanation.",
+      choose: "Choose an image", camera: "Take a photo", working: "Analysing your image…", aiWorking: "Writing your guide…",
+      title: "Step-by-step drawing guide", with: "with coloured pencils", final: "Final result", tools: "Tools you need", palette: "Suggested palette", secrets: "Pro secrets", noteT: "Last note:",
+      fix: "Area order", dlAll: "Download all steps", compare: "Compare with final", newOnly: "Only what's new", download: "Download", full: "Fullscreen", done: "Done", prev: "Previous", next: "Next",
+      where: "Where", how: "How", toolsW: "Tools", avoid: "Avoid",
+      honest: "Every step is computed from your picture by code (areas, edges, colours). The lines are a guide to copy, not a hand-made drawing.", generic: "General guidance — AI not available here.", aiBy: "Personalised by",
+      fixHelp: "Tap an area of the picture, then move it earlier or later in the colouring order.", earlier: "Earlier", later: "Later", err: "Could not analyse the image.", aiErr: "Personal guide unavailable — general guidance shown.",
+      st: { sketch: ["First sketch", "Mark the big shapes of the scene with light lines.", "Across the sheet", "Light, erasable strokes", "HB pencil", "Pressing hard"],
+        lines: ["Clean lines", "Go over the important lines with one smooth, confident stroke.", "Along the area borders", "One continuous line per edge", "2B pencil or fine liner", "Hairy, broken lines"],
+        color: ["Colour {area}", "Colour {area} in {color} with a light, even layer.", "{pos}", "Light pressure, one direction", "{color} pencil", "Leaving white gaps"],
+        shading: ["Shading & depth", "Darken the shadow areas and blend the transitions softly.", "Away from the light", "Build up in layers", "Darker pencils", "Using black everywhere"],
+        final: ["Final touches", "Lift the highlights and add the small details. Done!", "Bright spots and details", "Tiny touches last", "White pencil or gel pen", "Overworking"] },
+      materials: ["Drawing paper (A4)", "Light pencil", "Eraser", "Coloured pencils", "Sharpener"], tips: ["Use light layers of colour.", "Work from back to front.", "Shadows give depth.", "Keep gradients smooth.", "Don't press hard with the pencil."], note: "Simplicity is the secret of a beautiful drawing!" },
   };
   const store = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} } };
-  let lang = store.get("dm.lang", (navigator.language || "en").slice(0, 2)); if (!TX[lang]) lang = "en";
+  let lang = store.get("dm.lang", /^ar/.test(navigator.language || "") ? "ar" : /^fr/.test(navigator.language || "") ? "fr" : "en"); if (!TX[lang]) lang = "ar";
   const T = () => TX[lang];
   const $ = (id) => document.getElementById(id);
-  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null && text !== "") e.textContent = text; return e; };
-
-  /* ---------------- step groups (6 simple steps built from the engine's stages) ---------------- */
-  const GROUPS = [
-    { id: "sketch", keys: ["guides", "construction", "silhouettes"] },
-    { id: "lines", keys: ["outlines", "details"] },
-    { id: "background", keys: ["bgBase"] },
-    { id: "colors", keys: ["fgBase", "secondary"] },
-    { id: "shading", keys: ["shadows", "gradients", "textures"] },
-    { id: "final", keys: ["highlights", "final"] },
-  ];
-  const S = { an: null, plan: [], steps: [], img: null, blob: null, ai: null, aiModel: "", done: store.get("dm.done", {}), tools: store.get("dm.tools", {}),
-    model: store.get("dm.model", "sonnet"), effort: store.get("dm.effort", 1), sample: null, sampleReady: null };
+  const el = (t, c, x) => { const e = document.createElement(t); if (c) e.className = c; if (x != null && x !== "") e.textContent = x; return e; };
   const MODELS = { haiku: ["claude-haiku-5-5", "quick", "Haiku 5.5"], sonnet: ["claude-sonnet-5-5", "default", "Sonnet 5.5"], opus: ["claude-opus-5-5", "complex", "Opus 5.5"] };
-  function buildSteps() {
-    const have = new Set(S.plan.flatMap((p) => p.includes || [p.key]));
-    const planKeys = S.plan.map((p) => p.key);
-    S.steps = GROUPS.map((g) => { const keys = g.keys.filter((k) => have.has(k)); const render = [...keys].reverse().find((k) => planKeys.includes(k)) || keys[keys.length - 1]; return keys.length ? { id: g.id, keys, render } : null; }).filter(Boolean);
-  }
-  const stepText = (id) => { const ai = S.ai && S.ai.steps && S.ai.steps[id]; const g = T().steps[id], d = T().det[id];
-    return { title: (ai && ai.title) || g[0], caption: (ai && ai.caption) || g[1], where: (ai && ai.where) || d[0], how: (ai && ai.how) || d[1], tools: (ai && ai.tools) || d[2], avoid: (ai && ai.avoid) || d[3] }; };
+  const S = { an: null, il: null, img: null, ai: null, aiModel: "", sample: null, ready: null, model: store.get("dm.model", "sonnet"), effort: store.get("dm.effort", 1), done: store.get("dm.done", {}), tools: store.get("dm.tools", {}) };
+  const cache = {};
 
-  /* ---------------- settings ---------------- */
-  function paintSettings() {
+  /* ---------- text for a step (AI first, generic fallback) ---------- */
+  const kindOf = (s) => s.kind || (String(s.key).startsWith("color") ? "color" : s.key);
+  function areaOf(s) { return s.areaId != null ? S.il.areas.find((a) => a.id === s.areaId) : null; }
+  function stepText(i) {
+    const s = S.il.steps[i], k = kindOf(s), g = T().st[k] || T().st.final, a = areaOf(s);
+    const ai = S.ai && S.ai.steps && S.ai.steps[s.key];
+    const aname = (S.ai && S.ai.areas && a && S.ai.areas[a.id]) || (a ? a.position : "");
+    const fill = (x) => String(x).replace(/\{area\}/g, aname || "").replace(/\{color\}/g, a ? a.colorName : "").replace(/\{pos\}/g, a ? a.position : "");
+    return { title: (ai && ai.title) || fill(g[0]), caption: (ai && ai.caption) || fill(g[1]), where: (ai && ai.where) || fill(g[2]), how: (ai && ai.how) || fill(g[3]), tools: (ai && ai.tools) || fill(g[4]), avoid: (ai && ai.avoid) || fill(g[5]) };
+  }
+
+  /* ---------- settings ---------- */
+  function paintAI() {
     $("model").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.m === S.model)));
-    $("effort").value = String(S.effort); $("effLbl").textContent = T().eff[S.effort];
-    $("redo").hidden = !(S.sample && S.an); $("aiState").textContent = S.sample ? (S.aiModel ? `${T().aiBy} ${S.aiModel}` : "") : (window.claude ? T().generic : T().generic);
+    $("effort").value = S.effort; $("effLbl").textContent = T().eff[S.effort];
+    $("redo").hidden = !(S.sample && S.an); $("aiState").textContent = S.sample ? (S.aiModel ? `${T().aiBy} ${S.aiModel}` : "") : T().generic;
   }
-  $("model").onclick = (e) => { const b = e.target.closest("button[data-m]"); if (!b) return; S.model = b.dataset.m; store.set("dm.model", S.model); paintSettings(); };
-  $("redo").onclick = () => { $("setBtn").parentElement.open = false; if (S.an && S.sample) personalise(); };
-  $("effort").oninput = () => { S.effort = +$("effort").value; store.set("dm.effort", S.effort); paintSettings(); };
-  $("lang").onchange = () => { lang = $("lang").value; store.set("dm.lang", lang); applyLang(); if (S.an) { renderSheet(); if (S.sample) personalise(); } };
-  function applyLang() {
-    document.documentElement.lang = lang; $("app").dir = lang === "ar" ? "rtl" : "ltr"; $("lang").value = lang;
-    document.querySelectorAll("[data-t]").forEach((n) => { n.textContent = T()[n.dataset.t]; }); paintSettings();
-  }
+  $("model").onclick = (e) => { const b = e.target.closest("button[data-m]"); if (!b) return; S.model = b.dataset.m; store.set("dm.model", S.model); paintAI(); };
+  $("effort").oninput = () => { S.effort = +$("effort").value; store.set("dm.effort", S.effort); paintAI(); };
+  $("redo").onclick = () => { $("aiBox").open = false; personalise(); };
+  $("lang").onchange = () => { lang = $("lang").value; store.set("dm.lang", lang); applyLang(); if (S.il) { renderPoster(); if (S.sample) personalise(); } };
+  function applyLang() { document.documentElement.lang = lang; $("app").dir = lang === "ar" ? "rtl" : "ltr"; $("lang").value = lang; document.querySelectorAll("[data-t]").forEach((n) => (n.textContent = T()[n.dataset.t])); paintAI(); }
 
-  /* ---------------- upload & analysis ---------------- */
-  const setStatus = (m, busy, err) => { const s = $("status"); s.replaceChildren(); s.className = "status" + (err ? " err" : ""); if (busy) s.append(el("span", "spin")); if (m) s.append(document.createTextNode(m)); };
+  /* ---------- upload ---------- */
+  const status = (m, busy, err) => { const s = $("status"); s.replaceChildren(); s.className = "status" + (err ? " err" : ""); if (busy) s.append(el("span", "spin")); if (m) s.append(document.createTextNode(m)); };
   $("pick").onclick = () => $("file").click(); $("cam").onclick = () => $("camIn").click();
   $("file").onchange = (e) => load(e.target.files[0]); $("camIn").onchange = (e) => load(e.target.files[0]);
   ["dragenter", "dragover"].forEach((v) => $("drop").addEventListener(v, (e) => { e.preventDefault(); $("drop").classList.add("over"); }));
   ["dragleave", "drop"].forEach((v) => $("drop").addEventListener(v, (e) => { e.preventDefault(); $("drop").classList.remove("over"); }));
   $("drop").addEventListener("drop", (e) => load(e.dataTransfer.files[0]));
   document.addEventListener("paste", (e) => { const f = Array.from((e.clipboardData && e.clipboardData.items) || []).find((i) => i.kind === "file"); if (f) load(f.getAsFile()); });
-  $("newBtn").onclick = () => { $("sheet").hidden = true; $("drop").hidden = false; $("newBtn").hidden = true; setStatus(""); };
+  $("newBtn").onclick = () => { $("poster").hidden = true; $("drop").hidden = false; $("newBtn").hidden = true; status(""); };
   async function load(file) {
     if (!file || !/^image\//.test(file.type)) return;
-    setStatus(T().working, true);
+    status(T().working, true);
     try {
       const url = URL.createObjectURL(file); const img = new Image(); img.src = url; await img.decode();
       await new Promise((r) => setTimeout(r, 30));
-      const prep = DMEngine.prepare(img, { maxSide: 900 });
-      await new Promise((r) => setTimeout(r, 30));
-      S.an = DMEngine.analyze(prep); S.plan = DMEngine.planStages(S.an); buildSteps();
-      S.img = url; S.blob = file; S.ai = null; S.aiModel = "";
-      $("drop").hidden = true; $("sheet").hidden = false; $("newBtn").hidden = false; setStatus("");
-      renderSheet(); window.scrollTo({ top: 0 });
-      await S.sampleReady; if (S.sample) personalise();
-    } catch (e) { console.error(e); setStatus(T().err, false, true); }
+      S.an = DMEngine.analyze(DMEngine.prepare(img, { maxSide: 900 }));
+      await new Promise((r) => setTimeout(r, 10));
+      S.il = DMEngine.illustrate(S.an, { maxAreas: 7 });
+      S.img = url; S.ai = null; S.aiModel = ""; Object.keys(cache).forEach((k) => delete cache[k]);
+      $("drop").hidden = true; $("poster").hidden = false; $("newBtn").hidden = false; status("");
+      renderPoster(); window.scrollTo({ top: 0 });
+      await S.ready; if (S.sample) personalise();
+    } catch (e) { console.error(e); status(T().err, false, true); }
   }
 
-  /* ---------------- the guide sheet ---------------- */
-  const thumbs = {};
-  function stepCanvas(st, scale = 1) { return DMEngine.renderStage(S.an, st.render, { scale }); }
-  function renderSheet() {
-    const sh = $("sheet"); sh.replaceChildren(); const t = T(); const an = S.an;
-    sh.style.setProperty("--ar", `${an.width} / ${an.height}`);
-    const titleBox = el("div"); titleBox.append(el("div", "banner", t.guide)); if (S.ai && S.ai.title) { titleBox.append(document.createElement("br"), el("div", "sub", S.ai.title)); }
-    sh.append(titleBox);
-    // hero: final + tools + palette
-    const hero = el("div", "hero");
-    const fin = el("div", "final"); const im = el("img"); im.src = S.img; im.alt = t.final; fin.append(im, el("span", "tag", "👑 " + t.final)); hero.append(fin);
-    const side = el("div", "side");
-    const tb = el("div", "box"); tb.append(el("span", "kick", t.tools)); const ul = el("ul", "tools");
-    (S.ai && S.ai.materials && S.ai.materials.length ? S.ai.materials : t.materials).slice(0, 8).forEach((m) => { const li = el("li"); const lb = el("label"); const cb = el("input"); cb.type = "checkbox"; cb.checked = !!S.tools[m]; cb.onchange = () => { S.tools[m] = cb.checked; store.set("dm.tools", S.tools); }; lb.append(cb, document.createTextNode(m)); li.append(lb); ul.append(li); });
-    tb.append(ul); side.append(tb);
-    const pb = el("div", "box"); pb.append(el("span", "kick", t.palette)); const pal = el("div", "pal");
-    const cols = S.ai && S.ai.colors && S.ai.colors.length ? S.ai.colors : an.palette.slice().sort((a, b) => b.count - a.count).slice(0, 8).map((p) => ({ hex: p.hex, name: DMEngine.colorName(p.rgb) }));
-    cols.slice(0, 8).forEach((c) => { const s = el("div", "sw"); const i = el("i"); i.style.background = c.hex; s.append(i, el("span", null, c.name)); pal.append(s); });
-    pb.append(pal); side.append(pb); hero.append(side); sh.append(hero);
-    // steps grid
+  /* ---------- poster ---------- */
+  const stepCanvas = (i, scale = 1) => DMEngine.renderIllus(S.an, S.il, i, { scale });
+  const thumb = (i) => (cache[i] || (cache[i] = stepCanvas(i, 0.6)));
+  const copy = (src) => { const c = document.createElement("canvas"); c.width = src.width; c.height = src.height; c.getContext("2d").drawImage(src, 0, 0); return c; };
+  function renderPoster() {
+    const t = T(), P = $("poster"); P.replaceChildren(); P.style.setProperty("--ar", `${S.an.width} / ${S.an.height}`);
+    const head = el("div", "head"); head.append(el("h1", "ttl", t.title)); head.append(el("div", "hl", (S.ai && S.ai.title) || "")); if (!(S.ai && S.ai.title)) head.lastChild.remove(); head.append(el("div", "tag2", t.with)); P.append(head);
+    const top = el("div", "top");
+    const fin = el("div", "final"); const im = el("img"); im.src = S.img; im.alt = t.final; fin.append(im, el("span", "crown", "👑 " + t.final)); top.append(fin);
+    const tb = el("div", "box"); tb.append(el("span", "rib", t.tools)); const ul = el("ul", "tools");
+    ((S.ai && S.ai.materials && S.ai.materials.length) ? S.ai.materials : t.materials).slice(0, 7).forEach((m) => { const li = el("li"), lb = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = !!S.tools[m]; cb.onchange = () => { S.tools[m] = cb.checked; store.set("dm.tools", S.tools); }; lb.append(cb, document.createTextNode(m)); li.append(lb); ul.append(li); });
+    tb.append(ul); top.append(tb); P.append(top);
     const grid = el("div", "steps");
-    S.steps.forEach((st, i) => {
-      const tx = stepText(st.id); const card = el("button", "step"); card.type = "button";
-      const h = el("div", "step-h"); h.append(el("span", "num", String(i + 1)), el("b", null, tx.title)); if (S.done[st.id]) h.append(el("span", "done-t", "✓")); card.append(h);
-      const th = el("div", "thumb"); const key = st.render; if (!thumbs[key]) thumbs[key] = stepCanvas(st, 0.5); th.append(cloneCanvas(thumbs[key])); card.append(th);
-      card.append(el("p", "cap", tx.caption)); card.onclick = () => openViewer(i); grid.append(card);
+    S.il.steps.forEach((s, i) => {
+      const tx = stepText(i); const c = el("button", "st"); c.type = "button"; c.setAttribute("aria-label", `${i + 1}. ${tx.title}`);
+      c.append(el("span", "n", String(i + 1)), el("span", "rib", tx.title)); if (S.done[s.key]) c.append(el("span", "ok", "✓"));
+      const box = el("div", "img"); box.append(copy(thumb(i))); c.append(box, el("p", null, tx.caption)); c.onclick = () => openViewer(i); grid.append(c);
     });
-    sh.append(grid);
-    // bottom: tips + note
+    P.append(grid);
     const bot = el("div", "bottom");
-    const tp = el("div", "box"); tp.append(el("span", "kick", "💡 " + t.tips)); const tl = el("ul", "tips"); (S.ai && S.ai.tips && S.ai.tips.length ? S.ai.tips : t.tipsList).slice(0, 6).forEach((x) => tl.append(el("li", null, x))); tp.append(tl); bot.append(tp);
-    const nt = el("div", "note"); nt.append(el("b", null, "⭐ " + t.noteT), el("span", null, (S.ai && S.ai.note) || t.note)); bot.append(nt); sh.append(bot);
-    const links = el("div", "links"); const fx = el("button", "btn", "✎ " + t.fix); fx.type = "button"; fx.onclick = openFix; const da = el("button", "btn", "⬇ " + t.dlAll); da.type = "button"; da.onclick = downloadAll; links.append(fx, da); sh.append(links);
-    sh.append(el("p", "honest", t.honest + " " + (S.sample ? (S.aiModel ? `${t.aiBy} ${S.aiModel}.` : "") : t.generic)));
+    const sec = el("div", "box secrets"); sec.append(el("span", "rib", "💡 " + t.secrets)); const sl = el("ul"); ((S.ai && S.ai.tips && S.ai.tips.length) ? S.ai.tips : t.tips).slice(0, 5).forEach((x) => sl.append(el("li", null, x))); sec.append(sl); bot.append(sec);
+    const pb = el("div", "box"); pb.append(el("span", "rib", "🎨 " + t.palette)); const pal = el("div", "pal");
+    const cols = (S.ai && S.ai.colors && S.ai.colors.length) ? S.ai.colors : S.il.areas.map((a) => ({ hex: a.hex, name: a.colorName }));
+    const seen = new Set(); cols.filter((c) => !seen.has(c.hex) && seen.add(c.hex)).slice(0, 8).forEach((c) => { const s = el("div", "sw"), i = el("i"); i.style.background = c.hex; s.append(i, el("span", null, c.name)); pal.append(s); });
+    pb.append(pal); bot.append(pb); P.append(bot);
+    const note = el("div", "note"); const nt = el("div"); nt.append(el("b", null, "⭐ " + t.noteT), el("span", null, (S.ai && S.ai.note) || t.note)); note.append(nt); P.append(note);
+    const links = el("div", "links"); const fx = el("button", "btn", "↕ " + t.fix); fx.type = "button"; fx.onclick = openFix; const da = el("button", "btn", "⬇ " + t.dlAll); da.type = "button"; da.onclick = downloadAll; links.append(fx, da); P.append(links);
+    P.append(el("p", "honest", t.honest + " " + (S.sample ? (S.aiModel ? `${t.aiBy} ${S.aiModel}.` : "") : t.generic)));
   }
-  function cloneCanvas(src) { const c = document.createElement("canvas"); c.width = src.width; c.height = src.height; c.getContext("2d").drawImage(src, 0, 0); return c; }
 
-  /* ---------------- viewer ---------------- */
-  function deltaCanvas(i) {
-    const cur = stepCanvas(S.steps[i]); if (i === 0) return cur;
-    const prev = stepCanvas(S.steps[i - 1]); const w = cur.width, h = cur.height;
-    const cd = cur.getContext("2d").getImageData(0, 0, w, h), pd = prev.getContext("2d").getImageData(0, 0, w, h).data, d = cd.data;
-    for (let p = 0; p < d.length; p += 4) { const diff = Math.abs(d[p] - pd[p]) + Math.abs(d[p + 1] - pd[p + 1]) + Math.abs(d[p + 2] - pd[p + 2]); if (diff < 24) { d[p] = d[p + 1] = d[p + 2] = 255; } }
-    const out = document.createElement("canvas"); out.width = w; out.height = h; out.getContext("2d").putImageData(cd, 0, 0); return out;
-  }
+  /* ---------- viewer ---------- */
   function openViewer(i) {
-    const t = T(), st = S.steps[i], tx = stepText(st.id);
-    const ov = $("ovl"); ov.replaceChildren(); const back = el("div", "ov"); const vw = el("div", "vw"); vw.dir = lang === "ar" ? "rtl" : "ltr"; vw.setAttribute("role", "dialog"); vw.setAttribute("aria-modal", "true");
+    const t = T(), s = S.il.steps[i], tx = stepText(i), ov = $("ovl"); ov.replaceChildren();
+    const back = el("div", "ov"), vw = el("div", "vw"); vw.dir = lang === "ar" ? "rtl" : "ltr"; vw.setAttribute("role", "dialog"); vw.setAttribute("aria-modal", "true");
     const close = () => { ov.replaceChildren(); document.removeEventListener("keydown", key); };
+    const go = (d) => { const j = i + d; if (j >= 0 && j < S.il.steps.length) { close(); openViewer(j); } };
     const key = (e) => { if (e.key === "Escape") close(); if (e.key === "ArrowRight") go(lang === "ar" ? -1 : 1); if (e.key === "ArrowLeft") go(lang === "ar" ? 1 : -1); };
-    const go = (d) => { const j = i + d; if (j >= 0 && j < S.steps.length) { close(); openViewer(j); } };
     document.addEventListener("keydown", key); back.onclick = (e) => { if (e.target === back) close(); };
-    const head = el("div", "vw-h"); head.append(el("span", "num", String(i + 1)), el("h3", null, tx.title));
-    const pv = el("button", "btn", "‹ " + t.prev); pv.type = "button"; pv.disabled = i === 0; pv.onclick = () => go(-1);
-    const nx = el("button", "btn", t.next + " ›"); nx.type = "button"; nx.disabled = i === S.steps.length - 1; nx.onclick = () => go(1);
-    const cl = el("button", "btn", "✕"); cl.type = "button"; cl.setAttribute("aria-label", t.close); cl.onclick = close; head.append(pv, nx, cl); vw.append(head);
-    // stage with zoom/pan + compare
-    const stage = el("div", "stage"); const base = stepCanvas(st); const orig = document.createElement("canvas"); orig.width = base.width; orig.height = base.height; orig.className = "orig";
-    const oimg = new Image(); oimg.onload = () => orig.getContext("2d").drawImage(oimg, 0, 0, orig.width, orig.height); oimg.src = S.img;
-    const line = el("div", "cmp-line"); line.hidden = true; stage.append(base, orig, line); vw.append(stage);
-    let z = 1, px = 0, py = 0; const apply = () => { [base, orig].forEach((c) => (c.style.transform = `translate(${px}px,${py}px) scale(${z})`)); };
-    stage.addEventListener("wheel", (e) => { e.preventDefault(); z = Math.min(6, Math.max(1, z * (e.deltaY < 0 ? 1.15 : 1 / 1.15))); if (z === 1) { px = py = 0; } apply(); }, { passive: false });
-    let drag = null; stage.addEventListener("pointerdown", (e) => { drag = [e.clientX - px, e.clientY - py]; stage.setPointerCapture(e.pointerId); });
-    stage.addEventListener("pointermove", (e) => { if (!drag || z === 1) return; px = e.clientX - drag[0]; py = e.clientY - drag[1]; apply(); });
+    const h = el("div", "vw-h"); h.append(el("span", "n2", String(i + 1)), el("h2", null, tx.title));
+    const pv = el("button", "btn", t.prev); pv.type = "button"; pv.disabled = i === 0; pv.onclick = () => go(-1);
+    const nx = el("button", "btn", t.next); nx.type = "button"; nx.disabled = i === S.il.steps.length - 1; nx.onclick = () => go(1);
+    const cl = el("button", "btn", "✕"); cl.type = "button"; cl.onclick = close; h.append(pv, nx, cl); vw.append(h);
+    const stage = el("div", "stage"), base = stepCanvas(i), orig = document.createElement("canvas"); orig.width = base.width; orig.height = base.height; orig.className = "orig";
+    const oi = new Image(); oi.onload = () => orig.getContext("2d").drawImage(oi, 0, 0, orig.width, orig.height); oi.src = S.img;
+    const line = el("div", "cmp-line"); line.hidden = true; stage.append(base, orig, line);
+    let z = 1, px = 0, py = 0, drag = null; const apply = () => [base, orig].forEach((c) => (c.style.transform = `translate(${px}px,${py}px) scale(${z})`));
+    stage.addEventListener("wheel", (e) => { e.preventDefault(); z = Math.min(6, Math.max(1, z * (e.deltaY < 0 ? 1.15 : 1 / 1.15))); if (z === 1) px = py = 0; apply(); }, { passive: false });
+    stage.addEventListener("pointerdown", (e) => { drag = [e.clientX - px, e.clientY - py]; stage.setPointerCapture(e.pointerId); });
+    stage.addEventListener("pointermove", (e) => { if (drag && z > 1) { px = e.clientX - drag[0]; py = e.clientY - drag[1]; apply(); } });
     stage.addEventListener("pointerup", () => (drag = null));
-    const tools = el("div", "vw-tools");
-    const zin = el("button", "btn", "+"); zin.type = "button"; zin.setAttribute("aria-label", "zoom in"); zin.onclick = () => { z = Math.min(6, z * 1.3); apply(); };
-    const zout = el("button", "btn", "−"); zout.type = "button"; zout.setAttribute("aria-label", "zoom out"); zout.onclick = () => { z = Math.max(1, z / 1.3); if (z === 1) px = py = 0; apply(); };
-    const cmp = el("label"); const cr = el("input"); cr.type = "range"; cr.min = 0; cr.max = 100; cr.value = 100; cr.setAttribute("aria-label", t.compare);
-    cr.oninput = () => { const v = +cr.value; stage.style.setProperty("--cut", v + "%"); stage.style.setProperty("--cutp", v + "%"); line.hidden = v >= 100; }; cmp.append(document.createTextNode(t.compare), cr);
-    const nw = el("label"); const nc = el("input"); nc.type = "checkbox"; nc.onchange = () => { const c = nc.checked ? deltaCanvas(i) : stepCanvas(st); base.getContext("2d").drawImage(c, 0, 0); }; nw.append(nc, document.createTextNode(t.newOnly)); if (i === 0) nw.hidden = true;
-    const fs = el("button", "btn", "⛶ " + t.full); fs.type = "button"; fs.onclick = () => { (stage.requestFullscreen ? stage.requestFullscreen() : Promise.reject()).catch(() => {}); };
+    vw.append(stage, el("p", "cap2", tx.caption));
+    const tl = el("div", "vw-tools");
+    const zo = el("button", "btn", "−"); zo.type = "button"; zo.setAttribute("aria-label", "zoom out"); zo.onclick = () => { z = Math.max(1, z / 1.3); if (z === 1) px = py = 0; apply(); };
+    const zi = el("button", "btn", "+"); zi.type = "button"; zi.setAttribute("aria-label", "zoom in"); zi.onclick = () => { z = Math.min(6, z * 1.3); apply(); };
+    const cmp = el("label"), cr = el("input"); cr.type = "range"; cr.min = 0; cr.max = 100; cr.value = 100; cr.oninput = () => { stage.style.setProperty("--cut", cr.value + "%"); line.hidden = +cr.value >= 100; }; cmp.append(document.createTextNode(t.compare), cr);
+    const nw = el("label"), nc = el("input"); nc.type = "checkbox"; nc.onchange = () => { const c = nc.checked ? DMEngine.renderIllusDelta(S.an, S.il, i) : stepCanvas(i); const g = base.getContext("2d"); g.clearRect(0, 0, base.width, base.height); g.fillStyle = "#fbf8f1"; g.fillRect(0, 0, base.width, base.height); g.drawImage(c, 0, 0); }; nw.append(nc, document.createTextNode(t.newOnly)); if (i === 0) nw.hidden = true;
+    const fs = el("button", "btn", "⛶ " + t.full); fs.type = "button"; fs.onclick = () => { if (stage.requestFullscreen) stage.requestFullscreen().catch(() => {}); };
     const dl = el("button", "btn red", "⬇ " + t.download); dl.type = "button"; dl.onclick = () => saveStep(i);
-    const dn = el("label"); const dc = el("input"); dc.type = "checkbox"; dc.checked = !!S.done[st.id]; dc.onchange = () => { S.done[st.id] = dc.checked; store.set("dm.done", S.done); renderSheet(); }; dn.append(dc, document.createTextNode(t.done));
-    tools.append(zout, zin, cmp, nw, fs, dl, dn); vw.append(tools);
-    const det = el("div", "detail"); det.append(el("p", null, tx.caption));
-    [["where", tx.where], ["how", tx.how], ["toolsW", tx.tools], ["avoid", tx.avoid]].forEach(([k, v]) => { if (!v) return; const p = el("p"); p.append(el("b", null, t[k] + " : "), document.createTextNode(v)); det.append(p); });
-    vw.append(det); back.append(vw); ov.append(back); pv.focus();
+    const dn = el("label"), dc = el("input"); dc.type = "checkbox"; dc.checked = !!S.done[s.key]; dc.onchange = () => { S.done[s.key] = dc.checked; store.set("dm.done", S.done); renderPoster(); }; dn.append(dc, document.createTextNode(t.done));
+    tl.append(zo, zi, cmp, nw, fs, dl, dn); vw.append(tl);
+    const det = el("div", "det"); [["where", tx.where], ["how", tx.how], ["toolsW", tx.tools], ["avoid", tx.avoid]].forEach(([k, v]) => { if (!v) return; const p = el("p"); p.append(el("b", null, t[k] + ": "), document.createTextNode(v)); det.append(p); }); vw.append(det);
+    back.append(vw); ov.append(back); pv.focus();
   }
 
-  /* ---------------- subject / background correction ---------------- */
+  /* ---------- area order correction ---------- */
   function openFix() {
-    const t = T(); const ov = $("ovl"); ov.replaceChildren(); const back = el("div", "ov"); const vw = el("div", "vw"); vw.dir = lang === "ar" ? "rtl" : "ltr";
-    const close = () => { ov.replaceChildren(); thumbsReset(); renderSheet(); }; back.onclick = (e) => { if (e.target === back) close(); };
-    const head = el("div", "vw-h"); head.append(el("h3", null, t.fix)); const cl = el("button", "btn", "✕"); cl.type = "button"; cl.onclick = close; head.append(cl); vw.append(head, el("p", "honest", t.fixHelp));
-    const stage = el("div", "stage"); stage.style.cursor = "crosshair"; let sel = null;
-    const key = S.steps.find((s) => s.id === "colors") ? S.steps.find((s) => s.id === "colors").render : S.steps[S.steps.length - 2].render;
-    const draw = () => { stage.replaceChildren(DMEngine.renderStage(S.an, key, { highlightRegion: sel ? sel.id : undefined })); };
-    const chips = el("div", "region-chips");
-    const paintChips = () => { chips.replaceChildren(...["background", "foreground", "secondary", "detail"].map((r) => { const b = el("button", "btn", t.roles[r]); b.type = "button"; b.disabled = !sel; b.setAttribute("aria-pressed", String(!!sel && sel.role === r)); b.onclick = () => { DMEngine.setRole(S.an, sel.id, r, "user"); S.plan = DMEngine.planStages(S.an); buildSteps(); draw(); paintChips(); }; return b; })); };
-    stage.onclick = (e) => { const c = stage.querySelector("canvas"); const r = c.getBoundingClientRect(); const x = (e.clientX - r.left) * S.an.width / r.width, y = (e.clientY - r.top) * S.an.height / r.height; sel = DMEngine.regionAt(S.an, x, y); draw(); paintChips(); };
-    draw(); paintChips(); vw.append(stage, chips); back.append(vw); ov.append(back);
+    const t = T(), ov = $("ovl"); ov.replaceChildren(); const back = el("div", "ov"), vw = el("div", "vw"); vw.dir = lang === "ar" ? "rtl" : "ltr";
+    const close = () => { ov.replaceChildren(); Object.keys(cache).forEach((k) => delete cache[k]); renderPoster(); }; back.onclick = (e) => { if (e.target === back) close(); };
+    const h = el("div", "vw-h"); h.append(el("h2", null, t.fix)); const cl = el("button", "btn", "✕"); cl.type = "button"; cl.onclick = close; h.append(cl); vw.append(h, el("p", "honest", t.fixHelp));
+    let sel = null; const stage = el("div", "stage"); stage.style.cursor = "crosshair"; const list = el("div", "areas"); const acts = el("div", "vw-tools");
+    const lastColor = () => { let k = 0; S.il.steps.forEach((s, j) => { if (kindOf(s) === "color") k = j; }); return k; };
+    const paint = () => {
+      stage.replaceChildren(stepCanvas(lastColor()));
+      list.replaceChildren(...S.il.areas.slice().sort((a, b) => a.order - b.order).map((a, k) => { const b = el("button", "btn"); b.type = "button"; const sw = el("i"); sw.style.cssText = `width:14px;height:14px;border-radius:50%;display:inline-block;background:${a.hex}`; b.append(sw, document.createTextNode(`${k + 1}. ${(S.ai && S.ai.areas && S.ai.areas[a.id]) || a.position}`)); b.setAttribute("aria-pressed", String(sel === a)); b.onclick = () => { sel = a; paint(); }; return b; }));
+      acts.replaceChildren(); const up = el("button", "btn", "↑ " + t.earlier), dn = el("button", "btn", "↓ " + t.later); up.type = dn.type = "button"; up.disabled = dn.disabled = !sel;
+      up.onclick = () => { DMEngine.setAreaOrder(S.il, sel.id, sel.order - 1.5); paint(); }; dn.onclick = () => { DMEngine.setAreaOrder(S.il, sel.id, sel.order + 1.5); paint(); }; acts.append(up, dn);
+    };
+    stage.onclick = (e) => { const c = stage.querySelector("canvas"), r = c.getBoundingClientRect(); sel = DMEngine.areaAt(S.il, S.an, (e.clientX - r.left) * S.an.width / r.width, (e.clientY - r.top) * S.an.height / r.height); paint(); };
+    paint(); vw.append(stage, list, acts); back.append(vw); ov.append(back);
   }
-  function thumbsReset() { Object.keys(thumbs).forEach((k) => delete thumbs[k]); }
 
-  /* ---------------- downloads ---------------- */
+  /* ---------- downloads ---------- */
   async function saveCanvas(c, name) {
     const blob = await DMEngine.toBlob(c);
     const dl = window.claude && window.claude.use ? await window.claude.use("downloads").catch(() => null) : null;
     if (dl) return dl.save({ filename: name, data: blob });
     if (!window.claude) { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 3000); }
   }
-  const saveStep = (i) => saveCanvas(stepCanvas(S.steps[i], 2), `drawmaster-step-${i + 1}-${S.steps[i].id}.png`).catch(() => {});
-  async function downloadAll() { for (let i = 0; i < S.steps.length; i++) { try { await saveStep(i); } catch { break; } } }
+  const saveStep = (i) => saveCanvas(stepCanvas(i, 2), `drawmaster-step-${String(i + 1).padStart(2, "0")}.png`).catch(() => {});
+  async function downloadAll() { for (let i = 0; i < S.il.steps.length; i++) { try { await saveStep(i); } catch { break; } } }
 
-  /* ---------------- Claude (vision) personalisation ---------------- */
+  /* ---------- Claude personalisation ---------- */
   function parseJson(text) {
-    const tr = String(text).trim(); const tries = [tr]; const f = tr.match(/```(?:json)?\s*([\s\S]*?)```/); if (f) tries.push(f[1]); const a = tr.indexOf("{"), b = tr.lastIndexOf("}"); if (a >= 0 && b > a) tries.push(tr.slice(a, b + 1));
-    for (const c of tries) { try { return JSON.parse(c); } catch {} try { return JSON.parse(c.replace(/\\(?!["\\/bfnrtu])/g, "\\\\").replace(/,\s*([}\]])/g, "$1")); } catch {} }
+    const tr = String(text).trim(), tries = [tr], f = tr.match(/```(?:json)?\s*([\s\S]*?)```/); if (f) tries.push(f[1]); const a = tr.indexOf("{"), b = tr.lastIndexOf("}"); if (a >= 0 && b > a) tries.push(tr.slice(a, b + 1));
+    for (const c of tries) { try { return JSON.parse(c); } catch {} try { return JSON.parse(c.replace(/,\s*([}\]])/g, "$1")); } catch {} }
     throw new Error("json");
   }
-  async function jpeg() { const c = document.createElement("canvas"); const im = new Image(); im.src = S.img; await im.decode(); const sc = Math.min(1, 1400 / Math.max(im.width, im.height)); c.width = im.width * sc; c.height = im.height * sc; c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); return new Promise((r) => c.toBlob(r, "image/jpeg", 0.88)); }
+  async function jpeg() { const im = new Image(); im.src = S.img; await im.decode(); const sc = Math.min(1, 1400 / Math.max(im.width, im.height)), c = document.createElement("canvas"); c.width = im.width * sc; c.height = im.height * sc; c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); return new Promise((r) => c.toBlob(r, "image/jpeg", 0.88)); }
   async function personalise() {
-    if (!S.sample || !S.an) return;
-    const ln = { en: "English", fr: "French", ar: "Arabic" }[lang];
-    const ids = S.steps.map((s) => s.id);
-    const prompt = `You are a warm, expert drawing teacher. The image is what the student wants to draw with coloured pencils. A program has already computed ${S.steps.length} step images from it (${ids.join(", ")}): sketch = light construction, lines = clean outlines, background = background base colours, colors = main colours, shading = shadows/gradients/texture, final = highlights and details. Region data computed from the pixels: ${JSON.stringify(DMEngine.summary(S.an)).slice(0, 7000)}
-Write a SHORT, concrete guide for THIS picture in ${ln}. Keep it simple and organised like a printed "how to draw" poster: each caption ≤ 14 words, each detail ≤ 18 words; name real objects and places in the picture ("the rocks on the left", "the sky near the horizon").
-Reply ONLY JSON: {"title":"short name of the scene","steps":{${ids.map((k) => `"${k}":{"title":"2–4 words","caption":"…","where":"…","how":"…","tools":"…","avoid":"…"}`).join(",")}},"materials":["4–7 items"],"colors":[{"hex":"#rrggbb from the region data","name":"plain colour name"}],"tips":["5 short pro secrets"],"note":"one encouraging line","regionRoles":[{"id":0,"role":"background|foreground|secondary|detail"}]}
-regionRoles: only for ids in the region data whose role is clearly wrong (e.g. the sky marked foreground). colors: 6–8 colours from the image.`;
-    const m = MODELS[S.model];
-    const sheet = $("sheet"); const st = el("div", "status"); st.append(el("span", "spin"), document.createTextNode(T().aiWorking)); sheet.prepend(st);
+    if (!S.sample || !S.il) return;
+    const ln = { ar: "Arabic", fr: "French", en: "English" }[lang], m = MODELS[S.model];
+    const steps = S.il.steps.map((s) => ({ key: s.key, kind: kindOf(s), area: s.areaId }));
+    const areas = S.il.areas.map((a) => ({ id: a.id, position: a.position, colour: a.colorName, hex: a.hex, bbox_pct: a.bbox_pct, area_pct: a.area_pct }));
+    const prompt = `You are a warm drawing teacher writing a printed "how to draw" poster for this picture (coloured pencils). A program already computed the step images: ${JSON.stringify(steps)}. Areas (computed from the pixels): ${JSON.stringify(areas)}.
+Name each area by what it really shows in the picture (e.g. "the sky", "the rocks on the left"). Then for each step write: title (2–4 words), caption (one simple line, ≤ 14 words), where, how, tools, avoid (each ≤ 10 words). Write in ${ln}. Simple, concrete, encouraging.
+Reply ONLY JSON: {"title":"scene name, 2–4 words","areas":{"<areaId>":"name"},"steps":{"<step key>":{"title":"","caption":"","where":"","how":"","tools":"","avoid":""}},"materials":["4–6 items"],"colors":[{"hex":"#rrggbb","name":""}],"tips":["5 short pro secrets"],"note":"one encouraging line"}`;
+    const P = $("poster"), st = el("div", "status"); st.append(el("span", "spin"), document.createTextNode(T().aiWorking)); P.prepend(st);
+    let failed = false;
     try {
       const r = await S.sample(prompt, { model: m[0], modelTier: m[1], effort: ["low", "medium", "high"][S.effort], images: [await jpeg()], cache: false });
       const d = parseJson(r.text);
-      const valid = new Set(S.an.regions.map((x) => x.id));
-      (Array.isArray(d.regionRoles) ? d.regionRoles : []).forEach((x) => { const rg = S.an.regions.find((q) => q.id === +x.id); if (rg && valid.has(rg.id) && rg.roleSource !== "user" && ["background", "foreground", "secondary", "detail"].includes(x.role)) DMEngine.setRole(S.an, rg.id, x.role, "ai"); });
-      S.plan = DMEngine.planStages(S.an); buildSteps(); thumbsReset();
-      S.ai = { title: String(d.title || "").slice(0, 80), steps: d.steps && typeof d.steps === "object" ? d.steps : {}, materials: (d.materials || []).map(String).slice(0, 8), colors: (d.colors || []).filter((c) => c && /^#[0-9a-f]{6}$/i.test(c.hex)).map((c) => ({ hex: c.hex, name: String(c.name || "").slice(0, 24) })).slice(0, 8), tips: (d.tips || []).map(String).slice(0, 6), note: String(d.note || "").slice(0, 140) };
+      S.ai = { title: String(d.title || "").slice(0, 60), areas: d.areas && typeof d.areas === "object" ? d.areas : {}, steps: d.steps && typeof d.steps === "object" ? d.steps : {},
+        materials: (d.materials || []).map(String).slice(0, 7), colors: (d.colors || []).filter((c) => c && /^#[0-9a-f]{6}$/i.test(c.hex)).map((c) => ({ hex: c.hex, name: String(c.name || "").slice(0, 20) })).slice(0, 8),
+        tips: (d.tips || []).map(String).slice(0, 5), note: String(d.note || "").slice(0, 120) };
       S.aiModel = r.modelApplied ? m[2] : ({ quick: "Haiku", default: "Sonnet", complex: "Opus" }[r.modelTierApplied] || m[2]);
-    } catch (e) { const n = el("p", "honest", T().aiErr); setTimeout(() => sheet.prepend(n), 0); }
-    finally { st.remove(); renderSheet(); paintSettings(); }
+    } catch (e) { failed = true; }
+    st.remove(); renderPoster(); paintAI(); if (failed) $("poster").prepend(el("p", "honest", T().aiErr));
   }
-  S.sampleReady = (async () => { if (window.claude && window.claude.use) { try { S.sample = await window.claude.use("sample"); } catch { S.sample = null; } } paintSettings(); })();
-
+  S.ready = (async () => { if (window.claude && window.claude.use) { try { S.sample = await window.claude.use("sample"); } catch { S.sample = null; } } paintAI(); })();
   applyLang();
-  window.__dm = { S, openViewer, openFix, renderSheet };
+  window.__dm = { S, openViewer, openFix, renderPoster };
 })();
 </script>
