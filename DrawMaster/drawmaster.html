@@ -2,856 +2,355 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Instrument+Sans:wght@400;500;600&family=Noto+Naskh+Arabic:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Atkinson+Hyperlegible:wght@400;700&family=Readex+Pro:wght@400;600;700&display=swap">
 <style>
-:root{
-  --bg:#ece5d6; --paper:#fbf8f0; --paper2:#f4efe3; --ink:#211d18; --graphite:#5b564c; --muted:#80786a;
-  --line:#d8cfbb; --accent:#2a6d8e; --accent-ink:#ffffff; --ochre:#b9771d; --vermilion:#c0432c; --sage:#58865f;
-  --shadow:0 1px 0 rgba(0,0,0,.04),0 8px 24px -12px rgba(60,40,10,.25); --focus:#c0432c;
-  --desk:#e3dac6; --good:#3f7a4b; --warn:#a85a14;
-  color-scheme:light;
+/* Layout: one guide sheet, like a printed "how to draw" poster — final result + tools + palette on top,
+   numbered step cards in a grid, tips at the bottom. One viewer opens on click. */
+:root {
+  --paper: #f7f3ea; --card: #fffdf8; --ink: #22201c; --muted: #6f685c; --line: #e3dccd;
+  --red: #c8323a; --red-ink: #fff; --yellow: #f2c94c; --green: #2f8f5b; --blue: #2f6db3;
+  --font-d: "Fraunces", "Readex Pro", Georgia, serif; --font-b: "Atkinson Hyperlegible", "Readex Pro", system-ui, sans-serif;
+  color-scheme: light;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#141311; --paper:#1e1c19; --paper2:#262320; --ink:#efe8d9; --graphite:#b2aa99; --muted:#8d8576;
-  --line:#3a362f; --accent:#6db3d3; --accent-ink:#0e1a20; --ochre:#e2a550; --vermilion:#ee7a5f; --sage:#86b88d;
-  --shadow:0 1px 0 rgba(255,255,255,.03),0 10px 28px -14px rgba(0,0,0,.7); --focus:#ee7a5f; --desk:#191714; --good:#7fc08a; --warn:#e6a15c;
-  color-scheme:dark;}}
-:root[data-theme="dark"]{
-  --bg:#141311; --paper:#1e1c19; --paper2:#262320; --ink:#efe8d9; --graphite:#b2aa99; --muted:#8d8576;
-  --line:#3a362f; --accent:#6db3d3; --accent-ink:#0e1a20; --ochre:#e2a550; --vermilion:#ee7a5f; --sage:#86b88d;
-  --shadow:0 1px 0 rgba(255,255,255,.03),0 10px 28px -14px rgba(0,0,0,.7); --focus:#ee7a5f; --desk:#191714; --good:#7fc08a; --warn:#e6a15c;
-  color-scheme:dark;}
-*{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 "Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
-  background-image:radial-gradient(circle at 20% 0,rgba(185,119,29,.07),transparent 40%),radial-gradient(circle at 90% 10%,rgba(42,109,142,.07),transparent 35%);
-  overflow-x:hidden;min-height:100vh}
-.wrap{max-width:1360px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:700;margin:0;letter-spacing:-.01em}
-button,select,input,textarea{font:inherit;color:inherit}
-button{cursor:pointer}
-:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:4px}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-[hidden]{display:none!important}
-
-/* header */
-header.top{border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--paper) 80%,transparent);backdrop-filter:blur(6px);position:sticky;top:0;z-index:20}
-.top .wrap{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;padding-top:10px;padding-bottom:10px}
-.logo{display:flex;align-items:center;gap:9px;font-family:Fraunces,serif;font-size:24px;font-weight:700;font-style:italic;margin-right:auto;white-space:nowrap}
-.logo svg{width:30px;height:30px}
-.logo span b{color:var(--vermilion);font-style:normal}
-.ctl{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--graphite)}
-.ctl>label,.ctl>legend{font-weight:600;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
-fieldset.ctl{border:0;margin:0;padding:0;min-width:0}
-.seg{display:inline-flex;border:1.5px solid var(--ink);border-radius:999px;overflow:hidden;background:var(--paper)}
-.seg{max-width:100%}.seg label{position:relative;cursor:pointer;min-width:0}
-.seg input{position:absolute;opacity:0;inset:0;cursor:pointer}
-.seg span{display:block;padding:5px 11px;font-size:13px;font-weight:600;white-space:nowrap;color:var(--graphite);text-align:center}
-.cmprow .seg span{white-space:normal;line-height:1.2}
-@media (max-width:500px){.seg span{padding:5px 8px;font-size:12.5px}}
-.seg input:checked+span{background:var(--ink);color:var(--paper)}
-.seg input:focus-visible+span{outline:3px solid var(--focus);outline-offset:-3px}
-input[type=range]{accent-color:var(--vermilion);height:24px}
-select,.btn,.inp{background:var(--paper);border:1.5px solid var(--line);border-radius:8px;padding:6px 10px;min-height:36px}
-select:hover,.btn:hover:not(:disabled){border-color:var(--ink)}
-.btn{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:13.5px;white-space:nowrap}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-.btn.pri{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.btn.acc{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.btn[aria-pressed=true]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.btn.sm{min-height:30px;padding:3px 9px;font-size:12.5px}
-
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --paper: #17150f; --card: #211e17; --ink: #f1ece1; --muted: #a59d8c; --line: #3a3529; --red: #e0545b; --yellow: #e6be4a; --green: #57b884; --blue: #6ea3e0; color-scheme: dark; } }
+:root[data-theme="dark"] { --paper: #17150f; --card: #211e17; --ink: #f1ece1; --muted: #a59d8c; --line: #3a3529; --red: #e0545b; --yellow: #e6be4a; --green: #57b884; --blue: #6ea3e0; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--font-b); font-size: 15px; line-height: 1.55; }
+[dir="rtl"] body, [dir="rtl"] { font-family: "Readex Pro", var(--font-b); }
+h1, h2, h3 { font-family: var(--font-d); margin: 0; text-wrap: balance; }
+[dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3 { font-family: "Readex Pro", sans-serif; font-weight: 700; }
+button, select, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.wrap { max-width: 1100px; margin: 0 auto; padding-block: 18px 60px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr); }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.logo { font-family: var(--font-d); font-size: 22px; font-weight: 800; } .logo b { color: var(--red); }
+.top-r { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.btn { border: 1px solid var(--line); background: var(--card); border-radius: 10px; padding: 7px 12px; font-weight: 700; font-size: 14px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.btn:hover:not(:disabled) { border-color: var(--ink); } .btn:disabled { opacity: .5; cursor: default; }
+.btn.red { background: var(--red); color: var(--red-ink); border-color: var(--red); }
+select { border: 1px solid var(--line); background: var(--card); border-radius: 10px; padding: 6px 8px; font-size: 14px; }
+.settings { position: relative; }
+.settings > summary { list-style: none; cursor: pointer; } .settings > summary::-webkit-details-marker { display: none; }
+.pop { position: absolute; inset-inline-end: 0; top: 44px; z-index: 20; width: 280px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 10px; box-shadow: 0 12px 30px rgb(0 0 0 / .15); }
+.pop label { display: grid; gap: 4px; font-size: 13px; color: var(--muted); font-weight: 700; }
+.seg { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
+.seg button { border: 0; background: transparent; padding: 6px 4px; font-size: 13px; font-weight: 700; cursor: pointer; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+input[type=range] { width: 100%; accent-color: var(--red); }
 /* upload */
-.upload{padding:36px 0 56px}
-.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:36px;align-items:center}
-.hero h1{font-size:clamp(32px,5vw,56px);line-height:1.04}
-.hero h1 em{color:var(--vermilion)}
-.hero p.lead{font-size:17px;color:var(--graphite);max-width:46ch}
-.drop{border:2px dashed var(--graphite);border-radius:18px;background:var(--paper);padding:34px 22px;text-align:center;box-shadow:var(--shadow);position:relative;transition:transform .2s,border-color .2s,background .2s}
-.drop.over{border-color:var(--vermilion);background:var(--paper2);transform:scale(1.01)}
-.drop h2{font-size:22px;margin-bottom:6px}
-.drop .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:16px 0 8px}
-.drop small{color:var(--muted);display:block}
-.steps{display:flex;gap:6px;flex-wrap:wrap;margin-top:20px;padding:0;list-style:none}
-.steps li{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:3px 10px;background:var(--paper);color:var(--graphite)}
-.notice{border-left:4px solid var(--ochre);background:var(--paper);padding:9px 12px;border-radius:0 8px 8px 0;font-size:13.5px;color:var(--graphite)}
-.notice.bad{border-color:var(--vermilion)}
-.notice.ok{border-color:var(--sage)}
-.err{color:var(--vermilion);font-weight:600;margin-top:10px}
-
-/* progress */
-.prog{position:fixed;inset:0;background:rgba(20,18,15,.55);z-index:50;display:grid;place-items:center;padding:16px}
-.prog .card{background:var(--paper);border:1.5px solid var(--ink);border-radius:16px;padding:22px 24px;width:min(420px,100%);box-shadow:var(--shadow)}
-.bar{height:10px;border-radius:99px;background:var(--line);overflow:hidden;margin:12px 0 8px}
-.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--ochre));transition:width .25s}
-
-/* studio */
-.studio{padding:16px 0 60px}
-.stagehead{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:end;margin:6px 0 10px}
-.stagehead h2{font-size:clamp(20px,3vw,28px)}
-.stagehead .count{color:var(--muted);font-size:13px}
-.timeline{list-style:none;margin:0 0 14px;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:6px}
-.timeline button{width:100%;height:100%;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:7px 9px;display:grid;grid-template-columns:auto 1fr auto;gap:2px 8px;align-items:center;min-height:46px;position:relative}
-.timeline button:hover{border-color:var(--ink)}
-.timeline button[aria-current=step]{border-color:var(--ink);background:var(--ink);color:var(--paper);box-shadow:var(--shadow)}
-.timeline .n{font-family:Fraunces,serif;font-weight:700;font-size:17px;opacity:.7}
-.timeline .t{font-size:12.5px;font-weight:600;line-height:1.2}
-.timeline .k{grid-column:2/4;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;opacity:.65;margin-top:-2px}
-.timeline .tick{width:18px;height:18px;border-radius:50%;border:1.5px solid currentColor;opacity:.35;display:grid;place-items:center;font-size:11px}
-.timeline .done .tick{background:var(--sage);border-color:var(--sage);color:#fff;opacity:1}
-.timeline .done:not([aria-current=step]){border-color:color-mix(in srgb,var(--sage) 60%,var(--line))}
-@media (max-width:760px){.timeline{display:flex;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x proximity}.timeline li{flex:0 0 138px;scroll-snap-align:start}}
-
-#workspace{background:var(--desk);border:1px solid var(--line);border-radius:16px;padding:10px;box-shadow:var(--shadow)}
-#workspace:fullscreen,#workspace.fake-fs{background:var(--bg);display:flex;flex-direction:column;border-radius:0;padding:12px;overflow:auto}
-#workspace.fake-fs{position:fixed;inset:0;z-index:60}
-#workspace:fullscreen .viewers,#workspace.fake-fs .viewers{flex:1;min-height:0;height:auto}
-#workspace:fullscreen .view,#workspace.fake-fs .view{height:100%}
-.toolbar,.cmprow{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin-bottom:8px}
-.toolbar .sp{flex:1}
-.cmprow{font-size:13px;color:var(--graphite)}
-.cmprow input[type=range]{width:min(260px,60vw)}
-.viewers{display:grid;grid-template-columns:1fr 1fr;gap:10px;height:clamp(300px,58vh,660px)}
-.vwrap{display:flex;flex-direction:column;min-height:0;min-width:0}
-.vcap{min-height:20px;font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;gap:8px;padding:0 2px 4px}
-.view{position:relative;flex:1;min-height:0;overflow:hidden;border-radius:10px;background:
-  repeating-conic-gradient(var(--paper2) 0 25%,var(--paper) 0 50%) 0 0/22px 22px;border:1.5px solid var(--line);touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
-.view.grabbing{cursor:grabbing}
-.view.pick{cursor:crosshair}
-.pan{position:absolute;transform-origin:0 0;--inv:1;will-change:transform;box-shadow:0 2px 14px rgba(0,0,0,.25);background:#fff}
-.pan canvas{position:absolute;inset:0;width:100%;height:100%;display:block;image-rendering:auto}
-.pan canvas.ov{pointer-events:none}
-.pan.dim canvas.base{opacity:.35}
-.cmp-handle{position:absolute;top:0;bottom:0;width:calc(26px*var(--inv));margin-left:calc(-13px*var(--inv));cursor:ew-resize;touch-action:none;z-index:3}
-.cmp-handle::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:calc(2px*var(--inv));margin-left:calc(-1px*var(--inv));background:var(--vermilion);box-shadow:0 0 0 calc(1px*var(--inv)) #fff}
-.cmp-handle::after{content:"\2194";position:absolute;left:50%;top:50%;width:calc(30px*var(--inv));height:calc(30px*var(--inv));margin:calc(-15px*var(--inv)) 0 0 calc(-15px*var(--inv));border-radius:50%;background:var(--vermilion);color:#fff;display:grid;place-items:center;font-size:calc(16px*var(--inv))}
-.tag{position:absolute;top:8px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(20,18,15,.72);color:#fff;pointer-events:none;z-index:4}
-.tag.l{left:8px}.tag.r{right:8px}
-.busy{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.18);color:#fff;font-weight:600;z-index:5;pointer-events:none}
-.hint{font-size:12px;color:var(--muted);margin:8px 2px 0}
-.mini{font-size:12.5px;color:var(--graphite)}
-
-.lower{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;margin-top:16px;align-items:start}
-.panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px 20px;min-width:0}
-.panel h2{font-size:22px}
-.badges{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 10px}
-.badge{font-size:11.5px;font-weight:600;padding:2px 9px;border-radius:99px;border:1px solid var(--line);background:var(--paper2);color:var(--graphite)}
-.badge.ai{border-color:var(--accent);color:var(--accent)}
-.badge.gen{border-color:var(--ochre);color:var(--ochre)}
-.honest{font-size:13px;border-left:4px solid var(--accent);padding:6px 10px;background:var(--paper2);border-radius:0 8px 8px 0;margin:8px 0 12px;color:var(--graphite)}
-.lesson-body dl{margin:0;display:grid;gap:12px}
-.lesson-body dt{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--vermilion)}
-.lesson-body[dir=rtl] dt{letter-spacing:0;font-size:13px}
-.lesson-body dd{margin:2px 0 0}
-.lesson-body[dir=rtl]{font-family:"Noto Naskh Arabic","Instrument Sans",serif;font-size:16.5px;line-height:1.85;text-align:right}
-.sw{display:flex;gap:8px;flex-wrap:wrap;padding:0;margin:4px 0 0;list-style:none}
-.sw li{display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:99px;padding:3px 11px 3px 4px;font-size:13px;background:var(--paper2)}
-.lesson-body[dir=rtl] .sw li{padding:3px 4px 3px 11px}
-.sw i{width:22px;height:22px;border-radius:50%;border:1px solid rgba(0,0,0,.25);display:block;flex:none}
-.sw code{font-size:11px;color:var(--muted)}
-.donebar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px dashed var(--line)}
-.chk{display:flex;gap:8px;align-items:center;font-weight:600;cursor:pointer}
-.chk input{width:20px;height:20px;accent-color:var(--sage)}
-.pbar{flex:1;min-width:120px;height:8px;border-radius:99px;background:var(--line);overflow:hidden}
-.pbar i{display:block;height:100%;background:var(--sage);width:0;transition:width .3s}
-
-.tabs{display:flex;gap:4px;flex-wrap:wrap;margin:-4px 0 12px;border-bottom:1.5px solid var(--line)}
-.tabs button{background:none;border:0;border-bottom:3px solid transparent;margin-bottom:-1.5px;padding:8px 10px;font-weight:600;font-size:13.5px;color:var(--muted)}
-.tabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--vermilion)}
-.fl{display:grid;gap:8px}
-.fl label.row,.fl .row{display:flex;gap:9px;align-items:center}
-.fl label.row input{width:18px;height:18px;accent-color:var(--accent)}
-.fl .dot{width:12px;height:12px;border-radius:50%;flex:none}
-hr{border:0;border-top:1px dashed var(--line);margin:14px 0}
-.form{display:grid;gap:10px;margin-top:10px}
-.form .g{display:grid;grid-template-columns:90px 1fr;gap:8px;align-items:center}
-.form .g label{font-size:12.5px;font-weight:600;color:var(--graphite)}
-.inp{width:100%}
-.regsw{display:inline-block;width:20px;height:20px;border-radius:50%;border:1px solid rgba(0,0,0,.3);vertical-align:middle;margin-right:6px}
-.mat{display:grid;gap:6px;margin:0;padding:0;list-style:none}
-.mat li{display:flex;gap:10px;align-items:flex-start;padding:7px 8px;border:1px solid var(--line);border-radius:10px;background:var(--paper2)}
-.mat input{width:20px;height:20px;margin-top:2px;accent-color:var(--sage);flex:none}
-.mat .w{font-size:12.5px;color:var(--muted)}
-.mat li.got .nm{text-decoration:line-through;opacity:.6}
-.mat[dir=rtl]{text-align:right}
-textarea.inp{min-height:110px;resize:vertical;font-size:13px}
-.warnlist{margin:8px 0;padding-left:20px;color:var(--warn)}
-.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:9px 16px;border-radius:99px;font-size:13.5px;z-index:70;max-width:92vw;box-shadow:var(--shadow)}
-footer{padding:20px 0 36px;font-size:12.5px;color:var(--muted)}
-
-@media (max-width:900px){.hero{grid-template-columns:1fr}.lower{grid-template-columns:1fr}}
-@media (max-width:700px){
-  header.top{position:static}
-  .viewers{grid-template-columns:1fr;height:auto}
-  .view{height:min(78vw,420px);flex:none}
-  #workspace:fullscreen .viewers,#workspace.fake-fs .viewers{display:grid;grid-template-rows:1fr 1fr;grid-template-columns:1fr}
-  #workspace:fullscreen .view,#workspace.fake-fs .view{height:100%}
-  .logo{font-size:21px}.panel{padding:14px}
-  .form .g{grid-template-columns:1fr}
-}
-@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+.drop { border: 2px dashed var(--line); border-radius: 20px; background: var(--card); padding: 42px 20px; display: grid; gap: 12px; justify-items: center; text-align: center; }
+.drop.over { border-color: var(--red); }
+.drop h2 { font-size: clamp(24px, 4vw, 34px); }
+.drop p { margin: 0; color: var(--muted); max-width: 46ch; }
+.status { display: flex; gap: 10px; align-items: center; justify-content: center; color: var(--muted); min-height: 22px; font-size: 14px; }
+.status.err { color: var(--red); }
+.spin { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line); border-top-color: var(--red); animation: rot .8s linear infinite; }
+@keyframes rot { to { transform: rotate(360deg); } }
+/* sheet */
+.banner { display: inline-block; background: var(--ink); color: var(--paper); font-family: var(--font-d); font-weight: 800; font-size: clamp(22px, 3.6vw, 32px); padding: 4px 16px; border-radius: 6px; transform: rotate(-1deg); }
+.sub { display: inline-block; background: var(--yellow); color: #1d1a12; font-weight: 700; padding: 2px 12px; border-radius: 4px; margin-top: 8px; transform: rotate(.6deg); }
+.hero { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 860px) { .hero { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); align-items: start; } }
+.final { position: relative; border-radius: 14px; overflow: hidden; border: 3px solid var(--ink); background: var(--card); }
+.final img { display: block; width: 100%; height: auto; }
+.tag { position: absolute; top: 10px; inset-inline-start: 10px; background: var(--red); color: var(--red-ink); font-weight: 700; padding: 3px 12px; border-radius: 8px; font-size: 14px; }
+.side { display: grid; gap: 14px; }
+.box { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; display: grid; gap: 8px; }
+.box h3 { font-size: 16px; }
+.kick { display: inline-block; background: var(--red); color: var(--red-ink); font-weight: 700; font-size: 13.5px; padding: 2px 10px; border-radius: 7px; justify-self: start; }
+.tools { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.tools label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+.tools input { accent-color: var(--green); width: 17px; height: 17px; }
+.pal { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.sw { display: grid; justify-items: center; gap: 2px; font-size: 12px; text-align: center; color: var(--muted); }
+.sw i { width: 100%; height: 26px; border-radius: 13px 4px 13px 4px; display: block; border: 1px solid rgb(0 0 0 / .08); }
+.steps { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
+.step { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px; display: grid; gap: 8px; cursor: pointer; text-align: start; position: relative; min-width: 0; }
+.step:hover { border-color: var(--ink); }
+.step-h { display: flex; gap: 8px; align-items: center; }
+.num { width: 30px; height: 30px; border-radius: 50%; background: var(--red); color: var(--red-ink); display: grid; place-items: center; font-weight: 800; flex: none; font-family: var(--font-d); }
+.step-h b { font-size: 15px; }
+.done-t { margin-inline-start: auto; color: var(--green); font-weight: 800; }
+.thumb { border-radius: 8px; overflow: hidden; border: 1px solid var(--line); background: #fff; aspect-ratio: var(--ar, 16 / 9); }
+.thumb canvas { width: 100%; height: 100%; display: block; object-fit: contain; }
+.cap { margin: 0; font-size: 14px; text-align: center; }
+.bottom { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 760px) { .bottom { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); } }
+.tips { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.tips li::before { content: "✔ "; color: var(--red); font-weight: 800; }
+.note { background: var(--ink); color: var(--paper); border-radius: 14px; padding: 12px 16px; display: grid; gap: 4px; align-content: center; }
+.note b { color: var(--yellow); }
+.links { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.honest { font-size: 12.5px; color: var(--muted); text-align: center; margin: 0; }
+/* viewer */
+.ov { position: fixed; inset: 0; z-index: 50; background: rgb(15 13 9 / .82); display: grid; place-items: center; padding: max(12px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); }
+.vw { width: min(1100px, 100%); max-height: 100%; overflow: auto; background: var(--card); border-radius: 16px; padding: 12px; display: grid; gap: 10px; }
+.vw-h { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.vw-h h3 { font-size: 18px; flex: 1; min-width: 0; }
+.stage { position: relative; overflow: hidden; border-radius: 10px; border: 1px solid var(--line); background: #fff; touch-action: none; cursor: grab; }
+.stage canvas { display: block; width: 100%; height: auto; transform-origin: 0 0; }
+.stage .orig { position: absolute; inset: 0; clip-path: inset(0 0 0 var(--cut, 100%)); }
+.cmp-line { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--red); left: var(--cutp, 100%); pointer-events: none; }
+.vw-tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.vw-tools label { display: inline-flex; gap: 6px; align-items: center; font-size: 13.5px; font-weight: 700; }
+.vw-tools input[type=range] { width: 160px; }
+.detail { display: grid; gap: 6px; font-size: 14.5px; }
+.detail p { margin: 0; } .detail b { color: var(--red); }
+.region-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.region-chips button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+@media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
 </style>
 
-<header class="top"><div class="wrap">
-  <div class="logo" aria-label="DrawMaster">
-    <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27l2-7L22 5l5 5L12 25z" fill="var(--ochre)" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"/><path d="M5 27l2-7 5 5z" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"/><path d="M22 5l5 5" stroke="var(--vermilion)" stroke-width="4" stroke-linecap="round"/></svg>
-    <span>Draw<b>Master</b></span>
-  </div>
-  <fieldset class="ctl ai-only" id="modelCtl" hidden><legend>Model</legend>
-    <div class="seg" id="modelSeg" role="radiogroup" aria-label="Claude model"></div></fieldset>
-  <div class="ctl ai-only" id="effortCtl" hidden><label for="effort">Effort</label><input type="range" id="effort" min="0" max="2" step="1" value="1" aria-valuetext="medium"><output id="effortOut" for="effort" style="min-width:52px;font-weight:600">medium</output></div>
-  <div class="ctl"><label for="lang">Teaching</label>
-    <select id="lang" aria-label="Teaching language"><option value="en">English</option><option value="fr">Français</option><option value="ar">العربية</option></select></div>
-  <button class="btn" id="themeBtn" type="button" aria-label="Theme: auto">Theme: auto</button>
-  <button class="btn" id="newBtn" type="button" hidden>New image</button>
-</div></header>
-
-<main class="wrap">
-<section class="upload" id="uploadScreen" aria-labelledby="upTitle">
-  <div class="hero">
-    <div>
-      <h1 id="upTitle">Learn to draw <em>any picture</em>, one step at a time.</h1>
-      <p class="lead">Upload a photo or illustration. DrawMaster splits it into drawing stages computed from your own image: guides, shapes, outlines, colour, shadows and highlights, with a lesson for each step.</p>
-      <div class="notice" id="aiNote" role="status">Checking whether Claude is available…</div>
-      <ul class="steps" aria-label="Stages"><li>Guides</li><li>Construction</li><li>Outlines</li><li>Colour</li><li>Shading</li><li>Finishing</li></ul>
-    </div>
-    <div class="drop" id="drop">
-      <h2>Drop an image here</h2>
-      <p style="margin:0;color:var(--graphite)">or paste one with Ctrl/Cmd+V</p>
-      <div class="row">
-        <label class="btn pri" for="file" id="fileBtn" tabindex="0">Choose image</label>
-        <label class="btn" for="cam" id="camBtn" tabindex="0">Take photo</label>
-      </div>
-      <input class="sr" type="file" id="file" accept="image/*">
-      <input class="sr" type="file" id="cam" accept="image/*" capture="environment">
-      <small>JPG, PNG, WebP. Your image stays in this page; it is only sent to Claude (if available) for the lesson text.</small>
-      <div class="err" id="upErr" role="alert"></div>
-    </div>
-  </div>
-</section>
-
-<section class="studio" id="studio" hidden aria-label="Drawing studio">
-  <div class="stagehead"><h2 id="stageTitle">Stage</h2><span class="count" id="stageCount"></span></div>
-  <div id="aiBanner" class="notice" role="status" style="margin-bottom:10px" hidden></div>
-  <nav aria-label="Stages"><ol class="timeline" id="timeline"></ol></nav>
-
-  <div id="workspace">
-    <div class="toolbar" role="toolbar" aria-label="Stage and view controls">
-      <button class="btn" id="prev" type="button">&#9664; Previous</button>
-      <button class="btn pri" id="next" type="button">Next &#9654;</button>
-      <span class="sp"></span>
-      <button class="btn" id="zOut" type="button" aria-label="Zoom out">&minus;</button>
-      <output id="zVal" class="mini" style="min-width:42px;text-align:center">100%</output>
-      <button class="btn" id="zIn" type="button" aria-label="Zoom in">+</button>
-      <button class="btn" id="zFit" type="button">Fit</button>
-      <button class="btn" id="fsBtn" type="button" aria-pressed="false">Fullscreen</button>
-      <button class="btn acc" id="expOne" type="button">Export stage PNG</button>
-      <button class="btn" id="expAll" type="button">Export all stages</button>
-    </div>
-    <div class="cmprow">
-      <span class="seg" role="radiogroup" aria-label="Compare mode">
-        <label><input type="radio" name="cmp" value="off" checked><span>No compare</span></label>
-        <label><input type="radio" name="cmp" value="orig"><span>vs original</span></label>
-        <label><input type="radio" name="cmp" value="prev"><span>vs previous stage</span></label>
-      </span>
-      <label for="cmpPos" class="sr">Compare divider position</label>
-      <input type="range" id="cmpPos" min="0" max="100" value="50" disabled>
-      <label class="chk" style="font-weight:500"><input type="checkbox" id="deltaOn"> Show what&rsquo;s new in this step</label>
-    </div>
-    <div class="viewers" id="viewers">
-      <div class="vwrap"><div class="vcap"><span>Reference (your image)</span></div>
-        <div class="view" id="refView" tabindex="0" aria-label="Reference image viewer. Shift plus arrow keys pan, plus and minus zoom."><div class="pan" id="refPan"><canvas id="refCv" class="base"></canvas></div></div></div>
-      <div class="vwrap"><div class="vcap"><span id="stageCap">Current stage</span><span id="regionHint" class="mini" hidden>Click a region to select it</span></div>
-        <div class="view" id="stageView" tabindex="0" aria-label="Current stage viewer. Shift plus arrow keys pan, plus and minus zoom."><div class="pan" id="stagePan">
-          <canvas id="stageCv" class="base"></canvas><canvas id="beforeCv" class="ov"></canvas><canvas id="deltaCv" class="ov"></canvas><canvas id="maskCv" class="ov"></canvas>
-          <div class="cmp-handle" id="cmpHandle" role="presentation" hidden></div></div>
-          <span class="tag l" id="tagL" hidden></span><span class="tag r" id="tagR" hidden></span>
-          <div class="busy" id="busy" hidden>Rendering&hellip;</div></div></div>
-    </div>
-    <p class="hint">Scroll or pinch to zoom, drag to pan (both viewers move together). Arrow keys: previous / next step. <kbd>+</kbd> <kbd>&minus;</kbd> zoom, <kbd>0</kbd> fit, <kbd>F</kbd> fullscreen.</p>
-  </div>
-
-  <div class="lower">
-    <article class="panel" id="lessonPanel" aria-labelledby="lessonTitle">
-      <h2 id="lessonTitle">Lesson</h2>
-      <div class="badges" id="badges"></div>
-      <div class="honest" id="honest"></div>
-      <div class="lesson-body" id="lessonBody"></div>
-      <div class="donebar">
-        <label class="chk"><input type="checkbox" id="doneChk"> I&rsquo;ve drawn this step</label>
-        <div class="pbar" aria-hidden="true"><i id="pfill"></i></div><span class="mini" id="pText"></span>
-      </div>
-    </article>
-
-    <aside class="panel" aria-label="Tools">
-      <div class="tabs" role="tablist" id="tabs">
-        <button role="tab" id="tab-layers" aria-controls="p-layers" aria-selected="true" type="button">Layers</button>
-        <button role="tab" id="tab-fix" aria-controls="p-fix" aria-selected="false" tabindex="-1" type="button">Fix regions</button>
-        <button role="tab" id="tab-mat" aria-controls="p-mat" aria-selected="false" tabindex="-1" type="button">Materials</button>
-        <button role="tab" id="tab-ai" aria-controls="p-ai" aria-selected="false" tabindex="-1" type="button">AI</button>
-      </div>
-
-      <div role="tabpanel" id="p-layers" aria-labelledby="tab-layers" class="fl">
-        <p class="mini" style="margin:0">Show or hide the kinds of marks in the current stage. Exports use these settings.</p>
-        <label class="row"><input type="checkbox" data-layer="guides" checked><i class="dot" style="background:#3a78c8"></i> Guides (thirds, subject box)</label>
-        <label class="row"><input type="checkbox" data-layer="construction" checked><i class="dot" style="background:#8c8c8c"></i> Construction shapes</label>
-        <label class="row"><input type="checkbox" data-layer="lines" checked><i class="dot" style="background:#111"></i> Lines (outlines, details)</label>
-        <label class="row"><input type="checkbox" data-layer="color" checked><i class="dot" style="background:linear-gradient(90deg,#c0432c,#b9771d,#58865f)"></i> Colour</label>
-        <label class="row"><input type="checkbox" data-layer="values" checked><i class="dot" style="background:linear-gradient(90deg,#222,#ddd)"></i> Values (shadows, highlights)</label>
-      </div>
-
-      <div role="tabpanel" id="p-fix" aria-labelledby="tab-fix" hidden>
-        <div class="notice bad">Automatic separation is a guess made by colour and position. It can merge objects with similar colours or split one object in two, which changes the foreground/background stages. Check the highlighted region and correct it here.</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center">
-          <button class="btn" id="regionTool" type="button" aria-pressed="false">Region tool: off</button>
-          <label for="regionSel" class="sr">Choose a region</label>
-          <select id="regionSel" style="flex:1;min-width:150px"><option value="">Choose region (or click the stage)&hellip;</option></select>
+<div class="wrap" id="app">
+  <header class="top">
+    <div class="logo">✏️ Draw<b>Master</b></div>
+    <div class="top-r">
+      <select id="lang" aria-label="Language"><option value="en">English</option><option value="fr">Français</option><option value="ar">العربية</option></select>
+      <details class="settings"><summary class="btn" id="setBtn">⚙ AI</summary>
+        <div class="pop">
+          <label><span data-t="model"></span><div class="seg" id="model"><button type="button" data-m="haiku">Haiku 5.5</button><button type="button" data-m="sonnet">Sonnet 5.5</button><button type="button" data-m="opus">Opus 5.5</button></div></label>
+          <label><span><span data-t="effort"></span>: <b id="effLbl"></b></span><input type="range" id="effort" min="0" max="2" step="1"></label>
+          <button class="btn" type="button" id="redo" data-t="redo"></button>
+          <small id="aiState" style="color:var(--muted)"></small>
         </div>
-        <div id="regionForm" class="form" hidden>
-          <div id="regionInfo" class="mini"></div>
-          <div class="g"><label for="roleSel">Role</label>
-            <select id="roleSel"><option value="background">background</option><option value="foreground">foreground</option><option value="secondary">secondary</option><option value="detail">detail</option></select></div>
-          <div class="g"><label for="labelInp">Label</label><input class="inp" id="labelInp" maxlength="60" placeholder="e.g. red apple"></div>
-          <div class="g"><label>Paint order</label><div style="display:flex;gap:6px;align-items:center"><button class="btn sm" id="ordUp" type="button" aria-label="Paint earlier">&uarr; earlier</button><button class="btn sm" id="ordDn" type="button" aria-label="Paint later">&darr; later</button><output id="ordOut" class="mini"></output></div></div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="mergeBtn" type="button" aria-pressed="false">Merge with next click&hellip;</button><button class="btn" id="clearSel" type="button">Clear selection</button></div>
-        </div>
-        <p class="mini" id="fixMsg" role="status"></p>
-      </div>
+      </details>
+      <button class="btn" id="newBtn" type="button" hidden data-t="newImg"></button>
+    </div>
+  </header>
 
-      <div role="tabpanel" id="p-mat" aria-labelledby="tab-mat" hidden>
-        <p class="mini" style="margin:0 0 8px" id="matSrc"></p>
-        <ul class="mat" id="matList"></ul>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center">
-          <span class="mini" id="matCount"></span><span style="flex:1"></span>
-          <button class="btn sm" id="shopBtn" type="button">Shopping list</button>
-        </div>
-        <div id="shopBox" hidden style="margin-top:8px"><label for="shopTxt" class="sr">Shopping list</label><textarea class="inp" id="shopTxt" readonly></textarea><button class="btn sm" id="copyShop" type="button" style="margin-top:6px">Copy</button></div>
-      </div>
+  <section class="drop" id="drop">
+    <h2 data-t="upTitle"></h2>
+    <p data-t="upText"></p>
+    <div class="links"><button class="btn red" type="button" id="pick" data-t="choose"></button><button class="btn" type="button" id="cam" data-t="camera"></button></div>
+    <input type="file" id="file" accept="image/*" hidden><input type="file" id="camIn" accept="image/*" capture="environment" hidden>
+    <div class="status" id="status" aria-live="polite"></div>
+  </section>
 
-      <div role="tabpanel" id="p-ai" aria-labelledby="tab-ai" hidden>
-        <div id="aiState" class="notice" role="status"></div>
-        <div id="aiInfo" style="margin-top:10px"></div>
-        <div style="margin-top:12px"><button class="btn acc ai-only" id="reanalyse" type="button" hidden>Re-analyse with AI</button></div>
-        <p class="mini">The AI reads your image and the region summary to personalise the lesson text and suggest which regions are subject or background. It never creates the stage images; those are always computed from your picture.</p>
-      </div>
-    </aside>
-  </div>
-</section>
-</main>
-
-<div class="prog" id="prog" hidden><div class="card" role="status" aria-live="polite"><h2 style="font-size:20px">Preparing your lesson</h2><div class="bar"><i id="progBar"></i></div><div id="progText" class="mini">Starting&hellip;</div></div></div>
-<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
-<footer class="wrap">DrawMaster. All stage images are computed from your own picture by code (edge filters, colour clustering, geometry fitting). They are references to copy, not hand-made sketches.</footer>
+  <section id="sheet" hidden style="display:grid;gap:18px"></section>
+</div>
+<div id="ovl"></div>
 
 <script src="engine.js"></script>
 <script>
-(()=>{'use strict';
-const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
-const tick=()=>new Promise(r=>setTimeout(r));
-const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+(() => {
+  "use strict";
+  /* ---------------- text ---------------- */
+  const TX = {
+    en: { redo: "Rewrite my guide", model: "Model", effort: "Effort", eff: ["Quick", "Balanced", "Deep"], newImg: "New image", upTitle: "Turn any picture into a drawing guide", upText: "Upload an image. DrawMaster computes every step from it in your browser — sketch, outlines, colours, shading — and explains how to draw each one.", choose: "Choose an image", camera: "Take a photo", working: "Analysing your image…", aiWorking: "Writing your personal guide…", guide: "Step-by-step drawing guide", final: "Final result", tools: "Tools you need", palette: "Suggested colours", tips: "Pro secrets", noteT: "Last note", stepsTitle: "Steps", fix: "Fix subject / background", dlAll: "Download all steps", where: "Where", how: "How", toolsW: "Tools", avoid: "Avoid", compare: "Compare with final", newOnly: "Only what's new", download: "Download", full: "Fullscreen", done: "I drew this", prev: "Previous", next: "Next", close: "Close", honest: "Every step is computed from your picture by code (edge detection, colour clustering, geometry). Lines are extracted edges — a guide to copy, not a hand-made sketch.", generic: "General guidance — AI not available here.", aiBy: "Personalised by", fixHelp: "Tap a part of the picture, then say what it is. The steps update.", roles: { background: "Background", foreground: "Subject", secondary: "Secondary", detail: "Detail" }, err: "Could not analyse the image.", aiErr: "AI guide failed — showing general guidance.",
+      steps: { sketch: ["Light sketch", "Mark the big shapes lightly: horizon, main forms, where the subject sits."], lines: ["Clean outlines", "Go over the lines that matter with a firmer pencil or fine liner."], background: ["Background colours", "Fill the large background areas with light, even layers."], colors: ["Main colours", "Colour the subject and the other areas with their base colours."], shading: ["Shading & depth", "Add the darker tones and soft transitions; build them in layers."], final: ["Final touches", "Lift the highlights and add the small details. Done!"] },
+      det: { sketch: ["Over the whole sheet, following the guide lines.", "Use very light strokes you can erase. Place shapes, not details.", "HB pencil, eraser.", "Pressing hard or drawing details too early."], lines: ["Along the edges shown in the step.", "Trace confidently in one stroke per edge; skip tiny noise.", "2B pencil or 0.3 fine liner.", "Outlining every texture line."], background: ["The biggest areas behind the subject.", "Light pressure, small circles or parallel strokes, same direction.", "Coloured pencils in the background tones.", "Leaving white gaps or pressing too hard early."], colors: ["Inside the subject and the remaining shapes.", "One flat base layer per area, then a second layer to deepen.", "Coloured pencils from the palette.", "Mixing too many colours in one area."], shading: ["On the side away from the light, under objects, in folds.", "Layer a darker tone gradually; blend edges softly.", "Darker pencils, blender or white pencil.", "Using black for every shadow."], final: ["The brightest spots and small details.", "Keep or lift light areas; add tiny accents last.", "White gel pen or white pencil, sharp pencil.", "Over-working — know when to stop."] },
+      materials: ["Drawing paper (A4)", "Light pencil (HB)", "2B pencil", "Eraser", "Coloured pencils", "Sharpener"], tipsList: ["Start light, darken later.", "Work from background to front.", "Build colour in thin layers.", "Squint to see the big values.", "Don't press hard with the pencil."], note: "Simplicity is the secret of a beautiful drawing." },
+    fr: { redo: "Réécrire mon guide", model: "Modèle", effort: "Réflexion", eff: ["Rapide", "Équilibré", "Approfondi"], newImg: "Nouvelle image", upTitle: "Transforme n'importe quelle image en guide de dessin", upText: "Ajoute une image. DrawMaster calcule chaque étape à partir d'elle dans ton navigateur — esquisse, contours, couleurs, ombres — et t'explique comment dessiner chacune.", choose: "Choisir une image", camera: "Prendre une photo", working: "Analyse de l'image…", aiWorking: "Rédaction de ton guide personnel…", guide: "Guide de dessin étape par étape", final: "Résultat final", tools: "Matériel nécessaire", palette: "Couleurs suggérées", tips: "Secrets de pro", noteT: "Dernier conseil", stepsTitle: "Étapes", fix: "Corriger sujet / fond", dlAll: "Télécharger toutes les étapes", where: "Où", how: "Comment", toolsW: "Outils", avoid: "À éviter", compare: "Comparer au final", newOnly: "Seulement le nouveau", download: "Télécharger", full: "Plein écran", done: "J'ai dessiné ça", prev: "Précédente", next: "Suivante", close: "Fermer", honest: "Chaque étape est calculée à partir de ton image par du code (détection de contours, regroupement des couleurs, géométrie). Les traits sont des contours extraits — un guide à copier, pas une esquisse faite à la main.", generic: "Conseils généraux — IA indisponible ici.", aiBy: "Personnalisé par", fixHelp: "Touche une partie de l'image, puis dis ce que c'est. Les étapes se mettent à jour.", roles: { background: "Fond", foreground: "Sujet", secondary: "Secondaire", detail: "Détail" }, err: "Impossible d'analyser l'image.", aiErr: "Le guide IA a échoué — conseils généraux affichés.",
+      steps: { sketch: ["Esquisse légère", "Place légèrement les grandes formes : horizon, volumes, position du sujet."], lines: ["Contours nets", "Repasse les traits importants au crayon plus gras ou au feutre fin."], background: ["Couleurs du fond", "Remplis les grandes zones du fond en couches légères et régulières."], colors: ["Couleurs principales", "Colorie le sujet et les autres zones avec leur couleur de base."], shading: ["Ombres et profondeur", "Ajoute les tons foncés et les transitions douces, couche par couche."], final: ["Touches finales", "Fais ressortir les lumières et ajoute les petits détails. Terminé !"] },
+      det: { sketch: ["Sur toute la feuille, en suivant les lignes guides.", "Traits très légers et effaçables. Place les formes, pas les détails.", "Crayon HB, gomme.", "Appuyer fort ou dessiner les détails trop tôt."], lines: ["Le long des bords montrés dans l'étape.", "Un seul trait sûr par bord ; ignore le bruit.", "Crayon 2B ou feutre 0,3.", "Contourner chaque ligne de texture."], background: ["Les grandes zones derrière le sujet.", "Pression légère, petits cercles ou traits parallèles dans le même sens.", "Crayons de couleur aux tons du fond.", "Laisser des blancs ou appuyer trop tôt."], colors: ["Dans le sujet et les formes restantes.", "Une couche de base par zone, puis une seconde pour foncer.", "Crayons de couleur de la palette.", "Mélanger trop de couleurs dans une zone."], shading: ["Côté opposé à la lumière, sous les objets, dans les creux.", "Fonce progressivement ; adoucis les bords.", "Crayons plus foncés, estompe ou crayon blanc.", "Mettre du noir dans chaque ombre."], final: ["Les points les plus clairs et les petits détails.", "Garde ou ravive les lumières ; ajoute les petits accents à la fin.", "Stylo gel blanc ou crayon blanc, crayon taillé.", "En faire trop — sache t'arrêter."] },
+      materials: ["Papier à dessin (A4)", "Crayon léger (HB)", "Crayon 2B", "Gomme", "Crayons de couleur", "Taille-crayon"], tipsList: ["Commence léger, fonce ensuite.", "Travaille du fond vers l'avant.", "Construis la couleur en couches fines.", "Plisse les yeux pour voir les grandes valeurs.", "N'appuie pas fort avec le crayon."], note: "La simplicité est le secret d'un beau dessin." },
+    ar: { redo: "أعد كتابة دليلي", model: "النموذج", effort: "التفكير", eff: ["سريع", "متوازن", "معمّق"], newImg: "صورة جديدة", upTitle: "حوّل أي صورة إلى دليل رسم", upText: "ارفع صورة. يحسب DrawMaster كل خطوة منها داخل متصفحك — التخطيط، والخطوط، والألوان، والظلال — ويشرح لك كيف ترسم كل واحدة.", choose: "اختر صورة", camera: "التقط صورة", working: "جارٍ تحليل الصورة…", aiWorking: "جارٍ كتابة دليلك الشخصي…", guide: "دليل الرسم خطوة بخطوة", final: "النتيجة النهائية", tools: "الأدوات المطلوبة", palette: "لوحة الألوان المقترحة", tips: "أسرار الاحتراف", noteT: "ملاحظة أخيرة", stepsTitle: "الخطوات", fix: "تصحيح الموضوع / الخلفية", dlAll: "تنزيل كل الخطوات", where: "أين", how: "كيف", toolsW: "الأدوات", avoid: "تجنّب", compare: "قارن بالنتيجة", newOnly: "الجديد فقط", download: "تنزيل", full: "ملء الشاشة", done: "رسمتُ هذه", prev: "السابقة", next: "التالية", close: "إغلاق", honest: "كل خطوة محسوبة من صورتك بواسطة الشيفرة (كشف الحواف، تجميع الألوان، الهندسة). الخطوط حواف مستخرجة — دليل للنسخ، لا تخطيط مرسوم باليد.", generic: "إرشادات عامة — الذكاء الاصطناعي غير متاح هنا.", aiBy: "مخصّص بواسطة", fixHelp: "المس جزءًا من الصورة ثم حدّد ما هو. تتحدث الخطوات تلقائيًا.", roles: { background: "خلفية", foreground: "الموضوع", secondary: "ثانوي", detail: "تفصيل" }, err: "تعذّر تحليل الصورة.", aiErr: "فشل دليل الذكاء الاصطناعي — تُعرض إرشادات عامة.",
+      steps: { sketch: ["التخطيط الأولي", "ارسم الأشكال الكبرى بخطوط خفيفة: الأفق، الكتل، مكان الموضوع."], lines: ["الخطوط النظيفة", "مرّر على الخطوط المهمة بقلم أغمق أو قلم حبر رفيع."], background: ["ألوان الخلفية", "لوّن المساحات الكبيرة في الخلفية بطبقات خفيفة ومتساوية."], colors: ["الألوان الأساسية", "لوّن الموضوع وباقي المساحات بلونها الأساسي."], shading: ["الظلال والعمق", "أضف الدرجات الداكنة والتدرجات الناعمة طبقة بعد طبقة."], final: ["اللمسات الأخيرة", "أبرز مناطق الضوء وأضف التفاصيل الصغيرة. انتهيت!"] },
+      det: { sketch: ["على الورقة كلها، باتباع خطوط الإرشاد.", "خطوط خفيفة جدًا قابلة للمسح. ضع الأشكال لا التفاصيل.", "قلم رصاص HB، ممحاة.", "الضغط بقوة أو رسم التفاصيل مبكرًا."], lines: ["على امتداد الحواف الظاهرة في الخطوة.", "خط واثق واحد لكل حافة؛ تجاهل الضجيج.", "قلم 2B أو قلم حبر 0.3.", "تحديد كل خط من خطوط الملمس."], background: ["المساحات الكبرى خلف الموضوع.", "ضغط خفيف، دوائر صغيرة أو خطوط متوازية في اتجاه واحد.", "أقلام ملونة بدرجات الخلفية.", "ترك فراغات بيضاء أو الضغط مبكرًا."], colors: ["داخل الموضوع وباقي الأشكال.", "طبقة أساس واحدة لكل منطقة، ثم طبقة ثانية للتعميق.", "أقلام ملونة من اللوحة.", "خلط ألوان كثيرة في منطقة واحدة."], shading: ["في الجهة المقابلة للضوء، وتحت الأشياء، وفي الثنايا.", "عمّق تدريجيًا وليّن الحواف.", "أقلام أغمق، أداة دمج أو قلم أبيض.", "استعمال الأسود في كل ظل."], final: ["أكثر النقاط إضاءة والتفاصيل الصغيرة.", "احتفظ بمناطق الضوء أو أبرزها؛ أضف اللمسات الصغيرة في النهاية.", "قلم جل أبيض أو قلم أبيض، قلم مبري.", "المبالغة — اعرف متى تتوقف."] },
+      materials: ["ورقة رسم (A4)", "قلم رصاص خفيف (HB)", "قلم 2B", "ممحاة", "أقلام ملونة", "مبراة"], tipsList: ["ابدأ بخفة ثم عمّق.", "اعمل من الخلفية إلى الأمام.", "ابنِ اللون بطبقات رقيقة.", "ضيّق عينيك لترى الدرجات الكبرى.", "لا تضغط على القلم بقوة."], note: "بساطة الرسم هي سرّ جماله!" },
+  };
+  const store = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} } };
+  let lang = store.get("dm.lang", (navigator.language || "en").slice(0, 2)); if (!TX[lang]) lang = "en";
+  const T = () => TX[lang];
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null && text !== "") e.textContent = text; return e; };
 
-const KEYS=['guides','construction','silhouettes','outlines','details','bgBase','fgBase','secondary','shadows','gradients','textures','highlights','final'];
-const MODELS={haiku:{id:'claude-haiku-5-5',tier:'quick',name:'Haiku 5.5'},sonnet:{id:'claude-sonnet-5-5',tier:'default',name:'Sonnet 5.5'},opus:{id:'claude-opus-5-5',tier:'complex',name:'Opus 5.5'}};
-const EFFORTS=['low','medium','high'];
-const LANGNAME={en:'English',fr:'French',ar:'Arabic'};
-const KIND_LABEL={construction:'Preparation',line:'Black outlines',color:'Colouring',value:'Shading',finish:'Finishing'};
-const NOTE={
- guides:'Computed guides: thirds, subject box, centre of mass and horizon are measured from your image by code.',
- construction:'Geometry fitted by code to the main regions. These ellipses and rectangles are approximations, not a hand-drawn sketch.',
- silhouettes:'Outlines of foreground regions traced by code from the automatic segmentation, not hand-drawn.',
- outlines:'Edges extracted from your image by an edge filter (Canny). They are not hand-drawn lines.',
- details:'Fine edges extracted from your image by an edge filter. Not hand-drawn.',
- bgBase:'Flat colours taken from a clustered palette of your image.',fgBase:'Flat colours taken from a clustered palette of your image.',secondary:'Flat colours taken from a clustered palette of your image.',
- shadows:'Darker areas computed from the brightness bands of your image.',gradients:'Blend toward an edge-preserving smoothed copy of your image.',textures:'High-frequency detail computed from your image (original minus smooth).',
- highlights:'Brightest areas computed from your image.',final:'The final stage is your original image.'};
+  /* ---------------- step groups (6 simple steps built from the engine's stages) ---------------- */
+  const GROUPS = [
+    { id: "sketch", keys: ["guides", "construction", "silhouettes"] },
+    { id: "lines", keys: ["outlines", "details"] },
+    { id: "background", keys: ["bgBase"] },
+    { id: "colors", keys: ["fgBase", "secondary"] },
+    { id: "shading", keys: ["shadows", "gradients", "textures"] },
+    { id: "final", keys: ["highlights", "final"] },
+  ];
+  const S = { an: null, plan: [], steps: [], img: null, blob: null, ai: null, aiModel: "", done: store.get("dm.done", {}), tools: store.get("dm.tools", {}),
+    model: store.get("dm.model", "sonnet"), effort: store.get("dm.effort", 1), sample: null, sampleReady: null };
+  const MODELS = { haiku: ["claude-haiku-5-5", "quick", "Haiku 5.5"], sonnet: ["claude-sonnet-5-5", "default", "Sonnet 5.5"], opus: ["claude-opus-5-5", "complex", "Opus 5.5"] };
+  function buildSteps() {
+    const have = new Set(S.plan.flatMap((p) => p.includes || [p.key]));
+    const planKeys = S.plan.map((p) => p.key);
+    S.steps = GROUPS.map((g) => { const keys = g.keys.filter((k) => have.has(k)); const render = [...keys].reverse().find((k) => planKeys.includes(k)) || keys[keys.length - 1]; return keys.length ? { id: g.id, keys, render } : null; }).filter(Boolean);
+  }
+  const stepText = (id) => { const ai = S.ai && S.ai.steps && S.ai.steps[id]; const g = T().steps[id], d = T().det[id];
+    return { title: (ai && ai.title) || g[0], caption: (ai && ai.caption) || g[1], where: (ai && ai.where) || d[0], how: (ai && ai.how) || d[1], tools: (ai && ai.tools) || d[2], avoid: (ai && ai.avoid) || d[3] }; };
 
-/* ---------- generic teaching text: [what, where, how, tools, mistakes, time] ---------- */
-const GEN={
-en:{
-guides:["Prepare the sheet and mark the big proportions before any real drawing: thirds lines, the subject's bounding box, the centre of mass and the horizon if there is one.","Across the whole sheet: two vertical and two horizontal thirds lines, with the subject box placed inside them.","Tape the paper to a board. Lightly mark the sheet edges, divide it into thirds with a ruler, then mark the corners of the subject box. Use very light pressure: these lines are erased later.","HB or 2H pencil, ruler, masking tape, kneaded eraser.","Pressing hard so the lines cannot be erased; skipping the box and running out of space; ignoring the paper's proportions.","5–10 min"],
-construction:["Block in the subject with simple ellipses and rectangles that match its main masses.","On the largest foreground shapes, inside the subject box.","Draw each shape with a loose, light line. Check its size and tilt against the reference, compare the distances between shapes, and correct before moving on.","HB pencil; a ruler for rectangles; a template or compass if you like.","Treating the fitted shapes as exact (they are approximations computed by code); drawing them too dark.","10–15 min"],
-silhouettes:["Trace the outer outline of each foreground mass as one soft, continuous line.","All around the edge where the subject meets the background.","Start from the construction shapes and refine them into the real contour, watching where the edge changes direction. Big curves first, then corners.","HB or 2B pencil, light pressure.","Closing the outline too early and losing proportions; a hard uniform line; copying the jagged automatic trace literally.","10–20 min"],
-outlines:["Go over the main edges with firm black lines to define the shapes.","Along the strongest edges: object borders and big changes of colour or light.","Pencil first, then ink what you are sure about. Vary line weight: thicker on the shadow side and outer edges, thinner inside. Let the ink dry before erasing pencil.","Black fineliner 0.3–0.5 mm, brush pen for thick lines, eraser (after the ink dries).","Inking every tiny edge the filter found; one uniform line weight; smudging wet ink.","20–40 min"],
-details:["Add the small inner details: texture edges, patterns, small shapes.","Inside the subject, mainly where there are many edges.","Use the thinnest line. Suggest rather than copy every edge, group small marks together, and stay inside the silhouette.","Fine liner 0.1–0.3 mm or a sharp pencil.","Overloading detail everywhere; making details as dark as outlines; losing the focal point.","15–30 min"],
-bgBase:["Lay flat base colours on the background first.","On the areas that touch the sheet edges, behind the subject.","Work light to dark in large even layers. Keep the subject's outline clean. With pencils use even strokes in one direction; with watercolour wet the area first.","Large brush, broad marker or coloured pencils matching the palette swatches.","Colouring over the outline; going too dark too soon; uneven strokes.","15–30 min"],
-fgBase:["Fill the main subject with its flat base colours.","Inside the black outlines of the subject.","Test each palette colour on scrap paper, fill each region with one even tone, leave tiny paper gaps for highlights, and keep edges crisp.","Medium brush or coloured pencils, a palette, a water jar for watercolour.","Colours more saturated than the reference; overfilling; ignoring drying time.","20–40 min"],
-secondary:["Add the smaller secondary colour areas (accessories, patterns, secondary objects).","In the smaller regions around or inside the subject.","Same as the base colours: an even flat fill, taking care with neighbouring wet colours.","Small brush or fine marker.","Colours bleeding together; leaving the small areas until the very end.","10–20 min"],
-shadows:["Darken the shadow areas to give volume.","On the side away from the light and where shapes overlap or touch.","Build up in 2–3 layers. Use a darker version of the base colour, not black. Blend the edges gently, following the curve of the form.","Darker pencil (2B–6B), darker colours, blending stump.","Hard-edged shadows; pure black; shading on the wrong side of the light.","20–30 min"],
-gradients:["Blend the flat colours into smooth transitions.","Between neighbouring tones, on rounded forms and in sky or background.","Overlap the two colours, lighten the pressure at the edge, and blend with small circular strokes, a stump or a damp brush.","Blending stump, soft brush, colourless blender.","Over-blending until it is flat or muddy; visible banding; blending across outlines.","15–30 min"],
-textures:["Add surface texture: fur, wood, fabric, foliage.","Only where the texture map shows a lot of detail.","Use short strokes that follow the surface direction. Vary the pressure and place texture in patches that fade out.","Sharp pencil, dry brush, fine pen, sponge.","Texture everywhere; marks that ignore direction; repeating the same stroke.","20–40 min"],
-highlights:["Bring back the brightest spots.","On points facing the light: shiny edges and reflections.","Lift colour with a kneaded eraser or leave the paper bare, then finish with a white gel pen or tiny dots of white paint.","Kneaded eraser, white gel pen, white gouache.","Too many highlights; placing them against the light direction; adding them before shadows are done.","5–15 min"],
-final:["Compare with the original and finish: fix proportions, strengthen contrast, clean up.","Over the whole drawing. Step back and look.","View from a distance, flip the drawing in a mirror or photo to spot errors, clean up smudges, then sign it.","Eraser, fixative spray, mirror or phone.","Over-working; chasing a photographic copy; skipping the step-back check.","10–20 min"]},
-fr:{
-guides:["Préparez la feuille et repérez les grandes proportions avant de dessiner : tiers, cadre du sujet, centre de masse et horizon s'il y en a un.","Sur toute la feuille : deux lignes verticales et deux horizontales aux tiers, avec le cadre du sujet à l'intérieur.","Fixez le papier sur une planche. Marquez légèrement les bords, divisez en tiers à la règle, puis placez les coins du cadre du sujet. Appuyez très peu : ces traits seront effacés.","Crayon HB ou 2H, règle, ruban de masquage, gomme mie de pain.","Appuyer trop fort ; sauter le cadre et manquer de place ensuite ; ignorer le format du papier.","5–10 min"],
-construction:["Bloquez le sujet avec des ellipses et des rectangles simples qui suivent ses masses principales.","Sur les plus grandes formes du premier plan, à l'intérieur du cadre du sujet.","Tracez chaque forme d'un trait léger et libre. Vérifiez taille et inclinaison par rapport à la référence, comparez les distances entre les formes et corrigez avant de continuer.","Crayon HB ; règle pour les rectangles ; gabarit ou compas si vous voulez.","Prendre ces formes pour exactes alors qu'elles sont calculées par le code ; les tracer trop foncées.","10–15 min"],
-silhouettes:["Tracez le contour extérieur de chaque masse du premier plan en une ligne douce et continue.","Tout autour du bord où le sujet rencontre l'arrière-plan.","Partez des formes de construction et affinez-les vers le vrai contour en observant les changements de direction. Grandes courbes d'abord, puis angles.","Crayon HB ou 2B, pression légère.","Fermer le contour trop tôt ; ligne dure et uniforme ; copier à la lettre le tracé automatique dentelé.","10–20 min"],
-outlines:["Repassez les contours principaux en traits noirs fermes pour définir les formes.","Le long des bords les plus marqués : limites des objets, grands changements de couleur ou de lumière.","Crayon d'abord, puis encrez ce dont vous êtes sûr. Variez l'épaisseur : plus épais côté ombre et à l'extérieur, plus fin à l'intérieur. Laissez sécher avant de gommer.","Feutre fin noir 0,3–0,5 mm, pinceau-feutre, gomme (après séchage).","Encrer chaque petit bord détecté ; épaisseur uniforme ; faire baver l'encre fraîche.","20–40 min"],
-details:["Ajoutez les petits détails intérieurs : bords de texture, motifs, petites formes.","À l'intérieur du sujet, surtout là où il y a beaucoup de bords.","Trait le plus fin. Suggérez plutôt que de tout copier, regroupez les petites marques et restez dans la silhouette.","Liner 0,1–0,3 mm ou crayon bien taillé.","Surcharger partout ; détails aussi sombres que les contours ; perdre le point focal.","15–30 min"],
-bgBase:["Posez d'abord les couleurs de base à plat sur l'arrière-plan.","Sur les zones qui touchent les bords de la feuille, derrière le sujet.","Du clair au foncé, en grandes couches régulières. Gardez le contour du sujet net. Crayons : traits réguliers dans un sens ; aquarelle : mouillez la zone d'abord.","Grand pinceau, feutre large ou crayons de couleur selon les pastilles de la palette.","Déborder sur les contours ; foncer trop vite ; traits irréguliers.","15–30 min"],
-fgBase:["Remplissez le sujet principal avec ses couleurs de base à plat.","À l'intérieur des contours noirs du sujet.","Testez chaque couleur sur une feuille, remplissez chaque région d'un ton uniforme, laissez de petits blancs pour les reflets et gardez des bords nets.","Pinceau moyen ou crayons de couleur, palette, godet d'eau pour l'aquarelle.","Couleurs trop saturées par rapport à la référence ; trop remplir ; ignorer le temps de séchage.","20–40 min"],
-secondary:["Ajoutez les zones de couleur secondaires (accessoires, motifs, objets secondaires).","Dans les régions plus petites autour ou dans le sujet.","Comme pour la base : aplat régulier, en faisant attention aux couleurs voisines encore humides.","Petit pinceau ou feutre fin.","Couleurs qui bavent ; oublier les petites zones jusqu'à la fin.","10–20 min"],
-shadows:["Assombrissez les zones d'ombre pour donner du volume.","Du côté opposé à la lumière et là où les formes se chevauchent ou se touchent.","Construisez en 2–3 couches. Utilisez une version plus sombre de la couleur de base, pas du noir. Fondez doucement les bords en suivant la courbe de la forme.","Crayon plus gras (2B–6B), couleurs plus sombres, estompe.","Ombres aux bords durs ; noir pur ; ombrer du mauvais côté de la lumière.","20–30 min"],
-gradients:["Fondez les aplats en transitions douces.","Entre tons voisins, sur les formes arrondies et dans le ciel ou l'arrière-plan.","Superposez les deux couleurs, appuyez moins au bord, puis estompez par petits cercles, à l'estompe ou au pinceau humide.","Estompe, pinceau doux, crayon incolore.","Trop estomper jusqu'à un résultat plat ou boueux ; bandes visibles ; fondre à travers les contours.","15–30 min"],
-textures:["Ajoutez la texture de surface : poils, bois, tissu, feuillage.","Seulement là où la carte de texture montre beaucoup de détail.","Petits traits qui suivent le sens de la surface. Variez la pression et posez la texture par plages qui s'estompent.","Crayon bien taillé, pinceau sec, stylo fin, éponge.","Texture partout ; traits sans direction ; toujours le même geste.","20–40 min"],
-highlights:["Faites revenir les points les plus lumineux.","Aux points qui reçoivent la lumière : bords brillants, reflets.","Enlevez la couleur à la gomme mie de pain ou gardez le blanc du papier, puis terminez au stylo gel blanc ou par petits points de gouache blanche.","Gomme mie de pain, stylo gel blanc, gouache blanche.","Trop de reflets ; reflets contraires à la lumière ; les poser avant la fin des ombres.","5–15 min"],
-final:["Comparez avec l'original et terminez : corrigez les proportions, renforcez les contrastes, nettoyez.","Sur tout le dessin. Prenez du recul.","Regardez de loin, retournez le dessin dans un miroir ou en photo pour repérer les erreurs, nettoyez les traces, puis signez.","Gomme, fixatif, miroir ou téléphone.","Retoucher à l'excès ; viser la copie photographique ; sauter la vérification avec recul.","10–20 min"]},
-ar:{
-guides:["جهّز الورقة وحدّد النسب الكبيرة قبل الرسم الفعلي: خطوط الأثلاث، وإطار الموضوع، ومركز الثقل، والأفق إن وُجد.","على الورقة كلها: خطان رأسيان وخطان أفقيان للأثلاث، وإطار الموضوع داخلها.","ثبّت الورقة على لوح. علّم حواف الورقة بخفة، وقسّمها إلى أثلاث بمسطرة، ثم ضع زوايا إطار الموضوع. اضغط بخفة شديدة لأن هذه الخطوط ستُمحى لاحقاً.","قلم HB أو 2H، مسطرة، شريط لاصق ورقي، ممحاة عجينية.","الضغط بقوة؛ تخطي الإطار ثم نفاد المساحة؛ تجاهل أبعاد الورقة.","5–10 دقائق"],
-construction:["ابنِ الموضوع بأشكال بيضاوية ومستطيلات بسيطة تطابق كتله الرئيسية.","على أكبر أشكال المقدمة، داخل إطار الموضوع.","ارسم كل شكل بخط خفيف حر. قارن حجمه وميله بالمرجع، وقارن المسافات بين الأشكال، وصحّح قبل المتابعة.","قلم HB، مسطرة للمستطيلات، قالب أو فرجار إن شئت.","اعتبار الأشكال دقيقة تماماً مع أنها تقديرات حسبها الكود؛ رسمها داكنة جداً.","10–15 دقيقة"],
-silhouettes:["ارسم الخط الخارجي لكل كتلة في المقدمة بخط ناعم متصل.","حول الحافة التي يلتقي فيها الموضوع بالخلفية.","انطلق من أشكال البناء وصقلها إلى الكنتور الحقيقي مع ملاحظة تغيّر اتجاه الحافة. ابدأ بالمنحنيات الكبيرة ثم الزوايا.","قلم HB أو 2B بضغط خفيف.","إغلاق الكنتور مبكراً؛ خط قاسٍ متساوٍ؛ نسخ التتبع الآلي المسنّن حرفياً.","10–20 دقيقة"],
-outlines:["مرّر على الحواف الرئيسية بخطوط سوداء ثابتة لتحديد الأشكال.","على أقوى الحواف: حدود الأجسام وتغيّرات اللون أو الضوء الكبيرة.","ابدأ بالرصاص ثم حبّر ما أنت متأكد منه. نوّع سماكة الخط: أسمك في جهة الظل وعلى الحواف الخارجية وأرفع في الداخل. اترك الحبر يجف قبل المحو.","قلم حبر أسود 0.3–0.5 ملم، قلم فرشاة، ممحاة (بعد الجفاف).","تحبير كل حافة صغيرة التقطها المرشح؛ سماكة واحدة للخط؛ تلطيخ الحبر الرطب.","20–40 دقيقة"],
-details:["أضف التفاصيل الداخلية الصغيرة: حواف الملمس والزخارف والأشكال الصغيرة.","داخل الموضوع، خصوصاً حيث تكثر الحواف.","استخدم أرق خط. لمّح بدل نسخ كل حافة، واجمع العلامات الصغيرة، وابقَ داخل الكنتور.","قلم رفيع 0.1–0.3 ملم أو قلم رصاص مبري جيداً.","الإفراط في التفاصيل في كل مكان؛ جعلها بقوة الخطوط الخارجية؛ ضياع نقطة التركيز.","15–30 دقيقة"],
-bgBase:["ابدأ بتلوين الخلفية بألوان أساسية مسطّحة.","في المناطق الملامسة لحواف الورقة، خلف الموضوع.","اعمل من الفاتح إلى الداكن بطبقات كبيرة متساوية. حافظ على نظافة كنتور الموضوع. بالألوان الخشبية استخدم ضربات متساوية باتجاه واحد، وبالألوان المائية بلّل المساحة أولاً.","فرشاة كبيرة أو قلم عريض أو ألوان خشبية بحسب عينات اللوحة.","التلوين فوق الكنتور؛ التغميق مبكراً؛ ضربات غير متساوية.","15–30 دقيقة"],
-fgBase:["املأ الموضوع الرئيسي بألوانه الأساسية المسطحة.","داخل الخطوط السوداء للموضوع.","جرّب كل لون على ورقة جانبية، واملأ كل منطقة بدرجة واحدة متساوية، واترك فراغات صغيرة للانعكاسات، وحافظ على حدة الحواف.","فرشاة متوسطة أو ألوان خشبية، لوحة ألوان، كأس ماء للألوان المائية.","ألوان أكثر إشباعاً من المرجع؛ الإفراط في التعبئة؛ تجاهل وقت الجفاف.","20–40 دقيقة"],
-secondary:["أضف مناطق الألوان الثانوية (الإكسسوارات والزخارف والأجسام الثانوية).","في المناطق الأصغر حول الموضوع أو داخله.","كما في الألوان الأساسية: تعبئة مسطحة متساوية مع الانتباه للألوان المجاورة الرطبة.","فرشاة صغيرة أو قلم رفيع.","امتزاج الألوان؛ نسيان المناطق الصغيرة حتى النهاية.","10–20 دقيقة"],
-shadows:["غمّق مناطق الظل لإعطاء الحجم.","في الجهة البعيدة عن الضوء وحيث تتداخل الأشكال أو تتلامس.","ابنِ الظل بطبقتين أو ثلاث. استخدم درجة أغمق من اللون الأساسي لا الأسود، وامزج الحواف بلطف مع اتباع انحناء الشكل.","قلم 2B–6B، ألوان أغمق، قلم تمويه.","ظلال بحواف قاسية؛ الأسود الصرف؛ التظليل في الجهة الخطأ من الضوء.","20–30 دقيقة"],
-gradients:["امزج الألوان المسطحة في انتقالات ناعمة.","بين الدرجات المتجاورة، وعلى الأشكال المستديرة وفي السماء أو الخلفية.","داخِل اللونين، وخفّف الضغط عند الحافة، وامزج بحركات دائرية صغيرة بقلم التمويه أو بفرشاة رطبة.","قلم تمويه، فرشاة ناعمة، قلم مزج عديم اللون.","الإفراط في المزج حتى يصبح العمل مسطحاً أو موحلاً؛ ظهور خطوط متدرجة؛ المزج عبر الخطوط الخارجية.","15–30 دقيقة"],
-textures:["أضف ملمس السطح: الفرو أو الخشب أو القماش أو الأوراق.","فقط حيث تُظهر خريطة الملمس تفاصيل كثيرة.","استخدم ضربات قصيرة تتبع اتجاه السطح. نوّع الضغط وضع الملمس على شكل بقع تتلاشى.","قلم مبري جيداً، فرشاة جافة، قلم رفيع، إسفنجة.","الملمس في كل مكان؛ ضربات بلا اتجاه؛ تكرار الحركة نفسها.","20–40 دقيقة"],
-highlights:["أعد إبراز أشد النقاط سطوعاً.","في النقاط المواجهة للضوء: الحواف اللامعة والانعكاسات.","ارفع اللون بممحاة عجينية أو اترك بياض الورق، ثم أنهِ بقلم جل أبيض أو نقاط صغيرة من الغواش الأبيض.","ممحاة عجينية، قلم جل أبيض، غواش أبيض.","كثرة اللمعات؛ وضعها بما يخالف اتجاه الضوء؛ إضافتها قبل اكتمال الظلال.","5–15 دقيقة"],
-final:["قارن بالأصل وأنهِ العمل: صحّح النسب، وقوِّ التباين، ونظّف.","على الرسم كله؛ ابتعد قليلاً وتأمل.","انظر من بعيد، واقلب الرسم في المرآة أو الصورة لاكتشاف الأخطاء، ونظّف البقع ثم وقّع.","ممحاة، مثبّت رذاذ، مرآة أو هاتف.","الإفراط في التعديل؛ مطاردة النسخة الفوتوغرافية؛ تخطي فحص الابتعاد.","10–20 دقيقة"]}
-};
-const FIELDS=['what','where','how','tools','colors','mistakes','time'];
-const FL={en:{what:'What to draw',where:'Where',how:'How',tools:'Tools',colors:'Colours',mistakes:'Mistakes to avoid',time:'Time'},
-fr:{what:'Quoi dessiner',where:'Où',how:'Comment',tools:'Outils',colors:'Couleurs',mistakes:'Erreurs à éviter',time:'Durée'},
-ar:{what:'ماذا ترسم',where:'أين',how:'كيف',tools:'الأدوات',colors:'الألوان',mistakes:'أخطاء يجب تجنبها',time:'الوقت'}};
-const SPT={en:{pos:(v,h,n)=>`In your image the subject sits ${v} / ${h} on the sheet and its box covers about ${n}% of it.`,hor:n=>`A horizon line lies about ${n}% down from the top.`,
- v:{u:'upper',m:'middle',l:'lower'},h:{l:'left',c:'centre',r:'right'}},
-fr:{pos:(v,h,n)=>`Dans votre image, le sujet est placé ${v} / ${h} sur la feuille et son cadre en couvre environ ${n} %.`,hor:n=>`Une ligne d'horizon se trouve à environ ${n} % depuis le haut.`,
- v:{u:'en haut',m:'au milieu',l:'en bas'},h:{l:'à gauche',c:'au centre',r:'à droite'}},
-ar:{pos:(v,h,n)=>`في صورتك يقع الموضوع ${v} / ${h} من الورقة، ويغطي إطاره نحو ${n}% منها.`,hor:n=>`يقع خط الأفق على بُعد نحو ${n}% من الأعلى.`,
- v:{u:'في الأعلى',m:'في المنتصف',l:'في الأسفل'},h:{l:'يساراً',c:'في الوسط',r:'يميناً'}}};
-const CNAME={en:{graphite:'light graphite',ink:'black ink',blue:'thin blue guide line',grey:'soft grey'},fr:{graphite:'graphite clair',ink:'encre noire',blue:'trait guide bleu fin',grey:'gris doux'},ar:{graphite:'رصاص فاتح',ink:'حبر أسود',blue:'خط إرشاد أزرق رفيع',grey:'رمادي ناعم'}};
-const MATS={
-en:[["HB pencil","Light construction lines and guides",0],["2B–4B pencil","Shading and darker values",0],["Kneaded eraser","Lifts graphite and highlights without damaging the paper",0],["Drawing paper, 120–180 g (A4 or A3)","Takes erasing and layers of colour",0],["Black fineliner 0.3 / 0.5 mm","Refined black outlines",0],["Ruler","Thirds guides and straight edges",0],["Masking tape and a board","Holds the paper flat",0],["Colour medium (coloured pencils, markers or watercolour)","For the colouring stages; match the palette swatches",0],["Blending stump","Smooth gradients in pencil",1],["White gel pen","Final highlights",1]],
-fr:[["Crayon HB","Traits de construction légers et repères",0],["Crayon 2B–4B","Ombres et valeurs foncées",0],["Gomme mie de pain","Enlève le graphite et crée des reflets sans abîmer le papier",0],["Papier à dessin 120–180 g (A4 ou A3)","Supporte la gomme et les couches de couleur",0],["Feutre fin noir 0,3 / 0,5 mm","Contours noirs définitifs",0],["Règle","Repères des tiers et lignes droites",0],["Ruban de masquage et une planche","Maintient le papier à plat",0],["Médium de couleur (crayons, feutres ou aquarelle)","Pour les étapes de couleur ; suivez les pastilles de la palette",0],["Estompe","Dégradés doux au crayon",1],["Stylo gel blanc","Reflets finaux",1]],
-ar:[["قلم رصاص HB","خطوط بناء خفيفة وخطوط إرشاد",0],["قلم رصاص 2B–4B","التظليل والدرجات الداكنة",0],["ممحاة عجينية","ترفع الجرافيت وتصنع اللمعات دون إتلاف الورق",0],["ورق رسم 120–180 غرام (A4 أو A3)","يتحمل المحو وطبقات اللون",0],["قلم حبر أسود 0.3 / 0.5 ملم","خطوط سوداء نهائية",0],["مسطرة","خطوط الأثلاث والحواف المستقيمة",0],["شريط لاصق ورقي ولوح","لتثبيت الورقة مسطحة",0],["وسيط التلوين (ألوان خشبية أو أقلام تلوين أو ألوان مائية)","لمراحل التلوين؛ طابق عينات اللوحة",0],["قلم تمويه","تدرجات ناعمة بالرصاص",1],["قلم جل أبيض","اللمعات الأخيرة",1]]};
+  /* ---------------- settings ---------------- */
+  function paintSettings() {
+    $("model").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.m === S.model)));
+    $("effort").value = String(S.effort); $("effLbl").textContent = T().eff[S.effort];
+    $("redo").hidden = !(S.sample && S.an); $("aiState").textContent = S.sample ? (S.aiModel ? `${T().aiBy} ${S.aiModel}` : "") : (window.claude ? T().generic : T().generic);
+  }
+  $("model").onclick = (e) => { const b = e.target.closest("button[data-m]"); if (!b) return; S.model = b.dataset.m; store.set("dm.model", S.model); paintSettings(); };
+  $("redo").onclick = () => { $("setBtn").parentElement.open = false; if (S.an && S.sample) personalise(); };
+  $("effort").oninput = () => { S.effort = +$("effort").value; store.set("dm.effort", S.effort); paintSettings(); };
+  $("lang").onchange = () => { lang = $("lang").value; store.set("dm.lang", lang); applyLang(); if (S.an) { renderSheet(); if (S.sample) personalise(); } };
+  function applyLang() {
+    document.documentElement.lang = lang; $("app").dir = lang === "ar" ? "rtl" : "ltr"; $("lang").value = lang;
+    document.querySelectorAll("[data-t]").forEach((n) => { n.textContent = T()[n.dataset.t]; }); paintSettings();
+  }
 
-/* ---------- state ---------- */
-const S={model:LS.get('dm.model','sonnet'),effort:LS.get('dm.effort',1),lang:LS.get('dm.lang','en'),theme:LS.get('dm.theme','auto'),
- prep:null,A:null,stages:[],idx:0,ver:0,cache:new Map(),layers:{guides:true,construction:true,lines:true,color:true,values:true},
- cmp:'off',cmpPos:50,delta:false,regionMode:false,sel:null,merging:false,done:new Set(),imgKey:'',sample:null,dl:undefined,
- ai:{state:'idle'},aiCtl:null,tok:0,jpeg:null,refCanvas:null};
-if(!MODELS[S.model])S.model='sonnet'; if(!(S.effort>=0&&S.effort<=2))S.effort=1; if(!GEN[S.lang])S.lang='en';
-let A=null;
-const el={};['uploadScreen','studio','drop','file','cam','upErr','aiNote','aiBanner','prog','progBar','progText','timeline','stageTitle','stageCount','refView','stageView','refPan','stagePan','refCv','stageCv','beforeCv','deltaCv','maskCv','cmpHandle','cmpPos','tagL','tagR','busy','stageCap','regionHint','lessonTitle','badges','honest','lessonBody','doneChk','pfill','pText','zVal','toast','workspace','newBtn','themeBtn','lang','effort','effortOut','modelSeg','modelCtl','effortCtl','reanalyse','aiState','aiInfo','regionTool','regionSel','regionForm','regionInfo','roleSel','labelInp','ordOut','mergeBtn','fixMsg','matList','matSrc','matCount','shopBox','shopTxt','deltaOn','fsBtn'].forEach(id=>el[id]=document.getElementById(id));
+  /* ---------------- upload & analysis ---------------- */
+  const setStatus = (m, busy, err) => { const s = $("status"); s.replaceChildren(); s.className = "status" + (err ? " err" : ""); if (busy) s.append(el("span", "spin")); if (m) s.append(document.createTextNode(m)); };
+  $("pick").onclick = () => $("file").click(); $("cam").onclick = () => $("camIn").click();
+  $("file").onchange = (e) => load(e.target.files[0]); $("camIn").onchange = (e) => load(e.target.files[0]);
+  ["dragenter", "dragover"].forEach((v) => $("drop").addEventListener(v, (e) => { e.preventDefault(); $("drop").classList.add("over"); }));
+  ["dragleave", "drop"].forEach((v) => $("drop").addEventListener(v, (e) => { e.preventDefault(); $("drop").classList.remove("over"); }));
+  $("drop").addEventListener("drop", (e) => load(e.dataTransfer.files[0]));
+  document.addEventListener("paste", (e) => { const f = Array.from((e.clipboardData && e.clipboardData.items) || []).find((i) => i.kind === "file"); if (f) load(f.getAsFile()); });
+  $("newBtn").onclick = () => { $("sheet").hidden = true; $("drop").hidden = false; $("newBtn").hidden = true; setStatus(""); };
+  async function load(file) {
+    if (!file || !/^image\//.test(file.type)) return;
+    setStatus(T().working, true);
+    try {
+      const url = URL.createObjectURL(file); const img = new Image(); img.src = url; await img.decode();
+      await new Promise((r) => setTimeout(r, 30));
+      const prep = DMEngine.prepare(img, { maxSide: 900 });
+      await new Promise((r) => setTimeout(r, 30));
+      S.an = DMEngine.analyze(prep); S.plan = DMEngine.planStages(S.an); buildSteps();
+      S.img = url; S.blob = file; S.ai = null; S.aiModel = "";
+      $("drop").hidden = true; $("sheet").hidden = false; $("newBtn").hidden = false; setStatus("");
+      renderSheet(); window.scrollTo({ top: 0 });
+      await S.sampleReady; if (S.sample) personalise();
+    } catch (e) { console.error(e); setStatus(T().err, false, true); }
+  }
 
-function toast(m,ms=4500){el.toast.textContent=m;el.toast.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.toast.hidden=true,ms)}
+  /* ---------------- the guide sheet ---------------- */
+  const thumbs = {};
+  function stepCanvas(st, scale = 1) { return DMEngine.renderStage(S.an, st.render, { scale }); }
+  function renderSheet() {
+    const sh = $("sheet"); sh.replaceChildren(); const t = T(); const an = S.an;
+    sh.style.setProperty("--ar", `${an.width} / ${an.height}`);
+    const titleBox = el("div"); titleBox.append(el("div", "banner", t.guide)); if (S.ai && S.ai.title) { titleBox.append(document.createElement("br"), el("div", "sub", S.ai.title)); }
+    sh.append(titleBox);
+    // hero: final + tools + palette
+    const hero = el("div", "hero");
+    const fin = el("div", "final"); const im = el("img"); im.src = S.img; im.alt = t.final; fin.append(im, el("span", "tag", "👑 " + t.final)); hero.append(fin);
+    const side = el("div", "side");
+    const tb = el("div", "box"); tb.append(el("span", "kick", t.tools)); const ul = el("ul", "tools");
+    (S.ai && S.ai.materials && S.ai.materials.length ? S.ai.materials : t.materials).slice(0, 8).forEach((m) => { const li = el("li"); const lb = el("label"); const cb = el("input"); cb.type = "checkbox"; cb.checked = !!S.tools[m]; cb.onchange = () => { S.tools[m] = cb.checked; store.set("dm.tools", S.tools); }; lb.append(cb, document.createTextNode(m)); li.append(lb); ul.append(li); });
+    tb.append(ul); side.append(tb);
+    const pb = el("div", "box"); pb.append(el("span", "kick", t.palette)); const pal = el("div", "pal");
+    const cols = S.ai && S.ai.colors && S.ai.colors.length ? S.ai.colors : an.palette.slice().sort((a, b) => b.count - a.count).slice(0, 8).map((p) => ({ hex: p.hex, name: DMEngine.colorName(p.rgb) }));
+    cols.slice(0, 8).forEach((c) => { const s = el("div", "sw"); const i = el("i"); i.style.background = c.hex; s.append(i, el("span", null, c.name)); pal.append(s); });
+    pb.append(pal); side.append(pb); hero.append(side); sh.append(hero);
+    // steps grid
+    const grid = el("div", "steps");
+    S.steps.forEach((st, i) => {
+      const tx = stepText(st.id); const card = el("button", "step"); card.type = "button";
+      const h = el("div", "step-h"); h.append(el("span", "num", String(i + 1)), el("b", null, tx.title)); if (S.done[st.id]) h.append(el("span", "done-t", "✓")); card.append(h);
+      const th = el("div", "thumb"); const key = st.render; if (!thumbs[key]) thumbs[key] = stepCanvas(st, 0.5); th.append(cloneCanvas(thumbs[key])); card.append(th);
+      card.append(el("p", "cap", tx.caption)); card.onclick = () => openViewer(i); grid.append(card);
+    });
+    sh.append(grid);
+    // bottom: tips + note
+    const bot = el("div", "bottom");
+    const tp = el("div", "box"); tp.append(el("span", "kick", "💡 " + t.tips)); const tl = el("ul", "tips"); (S.ai && S.ai.tips && S.ai.tips.length ? S.ai.tips : t.tipsList).slice(0, 6).forEach((x) => tl.append(el("li", null, x))); tp.append(tl); bot.append(tp);
+    const nt = el("div", "note"); nt.append(el("b", null, "⭐ " + t.noteT), el("span", null, (S.ai && S.ai.note) || t.note)); bot.append(nt); sh.append(bot);
+    const links = el("div", "links"); const fx = el("button", "btn", "✎ " + t.fix); fx.type = "button"; fx.onclick = openFix; const da = el("button", "btn", "⬇ " + t.dlAll); da.type = "button"; da.onclick = downloadAll; links.append(fx, da); sh.append(links);
+    sh.append(el("p", "honest", t.honest + " " + (S.sample ? (S.aiModel ? `${t.aiBy} ${S.aiModel}.` : "") : t.generic)));
+  }
+  function cloneCanvas(src) { const c = document.createElement("canvas"); c.width = src.width; c.height = src.height; c.getContext("2d").drawImage(src, 0, 0); return c; }
 
-/* ---------- theme / settings ---------- */
-function applyTheme(){const r=document.documentElement;if(S.theme==='auto')r.removeAttribute('data-theme');else r.setAttribute('data-theme',S.theme);
- const t='Theme: '+S.theme;el.themeBtn.textContent=t;el.themeBtn.setAttribute('aria-label',t+' (click to change)')}
-el.themeBtn.onclick=()=>{S.theme={auto:'light',light:'dark',dark:'auto'}[S.theme]||'auto';LS.set('dm.theme',S.theme);applyTheme()};
-function buildModelSeg(){el.modelSeg.innerHTML=Object.entries(MODELS).map(([k,m])=>`<label><input type="radio" name="model" value="${k}" ${k===S.model?'checked':''}><span>${m.name}</span></label>`).join('');
- el.modelSeg.onchange=e=>{if(e.target.name==='model'){S.model=e.target.value;LS.set('dm.model',S.model);renderAI();toast('Model set to '+MODELS[S.model].name+'. It applies to the next AI analysis.')}}}
-function syncEffort(){el.effort.value=S.effort;el.effortOut.textContent=EFFORTS[S.effort];el.effort.setAttribute('aria-valuetext',EFFORTS[S.effort])}
-el.effort.oninput=()=>{S.effort=+el.effort.value;LS.set('dm.effort',S.effort);syncEffort()};
-el.lang.value=S.lang;
-el.lang.onchange=()=>{S.lang=el.lang.value;LS.set('dm.lang',S.lang);if(A){renderLesson();renderMaterials();renderAI()}};
+  /* ---------------- viewer ---------------- */
+  function deltaCanvas(i) {
+    const cur = stepCanvas(S.steps[i]); if (i === 0) return cur;
+    const prev = stepCanvas(S.steps[i - 1]); const w = cur.width, h = cur.height;
+    const cd = cur.getContext("2d").getImageData(0, 0, w, h), pd = prev.getContext("2d").getImageData(0, 0, w, h).data, d = cd.data;
+    for (let p = 0; p < d.length; p += 4) { const diff = Math.abs(d[p] - pd[p]) + Math.abs(d[p + 1] - pd[p + 1]) + Math.abs(d[p + 2] - pd[p + 2]); if (diff < 24) { d[p] = d[p + 1] = d[p + 2] = 255; } }
+    const out = document.createElement("canvas"); out.width = w; out.height = h; out.getContext("2d").putImageData(cd, 0, 0); return out;
+  }
+  function openViewer(i) {
+    const t = T(), st = S.steps[i], tx = stepText(st.id);
+    const ov = $("ovl"); ov.replaceChildren(); const back = el("div", "ov"); const vw = el("div", "vw"); vw.dir = lang === "ar" ? "rtl" : "ltr"; vw.setAttribute("role", "dialog"); vw.setAttribute("aria-modal", "true");
+    const close = () => { ov.replaceChildren(); document.removeEventListener("keydown", key); };
+    const key = (e) => { if (e.key === "Escape") close(); if (e.key === "ArrowRight") go(lang === "ar" ? -1 : 1); if (e.key === "ArrowLeft") go(lang === "ar" ? 1 : -1); };
+    const go = (d) => { const j = i + d; if (j >= 0 && j < S.steps.length) { close(); openViewer(j); } };
+    document.addEventListener("keydown", key); back.onclick = (e) => { if (e.target === back) close(); };
+    const head = el("div", "vw-h"); head.append(el("span", "num", String(i + 1)), el("h3", null, tx.title));
+    const pv = el("button", "btn", "‹ " + t.prev); pv.type = "button"; pv.disabled = i === 0; pv.onclick = () => go(-1);
+    const nx = el("button", "btn", t.next + " ›"); nx.type = "button"; nx.disabled = i === S.steps.length - 1; nx.onclick = () => go(1);
+    const cl = el("button", "btn", "✕"); cl.type = "button"; cl.setAttribute("aria-label", t.close); cl.onclick = close; head.append(pv, nx, cl); vw.append(head);
+    // stage with zoom/pan + compare
+    const stage = el("div", "stage"); const base = stepCanvas(st); const orig = document.createElement("canvas"); orig.width = base.width; orig.height = base.height; orig.className = "orig";
+    const oimg = new Image(); oimg.onload = () => orig.getContext("2d").drawImage(oimg, 0, 0, orig.width, orig.height); oimg.src = S.img;
+    const line = el("div", "cmp-line"); line.hidden = true; stage.append(base, orig, line); vw.append(stage);
+    let z = 1, px = 0, py = 0; const apply = () => { [base, orig].forEach((c) => (c.style.transform = `translate(${px}px,${py}px) scale(${z})`)); };
+    stage.addEventListener("wheel", (e) => { e.preventDefault(); z = Math.min(6, Math.max(1, z * (e.deltaY < 0 ? 1.15 : 1 / 1.15))); if (z === 1) { px = py = 0; } apply(); }, { passive: false });
+    let drag = null; stage.addEventListener("pointerdown", (e) => { drag = [e.clientX - px, e.clientY - py]; stage.setPointerCapture(e.pointerId); });
+    stage.addEventListener("pointermove", (e) => { if (!drag || z === 1) return; px = e.clientX - drag[0]; py = e.clientY - drag[1]; apply(); });
+    stage.addEventListener("pointerup", () => (drag = null));
+    const tools = el("div", "vw-tools");
+    const zin = el("button", "btn", "+"); zin.type = "button"; zin.setAttribute("aria-label", "zoom in"); zin.onclick = () => { z = Math.min(6, z * 1.3); apply(); };
+    const zout = el("button", "btn", "−"); zout.type = "button"; zout.setAttribute("aria-label", "zoom out"); zout.onclick = () => { z = Math.max(1, z / 1.3); if (z === 1) px = py = 0; apply(); };
+    const cmp = el("label"); const cr = el("input"); cr.type = "range"; cr.min = 0; cr.max = 100; cr.value = 100; cr.setAttribute("aria-label", t.compare);
+    cr.oninput = () => { const v = +cr.value; stage.style.setProperty("--cut", v + "%"); stage.style.setProperty("--cutp", v + "%"); line.hidden = v >= 100; }; cmp.append(document.createTextNode(t.compare), cr);
+    const nw = el("label"); const nc = el("input"); nc.type = "checkbox"; nc.onchange = () => { const c = nc.checked ? deltaCanvas(i) : stepCanvas(st); base.getContext("2d").drawImage(c, 0, 0); }; nw.append(nc, document.createTextNode(t.newOnly)); if (i === 0) nw.hidden = true;
+    const fs = el("button", "btn", "⛶ " + t.full); fs.type = "button"; fs.onclick = () => { (stage.requestFullscreen ? stage.requestFullscreen() : Promise.reject()).catch(() => {}); };
+    const dl = el("button", "btn red", "⬇ " + t.download); dl.type = "button"; dl.onclick = () => saveStep(i);
+    const dn = el("label"); const dc = el("input"); dc.type = "checkbox"; dc.checked = !!S.done[st.id]; dc.onchange = () => { S.done[st.id] = dc.checked; store.set("dm.done", S.done); renderSheet(); }; dn.append(dc, document.createTextNode(t.done));
+    tools.append(zout, zin, cmp, nw, fs, dl, dn); vw.append(tools);
+    const det = el("div", "detail"); det.append(el("p", null, tx.caption));
+    [["where", tx.where], ["how", tx.how], ["toolsW", tx.tools], ["avoid", tx.avoid]].forEach(([k, v]) => { if (!v) return; const p = el("p"); p.append(el("b", null, t[k] + " : "), document.createTextNode(v)); det.append(p); });
+    vw.append(det); back.append(vw); ov.append(back); pv.focus();
+  }
 
-/* ---------- AI availability ---------- */
-async function initAI(){
- try{S.sample=(await window.claude?.use?.('sample'))||null}catch(e){S.sample=null}
- const on=!!S.sample;$$('.ai-only').forEach(x=>x.hidden=!on);
- el.aiNote.className='notice '+(on?'ok':'bad');
- el.aiNote.textContent=on?'Claude is available: after your image is analysed it can personalise the lesson text and help sort subject from background.':'Claude is not available in this view. You will get general built-in guidance for every stage; the images are still computed from your picture.';
- renderAI();
-}
+  /* ---------------- subject / background correction ---------------- */
+  function openFix() {
+    const t = T(); const ov = $("ovl"); ov.replaceChildren(); const back = el("div", "ov"); const vw = el("div", "vw"); vw.dir = lang === "ar" ? "rtl" : "ltr";
+    const close = () => { ov.replaceChildren(); thumbsReset(); renderSheet(); }; back.onclick = (e) => { if (e.target === back) close(); };
+    const head = el("div", "vw-h"); head.append(el("h3", null, t.fix)); const cl = el("button", "btn", "✕"); cl.type = "button"; cl.onclick = close; head.append(cl); vw.append(head, el("p", "honest", t.fixHelp));
+    const stage = el("div", "stage"); stage.style.cursor = "crosshair"; let sel = null;
+    const key = S.steps.find((s) => s.id === "colors") ? S.steps.find((s) => s.id === "colors").render : S.steps[S.steps.length - 2].render;
+    const draw = () => { stage.replaceChildren(DMEngine.renderStage(S.an, key, { highlightRegion: sel ? sel.id : undefined })); };
+    const chips = el("div", "region-chips");
+    const paintChips = () => { chips.replaceChildren(...["background", "foreground", "secondary", "detail"].map((r) => { const b = el("button", "btn", t.roles[r]); b.type = "button"; b.disabled = !sel; b.setAttribute("aria-pressed", String(!!sel && sel.role === r)); b.onclick = () => { DMEngine.setRole(S.an, sel.id, r, "user"); S.plan = DMEngine.planStages(S.an); buildSteps(); draw(); paintChips(); }; return b; })); };
+    stage.onclick = (e) => { const c = stage.querySelector("canvas"); const r = c.getBoundingClientRect(); const x = (e.clientX - r.left) * S.an.width / r.width, y = (e.clientY - r.top) * S.an.height / r.height; sel = DMEngine.regionAt(S.an, x, y); draw(); paintChips(); };
+    draw(); paintChips(); vw.append(stage, chips); back.append(vw); ov.append(back);
+  }
+  function thumbsReset() { Object.keys(thumbs).forEach((k) => delete thumbs[k]); }
 
-/* ---------- upload ---------- */
-function showErr(m){el.upErr.textContent=m||''}
-el.file.onchange=()=>{if(el.file.files[0])loadFile(el.file.files[0]);el.file.value=''};
-el.cam.onchange=()=>{if(el.cam.files[0])loadFile(el.cam.files[0]);el.cam.value=''};
-['fileBtn','camBtn'].forEach(id=>document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.currentTarget.click()}}));
-let dragN=0;
-window.addEventListener('dragenter',e=>{e.preventDefault();dragN++;el.drop.classList.add('over')});
-window.addEventListener('dragleave',()=>{dragN=Math.max(0,dragN-1);if(!dragN)el.drop.classList.remove('over')});
-window.addEventListener('dragover',e=>e.preventDefault());
-window.addEventListener('drop',e=>{e.preventDefault();dragN=0;el.drop.classList.remove('over');const f=[...(e.dataTransfer?.files||[])].find(f=>/^image\//.test(f.type))||e.dataTransfer?.files?.[0];if(f)loadFile(f);else showErr('That was not an image file.')});
-window.addEventListener('paste',e=>{const it=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith('image/'));if(it){e.preventDefault();const f=it.getAsFile();if(f)loadFile(f)}});
-el.newBtn.onclick=()=>{el.uploadScreen.hidden=false;el.studio.hidden=true;el.newBtn.hidden=true;window.scrollTo(0,0)};
+  /* ---------------- downloads ---------------- */
+  async function saveCanvas(c, name) {
+    const blob = await DMEngine.toBlob(c);
+    const dl = window.claude && window.claude.use ? await window.claude.use("downloads").catch(() => null) : null;
+    if (dl) return dl.save({ filename: name, data: blob });
+    if (!window.claude) { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 3000); }
+  }
+  const saveStep = (i) => saveCanvas(stepCanvas(S.steps[i], 2), `drawmaster-step-${i + 1}-${S.steps[i].id}.png`).catch(() => {});
+  async function downloadAll() { for (let i = 0; i < S.steps.length; i++) { try { await saveStep(i); } catch { break; } } }
 
-function setProg(p,t){el.prog.hidden=false;el.progBar.style.width=Math.round(p*100)+'%';el.progText.textContent=t}
-async function decode(file){
- try{if(window.createImageBitmap)return await createImageBitmap(file)}catch(e){}
- return await new Promise((res,rej)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{res(im)};im.onerror=()=>rej(new Error('decode'));im.src=u})}
-async function makeJpeg(src){const sw=src.naturalWidth||src.width,sh=src.naturalHeight||src.height,s=Math.min(1,1600/Math.max(sw,sh));const c=document.createElement('canvas');c.width=Math.round(sw*s);c.height=Math.round(sh*s);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(src,0,0,c.width,c.height);return await new Promise(r=>c.toBlob(r,'image/jpeg',.85))}
+  /* ---------------- Claude (vision) personalisation ---------------- */
+  function parseJson(text) {
+    const tr = String(text).trim(); const tries = [tr]; const f = tr.match(/```(?:json)?\s*([\s\S]*?)```/); if (f) tries.push(f[1]); const a = tr.indexOf("{"), b = tr.lastIndexOf("}"); if (a >= 0 && b > a) tries.push(tr.slice(a, b + 1));
+    for (const c of tries) { try { return JSON.parse(c); } catch {} try { return JSON.parse(c.replace(/\\(?!["\\/bfnrtu])/g, "\\\\").replace(/,\s*([}\]])/g, "$1")); } catch {} }
+    throw new Error("json");
+  }
+  async function jpeg() { const c = document.createElement("canvas"); const im = new Image(); im.src = S.img; await im.decode(); const sc = Math.min(1, 1400 / Math.max(im.width, im.height)); c.width = im.width * sc; c.height = im.height * sc; c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); return new Promise((r) => c.toBlob(r, "image/jpeg", 0.88)); }
+  async function personalise() {
+    if (!S.sample || !S.an) return;
+    const ln = { en: "English", fr: "French", ar: "Arabic" }[lang];
+    const ids = S.steps.map((s) => s.id);
+    const prompt = `You are a warm, expert drawing teacher. The image is what the student wants to draw with coloured pencils. A program has already computed ${S.steps.length} step images from it (${ids.join(", ")}): sketch = light construction, lines = clean outlines, background = background base colours, colors = main colours, shading = shadows/gradients/texture, final = highlights and details. Region data computed from the pixels: ${JSON.stringify(DMEngine.summary(S.an)).slice(0, 7000)}
+Write a SHORT, concrete guide for THIS picture in ${ln}. Keep it simple and organised like a printed "how to draw" poster: each caption ≤ 14 words, each detail ≤ 18 words; name real objects and places in the picture ("the rocks on the left", "the sky near the horizon").
+Reply ONLY JSON: {"title":"short name of the scene","steps":{${ids.map((k) => `"${k}":{"title":"2–4 words","caption":"…","where":"…","how":"…","tools":"…","avoid":"…"}`).join(",")}},"materials":["4–7 items"],"colors":[{"hex":"#rrggbb from the region data","name":"plain colour name"}],"tips":["5 short pro secrets"],"note":"one encouraging line","regionRoles":[{"id":0,"role":"background|foreground|secondary|detail"}]}
+regionRoles: only for ids in the region data whose role is clearly wrong (e.g. the sky marked foreground). colors: 6–8 colours from the image.`;
+    const m = MODELS[S.model];
+    const sheet = $("sheet"); const st = el("div", "status"); st.append(el("span", "spin"), document.createTextNode(T().aiWorking)); sheet.prepend(st);
+    try {
+      const r = await S.sample(prompt, { model: m[0], modelTier: m[1], effort: ["low", "medium", "high"][S.effort], images: [await jpeg()], cache: false });
+      const d = parseJson(r.text);
+      const valid = new Set(S.an.regions.map((x) => x.id));
+      (Array.isArray(d.regionRoles) ? d.regionRoles : []).forEach((x) => { const rg = S.an.regions.find((q) => q.id === +x.id); if (rg && valid.has(rg.id) && rg.roleSource !== "user" && ["background", "foreground", "secondary", "detail"].includes(x.role)) DMEngine.setRole(S.an, rg.id, x.role, "ai"); });
+      S.plan = DMEngine.planStages(S.an); buildSteps(); thumbsReset();
+      S.ai = { title: String(d.title || "").slice(0, 80), steps: d.steps && typeof d.steps === "object" ? d.steps : {}, materials: (d.materials || []).map(String).slice(0, 8), colors: (d.colors || []).filter((c) => c && /^#[0-9a-f]{6}$/i.test(c.hex)).map((c) => ({ hex: c.hex, name: String(c.name || "").slice(0, 24) })).slice(0, 8), tips: (d.tips || []).map(String).slice(0, 6), note: String(d.note || "").slice(0, 140) };
+      S.aiModel = r.modelApplied ? m[2] : ({ quick: "Haiku", default: "Sonnet", complex: "Opus" }[r.modelTierApplied] || m[2]);
+    } catch (e) { const n = el("p", "honest", T().aiErr); setTimeout(() => sheet.prepend(n), 0); }
+    finally { st.remove(); renderSheet(); paintSettings(); }
+  }
+  S.sampleReady = (async () => { if (window.claude && window.claude.use) { try { S.sample = await window.claude.use("sample"); } catch { S.sample = null; } } paintSettings(); })();
 
-let loading=false;
-async function loadFile(file){
- if(loading)return;showErr('');
- if(!window.DMEngine){showErr('The drawing engine (engine.js) did not load, so images cannot be analysed.');return}
- loading=true;let ok=false;
- try{
-  if(S.aiCtl)try{S.aiCtl.abort()}catch(e){}
-  setProg(.04,'Reading your image…');await tick();
-  const src=await decode(file);
-  setProg(.12,'Scaling and preparing pixels…');await tick();
-  const prep=DMEngine.prepare(src,{maxSide:900});
-  S.jpeg=await makeJpeg(src);
-  setProg(.25,'Analysing edges, colours and regions…');await tick();await tick();
-  const an=DMEngine.analyze(prep);
-  setProg(.7,'Planning drawing stages…');await tick();
-  const st=DMEngine.planStages(an);
-  if(!st||!st.length)throw new Error('No stages were produced.');
-  S.prep=prep;A=S.A=an;S.stages=st;S.idx=0;S.ver++;S.cache.clear();S.sel=null;S.merging=false;S.ai={state:'idle'};
-  S.imgKey=[file.name||'image',file.size||0,an.width,an.height].join('|');
-  S.done=new Set(LS.get('dm.done.'+S.imgKey,[]));
-  const rc=document.createElement('canvas');rc.width=an.width;rc.height=an.height;rc.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(an.rgba),an.width,an.height),0,0);S.refCanvas=rc;
-  blit(el.refCv,rc);
-  setProg(.85,'Rendering the first stage…');await tick();
-  el.uploadScreen.hidden=true;el.studio.hidden=false;el.newBtn.hidden=false;
-  resetView();fitPans();
-  buildTimeline();renderMaterials();renderRegionSel();clearSel();
-  await showStage(0);
-  setProg(1,'Done');ok=true;
- }catch(e){console.warn(e);showErr('Could not analyse that image: '+(e&&e.message||e));el.uploadScreen.hidden=false;el.studio.hidden=true}
- finally{el.prog.hidden=true;loading=false}
- if(ok&&S.sample)runAI();else if(ok){S.ai={state:'unavailable'};renderAI();banner()}
-}
-
-function blit(cv,src){if(cv.width!==src.width||cv.height!==src.height){cv.width=src.width;cv.height=src.height}const x=cv.getContext('2d');x.clearRect(0,0,cv.width,cv.height);x.drawImage(src,0,0)}
-
-/* ---------- stage rendering ---------- */
-const layerSig=()=>Object.entries(S.layers).map(([k,v])=>k[0]+(v?1:0)).join('');
-function getStage(key,layers){const L=layers||S.layers;const k=S.ver+'|'+key+'|'+Object.entries(L).map(([a,v])=>a[0]+(v?1:0)).join('');
- let c=S.cache.get(k);if(!c){c=DMEngine.renderStage(A,key,{layers:L,scale:1});S.cache.set(k,c);if(S.cache.size>26)S.cache.delete(S.cache.keys().next().value)}return c}
-function getDelta(key){const k=S.ver+'|d|'+key;let c=S.cache.get(k);if(!c){c=DMEngine.renderDelta(A,key);S.cache.set(k,c)}return c}
-const cur=()=>S.stages[S.idx];
-async function showStage(i,noFocusMove){
- if(!A)return;S.idx=clamp(i,0,S.stages.length-1);const tok=++S.tok;
- renderHead();buildTimeline(true);renderLesson();
- el.busy.hidden=false;await tick();
- try{
-  if(tok!==S.tok)return;
-  const st=cur();blit(el.stageCv,getStage(st.key));await updateOverlays();
- }catch(e){console.warn(e);toast('Could not render this stage: '+(e&&e.message||e))}
- finally{if(tok===S.tok)el.busy.hidden=true}
-}
-async function updateOverlays(){
- const st=cur(),pan=el.stagePan;
- // delta
- if(S.delta){try{blit(el.deltaCv,getDelta(st.key));el.deltaCv.style.display='block'}catch(e){el.deltaCv.style.display='none'}}else el.deltaCv.style.display='none';
- pan.classList.toggle('dim',S.delta);
- // compare
- const on=S.cmp!=='off';el.cmpPos.disabled=!on;el.cmpHandle.hidden=!on;el.tagL.hidden=el.tagR.hidden=!on;
- if(on){
-  let before;
-  if(S.cmp==='orig'){before=S.refCanvas;el.tagL.textContent='Original'}
-  else{const p=S.stages[S.idx-1];el.tagL.textContent=p?('Before: '+short(p.title)):'Blank paper';
-   if(p)before=getStage(p.key);else{before=document.createElement('canvas');before.width=A.width;before.height=A.height;const x=before.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,A.width,A.height)}}
-  el.tagR.textContent='This stage';blit(el.beforeCv,before);el.beforeCv.style.display='block';setCmp();
- }else el.beforeCv.style.display='none';
- // region mask
- drawMask();
-}
-function setCmp(){el.beforeCv.style.clipPath=`inset(0 ${100-S.cmpPos}% 0 0)`;el.cmpHandle.style.left=S.cmpPos+'%';el.cmpPos.value=S.cmpPos}
-function drawMask(){
- if(S.sel!=null&&A){try{const m=DMEngine.regionMask(A,S.sel);blit(el.maskCv,m);el.maskCv.style.display='block';return}catch(e){}}
- el.maskCv.style.display='none';
-}
-const short=t=>String(t||'').replace(/\s*\(.*\)\s*$/,'').replace(/\s+[—–-]\s+.*$/,'');
-function renderHead(){const st=cur();el.stageTitle.textContent=`${S.idx+1}. ${st.title}`;el.stageCount.textContent=`Step ${S.idx+1} of ${S.stages.length}`;el.stageCap.textContent='Stage '+(S.idx+1)+': '+short(st.title);
- $('#prev').disabled=S.idx===0;$('#next').disabled=S.idx===S.stages.length-1}
-
-/* timeline */
-function buildTimeline(onlyState){
- const ol=el.timeline;
- if(!onlyState||ol.children.length!==S.stages.length){
-  ol.innerHTML=S.stages.map((s,i)=>`<li><button type="button" data-i="${i}" title="${esc(s.title)}"><span class="n">${i+1}</span><span class="t">${esc(short(s.title))}</span><span class="tick" aria-hidden="true">&#10003;</span><span class="k">${esc(KIND_LABEL[s.kind]||s.kind)}</span></button></li>`).join('');
- }
- [...ol.querySelectorAll('button')].forEach((b,i)=>{const s=S.stages[i];const d=S.done.has(s.key);b.classList.toggle('done',d);b.setAttribute('aria-label',`Step ${i+1}: ${short(s.title)}${d?', drawn':''}`);
-  if(i===S.idx){b.setAttribute('aria-current','step');}else b.removeAttribute('aria-current')});
- const act=ol.querySelector('[aria-current]');if(act&&!onlyState)act.scrollIntoView?.({block:'nearest',inline:'center'});
-}
-el.timeline.addEventListener('click',e=>{const b=e.target.closest('button[data-i]');if(b)showStage(+b.dataset.i)});
-$('#prev').onclick=()=>showStage(S.idx-1);$('#next').onclick=()=>showStage(S.idx+1);
-
-function persistDone(){LS.set('dm.done.'+S.imgKey,[...S.done])}
-el.doneChk.onchange=()=>{const k=cur().key;el.doneChk.checked?S.done.add(k):S.done.delete(k);persistDone();buildTimeline(true);renderProgress()};
-function renderProgress(){const n=S.stages.filter(s=>S.done.has(s.key)).length;el.pfill.style.width=(100*n/S.stages.length)+'%';el.pText.textContent=`${n} of ${S.stages.length} steps drawn`;el.doneChk.checked=S.done.has(cur().key)}
-
-/* ---------- teaching ---------- */
-function rgbHex(c){return '#'+c.map(v=>Math.round(clamp(v,0,255)).toString(16).padStart(2,'0')).join('')}
-function topColors(pred,n=5){
- const m=new Map();for(const r of A.regions){if(!pred(r))continue;const q=r.meanRgb.map(v=>Math.round(v/28)).join();const e=m.get(q)||{a:0,rgb:r.meanRgb};e.a+=r.area;m.set(q,e)}
- return [...m.values()].sort((a,b)=>b.a-a.a).slice(0,n).map(e=>({hex:rgbHex(e.rgb),name:cn(e.rgb)}));}
-function cn(rgb){try{return DMEngine.colorName(rgb)}catch(e){return ''}}
-function genericColors(key,lang){
- const N=CNAME[lang]||CNAME.en;
- switch(key){
-  case 'guides':return [{hex:'#3a78c8',name:N.blue},{hex:'#8c8c8c',name:N.graphite}];
-  case 'construction':return [{hex:'#9a9a9a',name:N.graphite}];
-  case 'silhouettes':return [{hex:'#8a8a8a',name:N.grey}];
-  case 'outlines':case 'details':return [{hex:'#141414',name:N.ink}];
-  case 'bgBase':return topColors(r=>r.role==='background');
-  case 'fgBase':return topColors(r=>r.role==='foreground');
-  case 'secondary':return topColors(r=>r.role==='secondary'||r.role==='detail');
-  case 'shadows':{const p=[...A.palette].sort((a,b)=>a.lab[0]-b.lab[0]).slice(0,3);return p.map(c=>({hex:c.hex,name:cn(c.rgb)}))}
-  case 'highlights':{const p=[...A.palette].sort((a,b)=>b.lab[0]-a.lab[0]).slice(0,3);return p.map(c=>({hex:c.hex,name:cn(c.rgb)}))}
-  default:return topColors(()=>true,6);
- }}
-function parseColor(s){if(s&&typeof s==='object')return {hex:s.hex||'#888',name:s.name||''};const m=String(s).match(/#[0-9a-f]{3,8}/i);return {hex:m?m[0]:'#888888',name:String(s).replace(/#[0-9a-f]{3,8}/i,'').replace(/^[\s:,\-–]+/,'').trim()}}
-function spatial(key,lang){
- const T=SPT[lang]||SPT.en,c=A.composition,b=c.subjectBox;if(!b)return '';
- const fx=(b[0]+b[2])/2/A.width,fy=(b[1]+b[3])/2/A.height;
- const h=fx<.38?'l':fx>.62?'r':'c',v=fy<.38?'u':fy>.62?'l':'m';
- const n=Math.round(100*Math.max(0,(b[2]-b[0])*(b[3]-b[1]))/(A.width*A.height));
- let s=T.pos(T.v[v],T.h[h],n);
- if(key==='guides'&&typeof c.horizon==='number')s+=' '+T.hor(Math.round(100*c.horizon/A.height));
- return s;}
-function teaching(key){
- const ai=S.ai&&S.ai.data&&S.ai.data.stages&&S.ai.data.stages[key];
- const lang=ai?S.ai.lang:S.lang;const g=(GEN[lang]||GEN.en)[key]||['','','','','',''];
- const base={what:g[0],where:g[1],how:g[2],tools:g[3],mistakes:g[4],time:g[5]};
- let colors=genericColors(key,lang);
- const out={lang,src:'generic',...base,colors};
- out.where=base.where+(base.where?' ':'')+spatial(key,lang);
- if(ai){out.src='ai';for(const f of ['what','where','how','tools','mistakes','time'])if(ai[f])out[f]=ai[f];
-  if(Array.isArray(ai.colors)&&ai.colors.length)out.colors=ai.colors.map(parseColor);}
- return out;}
-function renderLesson(){
- const st=cur(),t=teaching(st.key),L=FL[t.lang]||FL.en;
- el.lessonTitle.textContent=`${S.idx+1}. ${short(st.title)}`;
- const aiLangDiff=t.src==='ai'&&S.ai.lang!==S.lang;
- el.badges.innerHTML=`<span class="badge">${esc(KIND_LABEL[st.kind]||st.kind)}</span>`+(t.src==='ai'?`<span class="badge ai">Personalised by ${esc(S.ai.modelName||'Claude')}</span>`:'<span class="badge gen">General guidance (built in, not AI)</span>')+(aiLangDiff?`<span class="badge">AI text is in ${LANGNAME[S.ai.lang]}; re-analyse to change</span>`:'');
- el.honest.textContent=NOTE[st.key]||'Computed from your image by code.';
- const body=el.lessonBody;body.dir=t.lang==='ar'?'rtl':'ltr';body.lang=t.lang;
- const sw=t.colors.length?`<ul class="sw">${t.colors.map(c=>`<li><i style="background:${esc(c.hex)}"></i><span>${esc(c.name||'')}</span> <code dir="ltr">${esc(c.hex)}</code></li>`).join('')}</ul>`:'<dd>—</dd>';
- body.innerHTML='<dl>'+FIELDS.map(f=>f==='colors'?`<div><dt>${L.colors}</dt><dd>${sw}</dd></div>`:`<div><dt>${L[f]}</dt><dd>${esc(t[f]||'—')}</dd></div>`).join('')+'</dl>';
- renderProgress();
-}
-
-/* ---------- materials ---------- */
-function materialList(){
- const d=S.ai&&S.ai.data&&S.ai.data.materials;
- if(d&&d.length)return {src:'ai',items:d.map((m,i)=>({id:'ai:'+m.item,item:m.item,why:m.why,opt:!!m.optional})),lang:S.ai.lang};
- return {src:'gen',items:(MATS[S.lang]||MATS.en).map((m,i)=>({id:'g'+i,item:m[0],why:m[1],opt:!!m[2]})),lang:S.lang};}
-function renderMaterials(){
- const M=materialList(),chk=LS.get('dm.checklist',{});
- el.matSrc.textContent=M.src==='ai'?`Materials suggested by ${S.ai.modelName||'Claude'} for this image. Tick what you already have.`:'General materials list (built in, not AI). Tick what you already have.';
- el.matList.dir=M.lang==='ar'?'rtl':'ltr';
- el.matList.innerHTML=M.items.map((m,i)=>`<li class="${chk[m.id]?'got':''}"><input type="checkbox" id="mat${i}" data-id="${esc(m.id)}" ${chk[m.id]?'checked':''}><label for="mat${i}"><span class="nm">${esc(m.item)}</span>${m.opt?' <span class="badge">optional</span>':''}<br><span class="w">${esc(m.why||'')}</span></label></li>`).join('');
- const need=M.items.filter(m=>!chk[m.id]&&!m.opt).length;
- el.matCount.textContent=`${M.items.filter(m=>chk[m.id]).length} of ${M.items.length} ticked, ${need} required still to get`;
- el.shopTxt.value=M.items.filter(m=>!chk[m.id]).map(m=>`[ ] ${m.item}${m.opt?' (optional)':''}`).join('\n')||'Everything is ticked.';
-}
-el.matList.addEventListener('change',e=>{const i=e.target.closest('input[data-id]');if(!i)return;const c=LS.get('dm.checklist',{});c[i.dataset.id]=i.checked;LS.set('dm.checklist',c);renderMaterials();const n=document.getElementById(i.id);}) ;
-$('#shopBtn').onclick=()=>{el.shopBox.hidden=!el.shopBox.hidden};
-$('#copyShop').onclick=async()=>{try{await navigator.clipboard.writeText(el.shopTxt.value);toast('Shopping list copied')}catch(e){el.shopTxt.select();toast('Select the text and copy it with Ctrl/Cmd+C')}};
-
-/* ---------- viewer: zoom / pan ---------- */
-const V={z:1,fx:0,fy:0};
-const views=[[el.refView,el.refPan],[el.stageView,el.stagePan]];
-function resetView(){V.z=1;V.fx=V.fy=0}
-function fitBox(view){const vw=view.clientWidth,vh=view.clientHeight,ar=(A?A.width/A.height:1);let w=vw,h=vw/ar;if(h>vh){h=vh;w=vh*ar}return{vw,vh,w,h,ox:(vw-w)/2,oy:(vh-h)/2}}
-function clampPan(){if(V.z<=1.0001){V.z=1;V.fx=V.fy=0;return}const b=fitBox(el.stageView);if(!b.vw||!b.w)return;
- const zw=V.z*b.w,zh=V.z*b.h;const tx=clamp(V.fx*b.w,b.vw*.15-b.ox-zw,b.vw*.85-b.ox),ty=clamp(V.fy*b.h,b.vh*.15-b.oy-zh,b.vh*.85-b.oy);V.fx=tx/b.w;V.fy=ty/b.h}
-function fitPans(){if(!A)return;clampPan();for(const [v,p] of views){const b=fitBox(v);p.style.width=b.w+'px';p.style.height=b.h+'px';p.style.left=b.ox+'px';p.style.top=b.oy+'px';
- p.style.transform=`translate(${V.fx*b.w}px,${V.fy*b.h}px) scale(${V.z})`;p.style.setProperty('--inv',1/V.z)}
- el.zVal.textContent=Math.round(V.z*100)+'%'}
-function zoomAt(nz,cx,cy,view){nz=clamp(nz,1,10);const b=fitBox(view),tx=V.fx*b.w,ty=V.fy*b.h,px=cx-b.ox,py=cy-b.oy,r=nz/V.z;V.fx=(px-(px-tx)*r)/b.w;V.fy=(py-(py-ty)*r)/b.h;V.z=nz;fitPans()}
-function zoomCenter(f){const v=el.stageView;zoomAt(V.z*f,v.clientWidth/2,v.clientHeight/2,v)}
-$('#zIn').onclick=()=>zoomCenter(1.35);$('#zOut').onclick=()=>zoomCenter(1/1.35);$('#zFit').onclick=()=>{resetView();fitPans()};
-function panBy(dx,dy){const b=fitBox(el.stageView);V.fx+=dx/b.w;V.fy+=dy/b.h;fitPans()}
-for(const [view] of views){
- const ptrs=new Map();let drag=null,pinch=null;const isStage=view===el.stageView;
- view.addEventListener('wheel',e=>{if(!A)return;e.preventDefault();const r=view.getBoundingClientRect();zoomAt(V.z*Math.exp(-e.deltaY*(e.ctrlKey?.01:.0018)),e.clientX-r.left,e.clientY-r.top,view)},{passive:false});
- view.addEventListener('pointerdown',e=>{if(e.target.closest('.cmp-handle'))return;try{view.setPointerCapture(e.pointerId)}catch(_){}
-  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
-  if(ptrs.size===1)drag={x:e.clientX,y:e.clientY,fx:V.fx,fy:V.fy,moved:false};
-  else if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y)||1,z:V.z};if(drag)drag.moved=true}
-  view.classList.add('grabbing')});
- view.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId))return;ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
-  if(ptrs.size===2&&pinch){const [a,b]=[...ptrs.values()];const d=Math.hypot(a.x-b.x,a.y-b.y)||1,r=view.getBoundingClientRect();zoomAt(pinch.z*d/pinch.d,(a.x+b.x)/2-r.left,(a.y+b.y)/2-r.top,view)}
-  else if(drag&&ptrs.size===1){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.hypot(dx,dy)>5)drag.moved=true;
-   if(drag.moved&&V.z>1){const b=fitBox(view);V.fx=drag.fx+dx/b.w;V.fy=drag.fy+dy/b.h;fitPans()}}});
- const end=e=>{if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);
-  if(e.type==='pointerup'&&ptrs.size===0&&drag&&!drag.moved&&isStage&&S.regionMode)pickAt(e);
-  if(ptrs.size<2)pinch=null;if(ptrs.size===0){drag=null;view.classList.remove('grabbing')}else if(ptrs.size===1){const p=[...ptrs.values()][0];drag={x:p.x,y:p.y,fx:V.fx,fy:V.fy,moved:true}}};
- view.addEventListener('pointerup',end);view.addEventListener('pointercancel',end);
- view.addEventListener('keydown',e=>{if(!e.shiftKey)return;const s=40;const m={ArrowLeft:[s,0],ArrowRight:[-s,0],ArrowUp:[0,s],ArrowDown:[0,-s]}[e.key];if(m){e.preventDefault();e.stopPropagation();panBy(...m)}});
-}
-if(window.ResizeObserver)new ResizeObserver(()=>fitPans()).observe(el.stageView);window.addEventListener('resize',fitPans);
-
-/* compare handle */
-el.cmpPos.oninput=()=>{S.cmpPos=+el.cmpPos.value;setCmp()};
-{let d=false;el.cmpHandle.addEventListener('pointerdown',e=>{d=true;e.stopPropagation();el.cmpHandle.setPointerCapture(e.pointerId)});
- el.cmpHandle.addEventListener('pointermove',e=>{if(!d)return;const r=el.stagePan.getBoundingClientRect();S.cmpPos=clamp(Math.round((e.clientX-r.left)/r.width*100),0,100);setCmp()});
- el.cmpHandle.addEventListener('pointerup',()=>d=false);el.cmpHandle.addEventListener('pointercancel',()=>d=false);}
-$$('input[name=cmp]').forEach(r=>r.onchange=()=>{S.cmp=r.value;if(A)updateOverlays()});
-el.deltaOn.onchange=()=>{S.delta=el.deltaOn.checked;if(A)updateOverlays()};
-$$('[data-layer]').forEach(c=>c.onchange=()=>{S.layers[c.dataset.layer]=c.checked;if(A)showStage(S.idx)});
-
-/* fullscreen */
-async function toggleFS(){
- const w=el.workspace;
- if(document.fullscreenElement||w.classList.contains('fake-fs')){w.classList.remove('fake-fs');if(document.fullscreenElement)try{await document.exitFullscreen()}catch(e){}}
- else{let ok=false;try{if(w.requestFullscreen){await w.requestFullscreen();ok=true}}catch(e){}if(!ok)w.classList.add('fake-fs')}
- syncFS();}
-function syncFS(){const on=!!document.fullscreenElement||el.workspace.classList.contains('fake-fs');el.fsBtn.setAttribute('aria-pressed',on);el.fsBtn.textContent=on?'Exit fullscreen':'Fullscreen';setTimeout(fitPans,60)}
-el.fsBtn.onclick=toggleFS;document.addEventListener('fullscreenchange',syncFS);
-
-/* keyboard */
-document.addEventListener('keydown',e=>{
- if(!A||el.studio.hidden||e.ctrlKey||e.metaKey||e.altKey)return;
- const t=e.target;if(t.matches&&t.matches('input:not([type=checkbox]):not([type=radio]),textarea,select'))return;
- if(t.matches&&t.matches('input[type=range],input[type=radio],[role=tab]')&&(e.key==='ArrowLeft'||e.key==='ArrowRight'))return;
- if(e.key==='Escape'&&el.workspace.classList.contains('fake-fs')){toggleFS();return}
- if(e.shiftKey&&e.key.startsWith('Arrow'))return;
- if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();showStage(S.idx+1)}
- else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();showStage(S.idx-1)}
- else if(e.key==='+'||e.key==='='){zoomCenter(1.35)}
- else if(e.key==='-'||e.key==='_'){zoomCenter(1/1.35)}
- else if(e.key==='0'){resetView();fitPans()}
- else if(e.key==='f'||e.key==='F'){if(t.tagName!=='BUTTON'||true)toggleFS()}
-});
-
-/* ---------- tabs ---------- */
-const tabs=$$('#tabs [role=tab]');
-function selectTab(t,focus){tabs.forEach(b=>{const on=b===t;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;document.getElementById(b.getAttribute('aria-controls')).hidden=!on});if(focus)t.focus()}
-tabs.forEach((b,i)=>{b.onclick=()=>selectTab(b);b.onkeydown=e=>{const d={ArrowRight:1,ArrowLeft:-1}[e.key];if(d){e.preventDefault();selectTab(tabs[(i+d+tabs.length)%tabs.length],true)}else if(e.key==='Home'){e.preventDefault();selectTab(tabs[0],true)}else if(e.key==='End'){e.preventDefault();selectTab(tabs[tabs.length-1],true)}}});
-
-/* ---------- region tool ---------- */
-function regionLabel(r){return `#${r.id} ${r.label||cn(r.meanRgb)||''} · ${r.role} · ${(100*r.area/(A.width*A.height)).toFixed(1)}%`}
-function renderRegionSel(){
- const rs=[...A.regions].sort((a,b)=>b.area-a.area).slice(0,60);
- el.regionSel.innerHTML='<option value="">Choose region (or click the stage)…</option>'+rs.map(r=>`<option value="${r.id}">${esc(regionLabel(r))}</option>`).join('');
- if(S.sel!=null&&!rs.some(r=>r.id===S.sel)&&A.regions.some(r=>r.id===S.sel))el.regionSel.insertAdjacentHTML('beforeend',`<option value="${S.sel}">${esc(regionLabel(A.regions.find(r=>r.id===S.sel)))}</option>`);
- el.regionSel.value=S.sel==null?'':String(S.sel);}
-el.regionTool.onclick=()=>{S.regionMode=!S.regionMode;el.regionTool.setAttribute('aria-pressed',S.regionMode);el.regionTool.textContent='Region tool: '+(S.regionMode?'on':'off');
- el.stageView.classList.toggle('pick',S.regionMode);el.regionHint.hidden=!S.regionMode;if(!S.regionMode){S.merging=false;syncMerge()}else{selectTab($('#tab-fix'))}};
-function toImg(e){const r=el.stagePan.getBoundingClientRect();return[(e.clientX-r.left)/r.width*A.width,(e.clientY-r.top)/r.height*A.height]}
-function pickAt(e){const [x,y]=toImg(e);if(x<0||y<0||x>=A.width||y>=A.height)return;const r=DMEngine.regionAt(A,x,y);if(!r)return;
- if(S.merging&&S.sel!=null&&r.id!==S.sel)doMerge(r.id);else selectRegion(r.id);selectTab($('#tab-fix'))}
-function selectRegion(id){S.sel=id;S.merging=false;syncMerge();drawMask();fillForm();renderRegionSel()}
-function clearSel(){S.sel=null;S.merging=false;syncMerge();drawMask();fillForm();if(A)renderRegionSel()}
-function fillForm(){const r=S.sel!=null&&A?A.regions.find(r=>r.id===S.sel):null;el.regionForm.hidden=!r;if(!r)return;
- el.regionInfo.innerHTML=`<span class="regsw" style="background:${rgbHex(r.meanRgb)}"></span>Region #${r.id}: ${esc(cn(r.meanRgb))}, ${(100*r.area/(A.width*A.height)).toFixed(1)}% of the image, role set by <b>${esc(r.roleSource||'auto')}</b>${r.touchesBorder?', touches the image border':''}.`;
- el.roleSel.value=r.role;el.labelInp.value=r.label||'';el.ordOut.textContent='order '+r.order}
-el.regionSel.onchange=()=>{el.regionSel.value?selectRegion(+el.regionSel.value):clearSel()};
-$('#clearSel').onclick=clearSel;
-async function afterEdit(msg){
- const key=cur().key;S.ver++;S.cache.clear();S.stages=DMEngine.planStages(A);const i=S.stages.findIndex(s=>s.key===key);S.idx=i>=0?i:clamp(S.idx,0,S.stages.length-1);
- buildTimeline();renderRegionSel();fillForm();renderMaterials();await showStage(S.idx);if(msg)el.fixMsg.textContent=msg}
-el.roleSel.onchange=async()=>{const r=A.regions.find(r=>r.id===S.sel);if(!r)return;DMEngine.setRole(A,r.id,el.roleSel.value,'user');await afterEdit(`Region #${r.id} is now ${el.roleSel.value}. Stages were re-planned and re-rendered.`)};
-el.labelInp.onchange=()=>{const r=A.regions.find(r=>r.id===S.sel);if(r){r.label=el.labelInp.value.trim();renderRegionSel();el.fixMsg.textContent='Label saved.'}};
-async function reorder(d){const r=A.regions.find(r=>r.id===S.sel);if(!r)return;DMEngine.setOrder(A,r.id,(r.order||0)+d);await afterEdit(`Paint order of region #${r.id} is now ${r.order}.`)}
-$('#ordUp').onclick=()=>reorder(-1);$('#ordDn').onclick=()=>reorder(1);
-function syncMerge(){el.mergeBtn.setAttribute('aria-pressed',S.merging);el.mergeBtn.textContent=S.merging?'Click the region to merge with… (cancel)':'Merge with next click…'}
-el.mergeBtn.onclick=()=>{S.merging=!S.merging;if(S.merging&&!S.regionMode)el.regionTool.click();syncMerge();el.fixMsg.textContent=S.merging?'Now click another region on the stage image (or choose it in the list) to merge it into this one.':''};
-async function doMerge(b){const a=S.sel;const ra=A.regions.find(r=>r.id===a);if(!ra)return;const c=ra.centroid.slice();
- if(typeof DMEngine.mergeRegions!=='function'){el.fixMsg.textContent='Merging is not supported by this engine.';return}
- DMEngine.mergeRegions(A,a,b);S.merging=false;syncMerge();const r=A.regions.find(r=>r.id===a)||DMEngine.regionAt(A,c[0],c[1]);S.sel=r?r.id:null;
- await afterEdit(`Regions #${a} and #${b} merged.`);drawMask()}
-
-/* ---------- export ---------- */
-async function getDL(){if(S.dl!==undefined)return S.dl;try{S.dl=(await window.claude?.use?.('downloads'))||null}catch(e){S.dl=null}return S.dl}
-async function saveBlob(blob,filename){
- if(window.claude){const dl=await getDL();if(!dl||!dl.save)throw new Error('Downloads are not available in this view.');await dl.save({filename,data:blob});return}
- const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000)}
-const fname=(i,s)=>`drawmaster-${String(i+1).padStart(2,'0')}-${s.key}.png`;
-async function exportStage(i){const s=S.stages[i];const c=getStage(s.key);const b=await DMEngine.toBlob(c,'image/png');await saveBlob(b,fname(i,s));return fname(i,s)}
-$('#expOne').onclick=async()=>{try{const n=await exportStage(S.idx);toast('Saved '+n)}catch(e){toast('Export failed: '+(e&&e.message||e))}};
-let exporting=false;
-$('#expAll').onclick=async()=>{if(exporting||!A)return;exporting=true;const b=$('#expAll');b.disabled=true;
- try{for(let i=0;i<S.stages.length;i++){toast(`Saving ${i+1} of ${S.stages.length}…`,20000);await tick();await exportStage(i);await tick()}toast(`Saved ${S.stages.length} stage images`)}
- catch(e){toast('Export failed: '+(e&&e.message||e))}finally{exporting=false;b.disabled=false}};
-
-/* ---------- AI ---------- */
-function parseJSON(text){
- if(!text)return null;let t=String(text).trim();
- const f=t.match(/```(?:json)?\s*([\s\S]*?)```/i);if(f)t=f[1].trim();
- const a=t.indexOf('{');if(a<0)return null;t=t.slice(a);const z=t.lastIndexOf('}');if(z>=0)t=t.slice(0,z+1);
- const tries=[x=>x,
-  x=>x.replace(/\\(?!["\\\/bfnrtu])/g,'\\\\'),
-  x=>x.replace(/,\s*([}\]])/g,'$1').replace(/\\(?!["\\\/bfnrtu])/g,'\\\\'),
-  x=>closeJSON(x).replace(/,\s*([}\]])/g,'$1').replace(/\\(?!["\\\/bfnrtu])/g,'\\\\')];
- for(const fn of tries){try{return JSON.parse(fn(t))}catch(e){}}
- return null}
-function closeJSON(s){let st=[],inS=false,esc_=false;for(const ch of s){if(inS){if(esc_)esc_=false;else if(ch==='\\')esc_=true;else if(ch==='"')inS=false}else if(ch==='"')inS=true;else if(ch==='{'||ch==='[')st.push(ch);else if(ch==='}'||ch===']')st.pop()}
- let o=s;if(inS)o+='"';o=o.replace(/,\s*$/,'');while(st.length)o+=st.pop()==='{'?'}':']';return o}
-const str=v=>v==null?'':(Array.isArray(v)?v.join('; '):String(v));
-function sanitize(o){
- const d={subject:str(o.subject),description:str(o.description),difficulty:str(o.difficulty),totalTime:str(o.totalTime),regionRoles:[],materials:[],stages:{},warnings:[]};
- if(Array.isArray(o.regionRoles))d.regionRoles=o.regionRoles.filter(r=>r&&r.id!=null).map(r=>({id:+r.id,role:str(r.role).toLowerCase(),label:str(r.label)}));
- if(Array.isArray(o.materials))d.materials=o.materials.map(m=>typeof m==='string'?{item:m}:m).filter(m=>m&&m.item).map(m=>({item:str(m.item),why:str(m.why),optional:!!m.optional}));
- if(Array.isArray(o.warnings))d.warnings=o.warnings.map(str).filter(Boolean);else if(o.warnings)d.warnings=[str(o.warnings)];
- if(o.stages&&typeof o.stages==='object')for(const k of KEYS){const s=o.stages[k];if(s&&typeof s==='object'){d.stages[k]={what:str(s.what),where:str(s.where),how:str(s.how),tools:str(s.tools),mistakes:str(s.mistakes),time:str(s.time),colors:Array.isArray(s.colors)?s.colors:(s.colors?[s.colors]:[])}}}
- return d}
-function buildPrompt(){
- const sum=DMEngine.summary(A);
- const plan=S.stages.map(s=>({key:s.key,title:s.title,kind:s.kind}));
- return `You are an experienced drawing teacher. Look at the attached image. A program has already analysed it (edge detection, k-means colour palette, region segmentation); the automatic segmentation can be wrong. Using the image and this analysis summary, write a personalised drawing lesson.
-
-ANALYSIS SUMMARY (percentages are of the image width/height; region ids are valid ids):
-${JSON.stringify(sum)}
-
-STAGE PLAN (teach exactly these keys):
-${JSON.stringify(plan)}
-
-Reply with JSON ONLY (no prose, no markdown fence) in exactly this shape:
-{"subject":"...","description":"one sentence","difficulty":"beginner|intermediate|advanced","totalTime":"e.g. 2-3 h",
-"regionRoles":[{"id":3,"role":"background|foreground|secondary|detail","label":"short name"}],
-"materials":[{"item":"HB pencil","why":"...","optional":false}],
-"stages":{"<stageKey>":{"what":"...","where":"plain spatial terms such as upper-left third","how":"...","tools":"...","colors":["#hex colour name"],"mistakes":"...","time":"10 min"}},
-"warnings":["parts where the automatic separation looks wrong"]}
-Rules: only use region ids from the summary; give a role for the larger regions you are confident about; include every stage key of the plan; keep each text field to 1-3 sentences; colours must come from the palette in the summary; the stage images are edge/colour extractions computed by code, so never describe them as hand-drawn. Write ALL text values in ${LANGNAME[S.lang]}. Keep JSON keys and role values in English.`}
-function errText(e){const c=e&&(e.code||e.name||'');const m=e&&e.message||String(e);
- if(/not_granted/.test(c+m))return 'Claude access was not granted for this page, so the lesson stays on general guidance.';
- if(/rate_limit/.test(c+m))return 'Claude is rate limited right now. Try Re-analyse in a little while. General guidance is shown meanwhile.';
- return `Claude could not be used (${c&&c!==m?c+': ':''}${m}). General guidance is shown instead.`}
-async function runAI(){
- if(!S.sample||!A)return;
- if(S.aiCtl)try{S.aiCtl.abort()}catch(e){}
- const ctl=new AbortController();S.aiCtl=ctl;const myA=A;const lang=S.lang;
- S.ai={...(S.ai.data?{data:S.ai.data,lang:S.ai.lang,modelName:S.ai.modelName}:{}),state:'running',chars:0};renderAI();banner();
- const M=MODELS[S.model];
- try{
-  const res=await S.sample(buildPrompt(),{model:M.id,modelTier:M.tier,effort:EFFORTS[S.effort],images:[S.jpeg],onText:t=>{if(S.aiCtl===ctl){S.ai.chars=(t||'').length;renderAI(true)}},signal:ctl.signal,cache:false});
-  if(A!==myA||ctl.signal.aborted)return;
-  const obj=parseJSON(res&&res.text);if(!obj||typeof obj!=='object')throw new Error('The reply was not valid JSON.');
-  const data=sanitize(obj);const applied=applyAI(data);
-  const ap=(res&&res.modelApplied)||M.id;
-  S.ai={state:'done',data,lang,modelApplied:ap,modelName:prettyModel(ap),requested:M.id,effort:EFFORTS[S.effort],truncated:!!(res&&res.truncated),rolesApplied:applied};
-  await afterAI();
- }catch(e){if(ctl.signal.aborted||(e&&e.name==='AbortError'))return;S.ai={state:'error',msg:errText(e),data:S.ai.data,lang:S.ai.lang,modelName:S.ai.modelName}}
- renderAI();banner();
-}
-function prettyModel(id){const m=Object.values(MODELS).find(m=>m.id===id);return m?m.name:String(id||'Claude')}
-function applyAI(d){let n=0;for(const r of d.regionRoles){const reg=A.regions.find(x=>x.id===r.id);if(!reg||!['background','foreground','secondary','detail'].includes(r.role))continue;
-  if(reg.roleSource==='user')continue;DMEngine.setRole(A,r.id,r.role,'ai');n++;if(r.label){const g=A.regions.find(x=>x.id===r.id);if(g)g.label=r.label}}
- return n}
-async function afterAI(){
- const key=cur().key;S.ver++;S.cache.clear();S.stages=DMEngine.planStages(A);const i=S.stages.findIndex(s=>s.key===key);S.idx=i>=0?i:clamp(S.idx,0,S.stages.length-1);
- buildTimeline();renderMaterials();renderRegionSel();fillForm();await showStage(S.idx)}
-function banner(){const b=el.aiBanner,a=S.ai;b.hidden=false;b.className='notice';
- if(!S.sample){b.classList.add('bad');b.textContent='AI is unavailable here. You are seeing general built-in guidance; the stage images are still computed from your picture.'}
- else if(a.state==='running'){b.textContent=`Asking ${MODELS[S.model].name} (effort ${EFFORTS[S.effort]}) to personalise the lesson… General guidance is shown meanwhile.`}
- else if(a.state==='done'){b.classList.add('ok');b.textContent=`Lesson personalised by ${a.modelName}${a.data.subject?': '+a.data.subject:''}. ${a.data.warnings.length?'See the AI tab for '+a.data.warnings.length+' warning(s) about the automatic separation.':''}`}
- else if(a.state==='error'){b.classList.add('bad');b.textContent=a.msg}
- else b.hidden=true}
-function renderAI(light){
- const a=S.ai||{state:'idle'};
- if(!S.sample){el.aiState.className='notice bad';el.aiState.textContent='AI is not available in this view, so no personalised analysis can run. The built-in general guidance is used for every stage.';el.aiInfo.innerHTML='';return}
- if(a.state==='running'){el.aiState.className='notice';el.aiState.textContent=`Waiting for ${MODELS[S.model].name} (effort ${EFFORTS[S.effort]})… ${a.chars?a.chars+' characters received':''}`;if(light)return}
- else if(a.state==='error'){el.aiState.className='notice bad';el.aiState.textContent=a.msg}
- else if(a.state==='done'){el.aiState.className='notice ok';el.aiState.textContent=`Answered by ${a.modelName} (${a.modelApplied}), effort ${a.effort}. ${a.rolesApplied} region role(s) applied.${a.truncated?' The reply was truncated; some parts may be missing.':''}`}
- else{el.aiState.className='notice';el.aiState.textContent=`Ready: ${MODELS[S.model].name}, effort ${EFFORTS[S.effort]}. Load an image to analyse it.`}
- const d=a.data;let h='';
- if(d){h+=`<h3 style="font-size:17px">${esc(d.subject||'Subject')}</h3><p style="margin:4px 0">${esc(d.description)}</p><p class="mini">${d.difficulty?'Difficulty: <b>'+esc(d.difficulty)+'</b>. ':''}${d.totalTime?'Total time: <b>'+esc(d.totalTime)+'</b>.':''} Text language: ${LANGNAME[a.lang]}.</p>`;
-  if(d.warnings.length)h+=`<strong style="color:var(--warn)">Warnings about automatic separation</strong><ul class="warnlist">${d.warnings.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>`}
- el.aiInfo.innerHTML=h;
-}
-el.reanalyse.onclick=()=>{if(A&&S.sample)runAI()};
-
-/* ---------- boot ---------- */
-applyTheme();buildModelSeg();syncEffort();
-document.documentElement.lang='en';
-if(!window.DMEngine){showErr('The drawing engine (engine.js) did not load.');}
-initAI();
-// test hook
-window.__dm={state:S,showStage};
+  applyLang();
+  window.__dm = { S, openViewer, openFix, renderSheet };
 })();
 </script>
