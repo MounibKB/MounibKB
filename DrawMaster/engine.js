@@ -4,7 +4,7 @@
 (function (global) {
   'use strict';
 
-  var VERSION = '1.0.0';
+  var VERSION = '2.0.0';
   var ORDER = ['guides', 'construction', 'silhouettes', 'outlines', 'details', 'bgBase', 'fgBase',
     'secondary', 'shadows', 'gradients', 'textures', 'highlights', 'final'];
   var ROLES = ['background', 'foreground', 'secondary', 'detail'];
@@ -1001,10 +1001,773 @@
     };
   }
 
+  /* ====================================================================== v2: illustration plan */
+  var PAPER = [251, 248, 241];
+  var INK = '#2b2723';
+  var _PT = 0, _PON = false;
+  function PROF(n) { if (_PON) { var t = performance.now(); console.log('prof ' + n + ' ' + Math.round(t - _PT)); _PT = t; } }
+
+  function bilateralLab(L, A, B, w, h, rad, sr, iters) {
+    var N = w * h, inv = 1 / (2 * sr * sr), lut = new Float32Array(4096), ss = rad * 0.8, sp = [], dx, dy, x, y, i, it;
+    for (dy = -rad; dy <= rad; dy++) for (dx = -rad; dx <= rad; dx++) sp.push(Math.exp(-(dx * dx + dy * dy) / (2 * ss * ss)));
+    for (i = 0; i < 4096; i++) lut[i] = Math.exp(-(i / 4) * inv);
+    for (it = 0; it < iters; it++) {
+      var L2 = new Float32Array(N), A2 = new Float32Array(N), B2 = new Float32Array(N);
+      for (y = 0; y < h; y++) for (x = 0; x < w; x++) {
+        i = y * w + x; var l0 = L[i], a0 = A[i], b0 = B[i], sw = 0, sl = 0, sa = 0, sb = 0, k = 0;
+        for (dy = -rad; dy <= rad; dy++) {
+          var yy = y + dy; if (yy < 0 || yy >= h) { k += 2 * rad + 1; continue; }
+          for (dx = -rad; dx <= rad; dx++, k++) {
+            var xx = x + dx; if (xx < 0 || xx >= w) continue;
+            var j = yy * w + xx, d0 = L[j] - l0, d1 = A[j] - a0, d2 = B[j] - b0;
+            var q4 = ((d0 * d0 + d1 * d1 + d2 * d2) * 4) | 0, wt = sp[k] * (q4 > 4095 ? 0 : lut[q4]);
+            sw += wt; sl += wt * L[j]; sa += wt * A[j]; sb += wt * B[j];
+          }
+        }
+        L2[i] = sl / sw; A2[i] = sa / sw; B2[i] = sb / sw;
+      }
+      L = L2; A = A2; B = B2;
+    }
+    return [L, A, B];
+  }
+
+  function modeFilterLabels(lab, w, h, r, K, passes) {
+    var N = w * h, cnt = new Int32Array(K), p, x, y, dx, dy;
+    for (p = 0; p < passes; p++) {
+      var out = new Uint8Array(N);
+      for (y = 0; y < h; y++) for (x = 0; x < w; x++) {
+        cnt.fill(0);
+        var y0 = y - r < 0 ? 0 : y - r, y1 = y + r >= h ? h - 1 : y + r, x0 = x - r < 0 ? 0 : x - r, x1 = x + r >= w ? w - 1 : x + r;
+        for (dy = y0; dy <= y1; dy++) for (dx = x0; dx <= x1; dx++) cnt[lab[dy * w + dx]]++;
+        var best = lab[y * w + x], bc = cnt[best];
+        for (var c = 0; c < K; c++) if (cnt[c] > bc) { bc = cnt[c]; best = c; }
+        out[y * w + x] = best;
+      }
+      lab = out;
+    }
+    return lab;
+  }
+
+  // 4-connected components of an integer map. Returns {comp, n}
+  function components(map, w, h) {
+    var N = w * h, comp = new Int32Array(N).fill(-1), stack = new Int32Array(N), nc = 0, s, i, j, x, y;
+    for (s = 0; s < N; s++) {
+      if (comp[s] >= 0) continue;
+      var l = map[s], sp = 0; stack[sp++] = s; comp[s] = nc;
+      while (sp > 0) {
+        i = stack[--sp]; x = i % w; y = (i / w) | 0;
+        if (x > 0) { j = i - 1; if (comp[j] < 0 && map[j] === l) { comp[j] = nc; stack[sp++] = j; } }
+        if (x < w - 1) { j = i + 1; if (comp[j] < 0 && map[j] === l) { comp[j] = nc; stack[sp++] = j; } }
+        if (y > 0) { j = i - w; if (comp[j] < 0 && map[j] === l) { comp[j] = nc; stack[sp++] = j; } }
+        if (y < h - 1) { j = i + w; if (comp[j] < 0 && map[j] === l) { comp[j] = nc; stack[sp++] = j; } }
+      }
+      nc++;
+    }
+    return { comp: comp, n: nc };
+  }
+
+  // relabel tiny components to the label they border most
+  function cleanSmallComponents(map, w, h, minPx, K) {
+    var N = w * h, cc = components(map, w, h), comp = cc.comp, nc = cc.n, size = new Int32Array(nc), i, c;
+    for (i = 0; i < N; i++) size[comp[i]]++;
+    var small = [];
+    for (c = 0; c < nc; c++) if (size[c] < minPx) small.push(c);
+    if (!small.length) return map;
+    var isSmall = new Uint8Array(nc); small.forEach(function (c2) { isSmall[c2] = 1; });
+    var votes = new Map(); // comp -> Int32Array(K)
+    small.forEach(function (c2) { votes.set(c2, new Int32Array(K)); });
+    for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) {
+      i = y * w + x; c = comp[i];
+      if (isSmall[c]) {
+        var vv = votes.get(c);
+        if (x > 0 && comp[i - 1] !== c) vv[map[i - 1]]++;
+        if (x < w - 1 && comp[i + 1] !== c) vv[map[i + 1]]++;
+        if (y > 0 && comp[i - w] !== c) vv[map[i - w]]++;
+        if (y < h - 1 && comp[i + w] !== c) vv[map[i + w]]++;
+      }
+    }
+    var newLab = new Int32Array(nc).fill(-1);
+    small.forEach(function (c2) {
+      var v = votes.get(c2), b = -1, bv = 0;
+      for (var k = 0; k < K; k++) if (v[k] > bv) { bv = v[k]; b = k; }
+      newLab[c2] = b;
+    });
+    var out = new Uint8Array(map);
+    for (i = 0; i < N; i++) { var nl = newLab[comp[i]]; if (nl >= 0) out[i] = nl; }
+    return out;
+  }
+
+  /* ---- region graph used for merging (works on any label image) */
+  function makeGraph(comp, nc, w, h, L, A, B, Nl) {
+    var nodes = [], i, x, y, a, b;
+    for (i = 0; i < nc; i++) nodes.push({ id: i, n: 0, l: 0, a: 0, b: 0, adj: new Map(), alive: true, parent: i });
+    for (i = 0; i < w * h; i++) { var nd = nodes[comp[i]]; nd.n++; nd.l += L[i]; nd.a += A[i]; nd.b += B[i]; }
+    function addAdj(p, q) { var m = nodes[p].adj; m.set(q, (m.get(q) || 0) + 1); }
+    for (y = 0; y < h; y++) for (x = 0; x < w; x++) {
+      i = y * w + x; a = comp[i];
+      if (x < w - 1) { b = comp[i + 1]; if (a !== b) { addAdj(a, b); addAdj(b, a); } }
+      if (y < h - 1) { b = comp[i + w]; if (a !== b) { addAdj(a, b); addAdj(b, a); } }
+    }
+    return { nodes: nodes, Nl: Nl, alive: nc };
+  }
+  function gMean(nd) { return [nd.l / nd.n, nd.a / nd.n, nd.b / nd.n]; }
+  function gDist(p, q) {
+    var d0 = p.l / p.n - q.l / q.n, d1 = p.a / p.n - q.a / q.n, d2 = p.b / p.n - q.b / q.n;
+    return Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
+  }
+  function gMerge(G, keepId, goneId) {
+    var K = G.nodes[keepId], g = G.nodes[goneId];
+    K.n += g.n; K.l += g.l; K.a += g.a; K.b += g.b;
+    g.adj.forEach(function (cnt, o) {
+      if (o === keepId) return;
+      K.adj.set(o, (K.adj.get(o) || 0) + cnt);
+      var om = G.nodes[o].adj; om.delete(goneId); om.set(keepId, (om.get(keepId) || 0) + cnt);
+    });
+    K.adj.delete(goneId);
+    g.alive = false; g.parent = keepId; g.adj = new Map(); G.alive--;
+  }
+  function gFind(G, i) { var n = G.nodes; while (n[i].parent !== i) { n[i].parent = n[n[i].parent].parent; i = n[i].parent; } return i; }
+  function gAlive(G) { return G.nodes.filter(function (n) { return n.alive; }); }
+  function pairCost(G, p, q) { return gDist(p, q) * (1 + 2.5 * Math.sqrt(Math.min(p.n, q.n) / G.Nl)); }
+  function gBestPair(G, nonAdjThr) {
+    var best = null, bc = Infinity, al = gAlive(G), i, j;
+    for (i = 0; i < al.length; i++) {
+      var p = al[i];
+      p.adj.forEach(function (cnt, o) {
+        if (o < p.id) return;
+        var c = pairCost(G, p, G.nodes[o]);
+        if (c < bc) { bc = c; best = [p.id, o]; }
+      });
+    }
+    if (nonAdjThr > 0) {
+      for (i = 0; i < al.length; i++) for (j = i + 1; j < al.length; j++) {
+        var P = al[i], Q = al[j];
+        if (P.adj.has(Q.id)) continue;
+        var d = gDist(P, Q); if (d > nonAdjThr) continue;
+        var c2 = pairCost(G, P, Q) + 10;
+        if (c2 < bc) { bc = c2; best = [P.id, Q.id]; }
+      }
+    }
+    return best ? { a: best[0], b: best[1], cost: bc } : null;
+  }
+  function gMergePair(G, a, b) { // keep the bigger
+    var A = G.nodes[a], B = G.nodes[b];
+    if (A.n >= B.n) gMerge(G, a, b); else gMerge(G, b, a);
+  }
+  function gMergeSmallest(G, minN) { // merge nodes smaller than minN into closest neighbour; returns true if any merge happened
+    var did = false;
+    for (;;) {
+      var al = gAlive(G).filter(function (n) { return n.n < minN; });
+      if (!al.length || G.alive <= 2) break;
+      al.sort(function (p, q) { return p.n - q.n; });
+      var s = al[0], bt = -1, bc = Infinity;
+      s.adj.forEach(function (cnt, o) {
+        var c = gDist(s, G.nodes[o]) - 6 * Math.min(1, cnt / (4 * Math.sqrt(s.n) + 1));
+        if (c < bc) { bc = c; bt = o; }
+      });
+      if (bt < 0) {
+        gAlive(G).forEach(function (o) { if (o.id === s.id) return; var c = gDist(s, o); if (c < bc) { bc = c; bt = o.id; } });
+        if (bt < 0) break;
+      }
+      gMerge(G, bt, s.id); did = true;
+    }
+    return did;
+  }
+
+  /* ---- crack tracing: boundaries between segments → polylines on pixel corners */
+  function traceChains(seg, w, h) {
+    var W1 = w + 1, hE = new Uint8Array(w * (h + 1)), vE = new Uint8Array(W1 * h), hV = new Uint8Array(w * (h + 1)), vV = new Uint8Array(W1 * h), x, y;
+    for (y = 1; y < h; y++) for (x = 0; x < w; x++) if (seg[(y - 1) * w + x] !== seg[y * w + x]) hE[y * w + x] = 1;
+    for (y = 0; y < h; y++) for (x = 1; x < w; x++) if (seg[y * w + x - 1] !== seg[y * w + x]) vE[y * W1 + x] = 1;
+    var DX = [1, -1, 0, 0], DY = [0, 0, 1, -1], OPP = [1, 0, 3, 2];
+    function has(x, y, d) {
+      if (d === 0) return x < w && hE[y * w + x] === 1;
+      if (d === 1) return x > 0 && hE[y * w + x - 1] === 1;
+      if (d === 2) return y < h && vE[y * W1 + x] === 1;
+      return y > 0 && vE[(y - 1) * W1 + x] === 1;
+    }
+    function vis(x, y, d) {
+      if (d === 0) return hV[y * w + x] === 1;
+      if (d === 1) return hV[y * w + x - 1] === 1;
+      if (d === 2) return vV[y * W1 + x] === 1;
+      return vV[(y - 1) * W1 + x] === 1;
+    }
+    function mark(x, y, d) {
+      if (d === 0) hV[y * w + x] = 1; else if (d === 1) hV[y * w + x - 1] = 1;
+      else if (d === 2) vV[y * W1 + x] = 1; else vV[(y - 1) * W1 + x] = 1;
+    }
+    function deg(x, y) { return (has(x, y, 0) ? 1 : 0) + (has(x, y, 1) ? 1 : 0) + (has(x, y, 2) ? 1 : 0) + (has(x, y, 3) ? 1 : 0); }
+    var chains = [];
+    function walk(sx, sy, d0) {
+      var px = [sx, sy], cx = sx, cy = sy, d = d0, a, b;
+      // labels on the two sides of the first edge
+      if (d0 === 0) { a = seg[(cy - 1) * w + cx]; b = seg[cy * w + cx]; }
+      else if (d0 === 1) { a = seg[(cy - 1) * w + cx - 1]; b = seg[cy * w + cx - 1]; }
+      else if (d0 === 2) { a = seg[cy * w + cx - 1]; b = seg[cy * w + cx]; }
+      else { a = seg[(cy - 1) * w + cx - 1]; b = seg[(cy - 1) * w + cx]; }
+      for (;;) {
+        mark(cx, cy, d); cx += DX[d]; cy += DY[d]; px.push(cx, cy);
+        if (cx === sx && cy === sy) break;
+        var dg = deg(cx, cy); if (dg !== 2) break;
+        var nd = -1;
+        for (var k = 0; k < 4; k++) if (k !== OPP[d] && has(cx, cy, k)) { nd = k; break; }
+        if (nd < 0 || vis(cx, cy, nd)) break;
+        d = nd;
+      }
+      var closed = (cx === sx && cy === sy);
+      chains.push({ pts: px, a: Math.min(a, b), b: Math.max(a, b), closed: closed, len: px.length / 2 - 1, v0: sy * W1 + sx, v1: cy * W1 + cx });
+    }
+    var d;
+    for (y = 0; y <= h; y++) for (x = 0; x <= w; x++) {
+      var dg = deg(x, y); if (dg === 0 || dg === 2) continue;
+      for (d = 0; d < 4; d++) if (has(x, y, d) && !vis(x, y, d)) walk(x, y, d);
+    }
+    for (y = 0; y <= h; y++) for (x = 0; x <= w; x++) {
+      for (d = 0; d < 4; d++) if (has(x, y, d) && !vis(x, y, d)) walk(x, y, d);
+    }
+    return chains;
+  }
+
+  function smoothPts(pts, closed, hw, iters) {
+    var n = pts.length / 2, it, i, k;
+    if (n < 4) return pts.slice();
+    var cur = Float32Array.from(pts), m = closed ? n - 1 : n;
+    for (it = 0; it < iters; it++) {
+      var out = new Float32Array(cur.length);
+      for (i = 0; i < m; i++) {
+        var sx = 0, sy = 0, cnt = 0, r;
+        if (closed) { r = Math.min(hw, (m >> 1) - 1); if (r < 1) r = 1; for (k = -r; k <= r; k++) { var j = ((i + k) % m + m) % m; sx += cur[2 * j]; sy += cur[2 * j + 1]; cnt++; } }
+        else {
+          r = Math.min(hw, i, m - 1 - i);
+          for (k = -r; k <= r; k++) { sx += cur[2 * (i + k)]; sy += cur[2 * (i + k) + 1]; cnt++; }
+        }
+        out[2 * i] = sx / cnt; out[2 * i + 1] = sy / cnt;
+      }
+      if (closed) { out[2 * (n - 1)] = out[0]; out[2 * (n - 1) + 1] = out[1]; }
+      cur = out;
+    }
+    return cur;
+  }
+
+  function dpSimplify(p, eps) { // p: flat xy; returns flat xy
+    var n = p.length / 2; if (n < 3) return Array.prototype.slice.call(p);
+    var keep = new Uint8Array(n); keep[0] = 1; keep[n - 1] = 1;
+    var st = [[0, n - 1]];
+    while (st.length) {
+      var s = st.pop(), a = s[0], b = s[1]; if (b <= a + 1) continue;
+      var ax = p[2 * a], ay = p[2 * a + 1], bx = p[2 * b], by = p[2 * b + 1], dx = bx - ax, dy = by - ay, L = Math.hypot(dx, dy) || 1e-9, md = -1, mi = -1;
+      for (var i = a + 1; i < b; i++) {
+        var d = Math.abs((p[2 * i] - ax) * dy - (p[2 * i + 1] - ay) * dx) / L;
+        if (d > md) { md = d; mi = i; }
+      }
+      if (md > eps) { keep[mi] = 1; st.push([a, mi], [mi, b]); }
+    }
+    var out = [];
+    for (var j = 0; j < n; j++) if (keep[j]) out.push(p[2 * j], p[2 * j + 1]);
+    return out;
+  }
+
+  function pathFromPts(path, p, closed) {
+    var n = p.length / 2, i;
+    if (n < 2) return;
+    // subsample every 2nd point, then quadratic midpoints
+    var q = [];
+    for (i = 0; i < n; i += 2) q.push(p[2 * i], p[2 * i + 1]);
+    if ((n - 1) % 2 !== 0 || q.length / 2 < 2) q.push(p[2 * (n - 1)], p[2 * (n - 1) + 1]);
+    var m = q.length / 2;
+    if (m < 3) { path.moveTo(q[0], q[1]); path.lineTo(q[2 * (m - 1)], q[2 * (m - 1) + 1]); return; }
+    path.moveTo(q[0], q[1]);
+    for (i = 1; i < m - 1; i++) {
+      var mx = (q[2 * i] + q[2 * i + 2]) / 2, my = (q[2 * i + 1] + q[2 * i + 3]) / 2;
+      path.quadraticCurveTo(q[2 * i], q[2 * i + 1], mx, my);
+    }
+    path.lineTo(q[2 * (m - 1)], q[2 * (m - 1) + 1]);
+    if (closed) path.closePath();
+  }
+
+  /* ---- illustrate */
+  function labFull(rgba, N) {
+    var L = new Float32Array(N), A = new Float32Array(N), B = new Float32Array(N);
+    for (var i = 0; i < N; i++) {
+      var R = LIN[rgba[4 * i]], G = LIN[rgba[4 * i + 1]], Bv = LIN[rgba[4 * i + 2]];
+      var fx = labF((0.4124564 * R + 0.3575761 * G + 0.1804375 * Bv) / 0.95047), fy = labF(0.2126729 * R + 0.7151522 * G + 0.0721750 * Bv), fz = labF((0.0193339 * R + 0.1191920 * G + 0.9503041 * Bv) / 1.08883);
+      L[i] = 116 * fy - 16; A[i] = 500 * (fx - fy); B[i] = 200 * (fy - fz);
+    }
+    return [L, A, B];
+  }
+
+  function illustrate(an, o) {
+    o = o || {};
+    var maxAreas = clamp(Math.round(o.maxAreas || 7), 3, 12);
+    var w = an.width, h = an.height, N = w * h, rgba = an.rgba, i, x, y;
+    _PON = !!o._prof; _PT = performance.now(); var _P = PROF;
+    var s = Math.max(1, Math.ceil(Math.max(w, h) / 300));
+    var lw = Math.ceil(w / s), lh = Math.ceil(h / s), NL = lw * lh;
+    // --- low-res image (box average) + Lab
+    var lr = new Float32Array(NL), lg = new Float32Array(NL), lb = new Float32Array(NL), lc = new Float32Array(NL);
+    for (y = 0; y < h; y++) {
+      var ly = (y / s) | 0;
+      for (x = 0; x < w; x++) {
+        var li = ly * lw + ((x / s) | 0), p4 = 4 * (y * w + x);
+        lr[li] += rgba[p4]; lg[li] += rgba[p4 + 1]; lb[li] += rgba[p4 + 2]; lc[li]++;
+      }
+    }
+    var lrgba = new Uint8ClampedArray(4 * NL);
+    for (i = 0; i < NL; i++) { lr[i] /= lc[i]; lg[i] /= lc[i]; lb[i] /= lc[i]; lrgba[4 * i] = lr[i]; lrgba[4 * i + 1] = lg[i]; lrgba[4 * i + 2] = lb[i]; lrgba[4 * i + 3] = 255; }
+    var lab = labFull(lrgba, NL);
+    _P('down');
+    var sm = bilateralLab(lab[0], lab[1], lab[2], lw, lh, 2, 13, 5);
+    var Ls = sm[0], As = sm[1], Bs = sm[2];
+    _P('bilat');
+    // --- k-means + mode filter
+    var cx = o._k || 10, rng = mulberry32(777);
+    var cen = kmeansCenters(Ls, As, Bs, NL, cx, rng), lab0 = new Uint8Array(NL), c;
+    for (i = 0; i < NL; i++) {
+      var best = 0, bd = Infinity;
+      for (c = 0; c < cx; c++) {
+        var d0 = Ls[i] - cen[3 * c], d1 = As[i] - cen[3 * c + 1], d2 = Bs[i] - cen[3 * c + 2], dd = d0 * d0 + d1 * d1 + d2 * d2;
+        if (dd < bd) { bd = dd; best = c; }
+      }
+      lab0[i] = best;
+    }
+    lab0 = modeFilterLabels(lab0, lw, lh, 2, cx, 2);
+    _P('kmeans');
+    // --- merge graph
+    var cc = components(lab0, lw, lh);
+    var G = makeGraph(cc.comp, cc.n, lw, lh, Ls, As, Bs, NL);
+    gMergeSmallest(G, Math.max(8, NL * 0.003));
+    var bp;
+    for (;;) {
+      bp = gBestPair(G, 0);
+      if (!bp || G.alive <= 3) break;
+      if (G.alive > 16 || bp.cost < 9) gMergePair(G, bp.a, bp.b); else break;
+    }
+    // snapshot: segments
+    var segRootOfComp = new Int32Array(cc.n), rootsSeg = [], segIdxOfRoot = new Map();
+    for (i = 0; i < cc.n; i++) {
+      var rt = gFind(G, i); segRootOfComp[i] = rt;
+      if (!segIdxOfRoot.has(rt)) { segIdxOfRoot.set(rt, rootsSeg.length); rootsSeg.push(rt); }
+    }
+    var S = rootsSeg.length, segMeans = [], segN = [];
+    rootsSeg.forEach(function (rt) { var nd = G.nodes[rt]; segMeans.push(gMean(nd)); segN.push(nd.n); });
+    var lowSeg = new Uint8Array(NL);
+    for (i = 0; i < NL; i++) lowSeg[i] = segIdxOfRoot.get(segRootOfComp[cc.comp[i]]);
+    // continue merging into areas
+    var thrA = o._thr || 15;
+    for (;;) {
+      if (G.alive <= 2) break;
+      var minN = NL * 0.012;
+      if (G.alive > 3 && gMergeSmallest(G, minN)) continue;
+      bp = gBestPair(G, 8);
+      if (!bp || G.alive <= 3) break;
+      if (G.alive > maxAreas || bp.cost < thrA) gMergePair(G, bp.a, bp.b); else break;
+    }
+    var segAreaRoot = rootsSeg.map(function (rt) { return gFind(G, rt); });
+    var areaRootIds = [];
+    segAreaRoot.forEach(function (r) { if (areaRootIds.indexOf(r) < 0) areaRootIds.push(r); });
+    var segArea = segAreaRoot.map(function (r) { return areaRootIds.indexOf(r); });
+
+    _P('merge');
+    // --- full-res refinement of the segment map
+    var fl = labFull(rgba, N);
+    var FL = blurF(fl[0], w, h, 1.3), FA = blurF(fl[1], w, h, 1.3), FB = blurF(fl[2], w, h, 1.3);
+    var seg = new Uint8Array(N), cand = [0, 0, 0, 0];
+    for (y = 0; y < h; y++) {
+      var fy = (y + 0.5) / s - 0.5, y0 = Math.floor(fy), wy = fy - y0, y1 = y0 + 1;
+      y0 = y0 < 0 ? 0 : y0 >= lh ? lh - 1 : y0; y1 = y1 < 0 ? 0 : y1 >= lh ? lh - 1 : y1;
+      for (x = 0; x < w; x++) {
+        var fx = (x + 0.5) / s - 0.5, x0 = Math.floor(fx), wx = fx - x0, x1 = x0 + 1;
+        x0 = x0 < 0 ? 0 : x0 >= lw ? lw - 1 : x0; x1 = x1 < 0 ? 0 : x1 >= lw ? lw - 1 : x1;
+        cand[0] = lowSeg[y0 * lw + x0]; cand[1] = lowSeg[y0 * lw + x1]; cand[2] = lowSeg[y1 * lw + x0]; cand[3] = lowSeg[y1 * lw + x1];
+        var nearest = cand[(wy < 0.5 ? 0 : 2) + (wx < 0.5 ? 0 : 1)];
+        i = y * w + x; var bestS = nearest, bestC = Infinity;
+        for (var q = 0; q < 4; q++) {
+          var sg = cand[q], mm = segMeans[sg];
+          var e0 = FL[i] - mm[0], e1 = FA[i] - mm[1], e2 = FB[i] - mm[2];
+          var cst = Math.sqrt(e0 * e0 + e1 * e1 + e2 * e2) + (sg === nearest ? 0 : 5);
+          if (cst < bestC) { bestC = cst; bestS = sg; }
+        }
+        seg[i] = bestS;
+      }
+    }
+    _P('refine');
+    seg = modeFilterLabels(seg, w, h, 2, S, 1);
+    seg = modeFilterLabels(seg, w, h, 1, S, 1);
+    seg = cleanSmallComponents(seg, w, h, Math.max(40, Math.round(0.0006 * N)), S);
+
+    _P('cleanup');
+    var ill = { _seg: seg, _segArea: segArea, _segMeans: segMeans, _S: S, _w: w, _h: h, _s: s, _lw: lw, _lh: lh, _lrgb: [lr, lg, lb], areas: [], steps: [] };
+    ill._chains = traceChains(seg, w, h);
+    var dg = Math.hypot(w, h), hw = Math.max(2, Math.round(dg / 260));
+    ill._chains.forEach(function (ch) {
+      ch.sp = smoothPts(ch.pts, ch.closed, hw, 3);
+      var a = segMeans[ch.a], b = segMeans[ch.b];
+      ch.dE = Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+    });
+    _P('chains');
+    buildAreas(an, ill, null);
+    _P('areas');
+    return ill;
+  }
+
+  /* ---- areas from seg map + seg→area assignment */
+  var AREA_EDGE_PX = 0;
+  function posWords(bb, ct) {
+    var bw = bb[2] - bb[0], bh = bb[3] - bb[1], cx = ct[0], cy = ct[1];
+    if (bw >= 68 && bh <= 48) return cy < 34 ? 'top band' : cy > 66 ? 'bottom band' : 'middle band';
+    if (bh >= 68 && bw <= 48) return cx < 34 ? 'left side' : cx > 66 ? 'right side' : 'centre column';
+    var v = cy < 34 ? 'upper' : cy > 66 ? 'lower' : '', hh = cx < 34 ? 'left' : cx > 66 ? 'right' : '';
+    if (!v && !hh) return 'centre';
+    if (v && hh) return v + ' ' + hh;
+    return v ? v + ' centre' : 'centre ' + hh;
+  }
+
+  function buildAreas(an, ill, keepOrderOf) {
+    var w = ill._w, h = ill._h, N = w * h, seg = ill._seg, segArea = ill._segArea, i, x, y;
+    var ids = [];
+    segArea.forEach(function (a) { if (ids.indexOf(a) < 0) ids.push(a); });
+    var AN = ids.length, idx = new Int32Array(Math.max.apply(null, ids) + 1).fill(-1);
+    ids.forEach(function (a, k) { idx[a] = k; });
+    var map = new Uint8Array(N), cnt = new Float64Array(AN);
+    var segToK = segArea.map(function (a) { return idx[a]; });
+    for (i = 0; i < N; i++) { var k = segToK[seg[i]]; map[i] = k; cnt[k]++; }
+    // sort by size → stable ids 0..AN-1
+    var perm = []; for (i = 0; i < AN; i++) perm.push(i);
+    perm.sort(function (p, q) { return cnt[q] - cnt[p]; });
+    var inv = new Int32Array(AN); perm.forEach(function (old, nw) { inv[old] = nw; });
+    for (i = 0; i < N; i++) map[i] = inv[map[i]];
+    var segToArea = segToK.map(function (k2) { return inv[k2]; });
+    ill._segToArea = segToArea;
+    ill._areaMap = map;
+    var st = new Array(AN), bandTop = Math.max(1, Math.round(h * 0.1)), fine = an.edges.fine, rgba = an.rgba;
+    for (i = 0; i < AN; i++) st[i] = { n: 0, sx: 0, sy: 0, x0: 1e9, y0: 1e9, x1: -1, y1: -1, r: 0, g: 0, b: 0, top: 0, bot: 0, bord: 0, ed: 0, adj: new Map() };
+    for (y = 0; y < h; y++) for (x = 0; x < w; x++) {
+      i = y * w + x; var a = map[i], t = st[a];
+      t.n++; t.sx += x; t.sy += y; if (x < t.x0) t.x0 = x; if (x > t.x1) t.x1 = x; if (y < t.y0) t.y0 = y; if (y > t.y1) t.y1 = y;
+      t.r += rgba[4 * i]; t.g += rgba[4 * i + 1]; t.b += rgba[4 * i + 2]; t.ed += fine[i];
+      if (y < bandTop) t.top++; if (y >= h - bandTop) t.bot++;
+      if (x === 0 || y === 0 || x === w - 1 || y === h - 1) t.bord++;
+      if (x < w - 1) { var b2 = map[i + 1]; if (b2 !== a) { t.adj.set(b2, (t.adj.get(b2) || 0) + 1); st[b2].adj.set(a, (st[b2].adj.get(a) || 0) + 1); } }
+      if (y < h - 1) { var b3 = map[i + w]; if (b3 !== a) { t.adj.set(b3, (t.adj.get(b3) || 0) + 1); st[b3].adj.set(a, (st[b3].adj.get(a) || 0) + 1); } }
+    }
+    // regionIds
+    var rIds = []; for (i = 0; i < AN; i++) rIds.push(new Map());
+    var rm = an.regionMap;
+    for (i = 0; i < N; i++) { var m = rIds[map[i]]; m.set(rm[i], (m.get(rm[i]) || 0) + 1); }
+    var perim = 2 * (w + h), areas = [];
+    for (i = 0; i < AN; i++) {
+      var t2 = st[i], share = t2.n / N, rgb = [Math.round(t2.r / t2.n), Math.round(t2.g / t2.n), Math.round(t2.b / t2.n)];
+      var bb = [t2.x0, t2.y0, t2.x1 + 1, t2.y1 + 1];
+      var bbp = [Math.round(bb[0] / w * 1000) / 10, Math.round(bb[1] / h * 1000) / 10, Math.round(bb[2] / w * 1000) / 10, Math.round(bb[3] / h * 1000) / 10];
+      var ctp = [Math.round(t2.sx / t2.n / w * 1000) / 10, Math.round(t2.sy / t2.n / h * 1000) / 10];
+      var rid = []; rIds[i].forEach(function (v, k2) { if (v >= 0.25 * t2.n * 0.0 + 1) rid.push(k2); });
+      rid.sort(function (p, q) { return rIds[i].get(q) - rIds[i].get(p); });
+      areas.push({
+        id: i, regionIds: rid, bbox: [bb[0], bb[1], bb[2] - 1, bb[3] - 1], bbox_pct: bbp, centroid_pct: ctp, area_pct: Math.round(share * 1000) / 10,
+        meanRgb: rgb, hex: toHex(rgb), colorName: colorName(rgb), position: posWords(bbp, ctp), order: 0, kind: 'middle',
+        _st: { share: share, topCov: t2.top / (bandTop * w), botCov: t2.bot / (bandTop * w), bordFrac: t2.bord / perim, edgeD: Math.min(1, t2.ed / t2.n * 4), cy: t2.sy / t2.n / h, by: (t2.y1 + 1) / h, cx: t2.sx / t2.n / w, adj: t2.adj, perim: Array.from(t2.adj.values()).reduce(function (p, q) { return p + q; }, 0) }
+      });
+    }
+    PROF('areastats');
+    // kinds (before ordering)
+    var bgScore = areas.map(function (a) {
+      var t3 = a._st;
+      return 1.6 * t3.topCov + 0.9 * Math.sqrt(t3.share) + 0.4 * Math.min(1, t3.bordFrac * 4) + 0.4 * (1 - t3.edgeD) + 0.6 * (1 - t3.cy);
+    });
+    var firstId = 0; areas.forEach(function (a) { if (bgScore[a.id] > bgScore[firstId]) firstId = a.id; });
+    var subj = null, sb = -1;
+    areas.forEach(function (a) {
+      var t4 = a._st; if (a.id === firstId || t4.topCov > 0.4 || t4.share < 0.02) return;
+      var bw = (a.bbox[2] - a.bbox[0]) / w, band = bw > 0.7 ? 0.45 : 1;
+      var sc = (0.25 + t4.edgeD) * Math.sqrt(t4.share) * (1 - 0.8 * Math.min(1, Math.hypot(t4.cx - 0.5, t4.cy - 0.55))) * band;
+      if (sc > sb) { sb = sc; subj = a; }
+    });
+    areas.forEach(function (a) {
+      var t5 = a._st;
+      if (a.id === firstId || t5.topCov > 0.5) a.kind = 'background';
+      else if (a === subj) a.kind = 'subject';
+      else if (t5.share < 0.03) a.kind = 'detail';
+      else a.kind = 'middle';
+    });
+    // ordering: back to front
+    var ordList;
+    if (keepOrderOf) ordList = keepOrderOf.slice();
+    else {
+      var KR = { background: 0, middle: 1, subject: 1, detail: 2 };
+      var depth = function (a) { return 0.5 * a._st.cy + 0.5 * a._st.by - 0.4 * a._st.topCov; };
+      ordList = areas.map(function (a) { return a.id; }).sort(function (p, q) {
+        var kp = KR[areas[p].kind], kq = KR[areas[q].kind];
+        return kp !== kq ? kp - kq : (kp === 0 ? bgScore[q] - bgScore[p] : depth(areas[p]) - depth(areas[q]));
+      });
+      // an area mostly surrounded by another is painted after it
+      for (var pass = 0; pass < 12; pass++) {
+        var moved = false;
+        for (var ai = 0; ai < areas.length; ai++) {
+          var A = areas[ai], bestB = -1, bv = 0; if (A.kind === 'background') continue;
+          A._st.adj.forEach(function (c2, o) { if (c2 > bv) { bv = c2; bestB = o; } });
+          if (bestB < 0 || bv < 0.5 * A._st.perim) continue;
+          if (areas[bestB]._st.share < A._st.share) continue;
+          var pa = ordList.indexOf(A.id), pb = ordList.indexOf(bestB);
+          if (pa < pb) { ordList.splice(pa, 1); ordList.splice(ordList.indexOf(bestB) + 1, 0, A.id); moved = true; }
+        }
+        if (!moved) break;
+      }
+    }
+    var sorted = ordList.map(function (id) { return areas[id]; });
+    sorted.forEach(function (a, k3) { a.order = k3; });
+    ill.areas = sorted;
+    ill._byId = {}; sorted.forEach(function (a) { ill._byId[a.id] = a; });
+    rebuildSteps(ill);
+    PROF('order');
+    buildLines(an, ill);
+    PROF('lines');
+    buildFills(an, ill);
+    PROF('fills');
+  }
+
+  function rebuildSteps(ill) {
+    var st = [{ key: 'sketch', kind: 'sketch', title: 'Light pencil construction lines' },
+      { key: 'lines', kind: 'lines', title: 'Clean line art' }];
+    ill.areas.forEach(function (a) {
+      st.push({ key: 'color:' + a.id, kind: 'color', areaId: a.id, title: 'Colour the ' + a.position + ' (' + a.colorName + ')' });
+    });
+    st.push({ key: 'shading', kind: 'shading', title: 'Shading and soft gradients' });
+    st.push({ key: 'final', kind: 'final', title: 'Final details: the finished picture' });
+    ill.steps = st;
+    var rank = new Int32Array(ill.areas.length + 1);
+    ill.areas.forEach(function (a, k) { rank[a.id] = k; });
+    ill._rank = rank;
+  }
+
+  function buildLines(an, ill) {
+    var w = ill._w, h = ill._h, dg = Math.hypot(w, h), segToArea = ill._segToArea;
+    var linePath = new Path2D(), sketchPath = new Path2D(), kept = [];
+    var T = ill._lineMin || 0.03 * dg, Tin = 0.065 * dg;
+    ill._chains.forEach(function (ch) {
+      var isArea = segToArea[ch.a] !== segToArea[ch.b];
+      var ok = isArea ? (ch.len >= (ch.closed ? 0.05 * dg : 0.018 * dg)) : (ch.len >= Tin && ch.dE >= 9);
+      if (!ok) return;
+      ch.isArea = isArea; kept.push(ch);
+    });
+    // second pass: short area chains survive only if they touch a long chain end
+    var endLong = new Set();
+    kept.forEach(function (ch) { if (ch.len >= T) { endLong.add(ch.v0); endLong.add(ch.v1); } });
+    kept = kept.filter(function (ch) { return ch.len >= T || ch.closed || endLong.has(ch.v0) || endLong.has(ch.v1); });
+    kept.forEach(function (ch) { pathFromPts(linePath, ch.sp, ch.closed); });
+    // sketch: simplified long area boundaries
+    var eps = 0.03 * dg, skC = kept.filter(function (c) { return c.isArea && c.len >= 0.12 * dg; }).sort(function (p, q) { return q.len - p.len; }).slice(0, 5);
+    skC.forEach(function (ch) {
+      var p = ch.sp, simp;
+      if (ch.closed) {
+        var half = Math.floor(p.length / 4) * 2, a1 = Array.prototype.slice.call(p, 0, half + 2), a2 = Array.prototype.slice.call(p, half);
+        simp = dpSimplify(a1, eps).concat(dpSimplify(a2, eps).slice(2));
+      } else simp = dpSimplify(p, eps);
+      if (simp.length < 4) return;
+      sketchPath.moveTo(simp[0], simp[1]);
+      for (var i = 2; i < simp.length; i += 2) sketchPath.lineTo(simp[i], simp[i + 1]);
+    });
+    // construction shapes of the middle/subject areas
+    var shapes = [];
+    ill.areas.forEach(function (a) {
+      if (a.kind === 'background' || a.area_pct < 3 || shapes.length >= 2) return;
+      var bw = a.bbox_pct[2] - a.bbox_pct[0], bh = a.bbox_pct[3] - a.bbox_pct[1];
+      if ((bw > 80 && bh < 40) || (bw > 92 && bh > 92)) return;
+      var sh = fitAreaShape(ill, a); if (sh) shapes.push(sh);
+    });
+    shapes.forEach(function (s) {
+      if (s.type === 'ellipse') { sketchPath.moveTo(s.cx + s.rx * Math.cos(s.angle), s.cy + s.rx * Math.sin(s.angle)); sketchPath.ellipse(s.cx, s.cy, s.rx, s.ry, s.angle, 0, Math.PI * 2); }
+      else {
+        var co = Math.cos(s.angle), si = Math.sin(s.angle), pts = [[-s.rx, -s.ry], [s.rx, -s.ry], [s.rx, s.ry], [-s.rx, s.ry]];
+        pts.forEach(function (p, k) { var X = s.cx + p[0] * co - p[1] * si, Y = s.cy + p[0] * si + p[1] * co; if (k === 0) sketchPath.moveTo(X, Y); else sketchPath.lineTo(X, Y); });
+        sketchPath.closePath();
+      }
+    });
+    ill._shapes = shapes; ill._linePath = linePath; ill._sketchPath = sketchPath; ill._keptChains = kept;
+  }
+
+  function fitAreaShape(ill, a) {
+    var w = ill._w, map = ill._areaMap, id = a.id, bb = a.bbox, x, y, n = 0, mx = 0, my = 0, mxx = 0, myy = 0, mxy = 0;
+    for (y = bb[1]; y <= bb[3]; y++) for (x = bb[0]; x <= bb[2]; x++) { if (map[y * w + x] !== id) continue; n++; mx += x; my += y; mxx += x * x; myy += y * y; mxy += x * y; }
+    if (n < 100) return null;
+    mx /= n; my /= n;
+    var cxx = mxx / n - mx * mx, cyy = myy / n - my * my, cxy = mxy / n - mx * my;
+    var tr = cxx + cyy, det = cxx * cyy - cxy * cxy, disc = Math.sqrt(Math.max(0, tr * tr / 4 - det));
+    var l1 = tr / 2 + disc, l2 = Math.max(1e-6, tr / 2 - disc), th = 0.5 * Math.atan2(2 * cxy, cxx - cyy), co = Math.cos(th), si = Math.sin(th);
+    var u0 = 1e9, u1 = -1e9, v0 = 1e9, v1 = -1e9;
+    for (y = bb[1]; y <= bb[3]; y++) for (x = bb[0]; x <= bb[2]; x++) {
+      if (map[y * w + x] !== id) continue;
+      var u = (x - mx) * co + (y - my) * si, v = -(x - mx) * si + (y - my) * co;
+      if (u < u0) u0 = u; if (u > u1) u1 = u; if (v < v0) v0 = v; if (v > v1) v1 = v;
+    }
+    var W = u1 - u0 + 1, H = v1 - v0 + 1, fill = n / (W * H);
+    if (fill > 0.8) { var mu = (u0 + u1) / 2, mv = (v0 + v1) / 2; return { type: 'rect', cx: mx + mu * co - mv * si, cy: my + mu * si + mv * co, rx: W / 2, ry: H / 2, angle: th }; }
+    var ratio = n / (4 * Math.PI * Math.sqrt(l1 * l2));
+    if (ratio < 0.7 || ratio > 1.3) return null;
+    return { type: 'ellipse', cx: mx, cy: my, rx: 2 * Math.sqrt(l1), ry: 2 * Math.sqrt(l2), angle: th };
+  }
+
+  /* ---- fills: masked (normalised) blur of the original, per area, sampled bilinearly at full resolution */
+  function buildFills(an, ill) {
+    var w = ill._w, h = ill._h, N = w * h, lw = ill._lw, lh = ill._lh, NL = lw * lh, s = ill._s, map = ill._areaMap, AN = ill.areas.length, a, i, x, y, ch;
+    var rgb = ill._lrgb;
+    // low-res area label (majority = centre sample) and purity
+    var lowA = new Uint8Array(NL), pure = new Uint8Array(NL);
+    for (y = 0; y < lh; y++) for (x = 0; x < lw; x++) {
+      var cxp = Math.min(w - 1, x * s + (s >> 1)), cyp = Math.min(h - 1, y * s + (s >> 1)), a0 = map[cyp * w + cxp], pu = 1;
+      for (var yy = y * s; yy < Math.min(h, y * s + s) && pu; yy += 1) for (var xx = x * s; xx < Math.min(w, x * s + s); xx += 1) if (map[yy * w + xx] !== a0) { pu = 0; break; }
+      lowA[y * lw + x] = a0; pure[y * lw + x] = pu;
+    }
+    var soft = [], detail = [], means = [];
+    var sigS = 1.8, sigD = 0.8;
+    for (a = 0; a < AN; a++) {
+      var m = new Float32Array(NL), mAll = new Float32Array(NL), cntP = 0;
+      for (i = 0; i < NL; i++) { if (lowA[i] === a) { mAll[i] = 1; if (pure[i]) { m[i] = 1; cntP++; } } }
+      if (cntP < 6) m = mAll;
+      var mean = [0, 0, 0], tot = 0, it;
+      for (i = 0; i < NL; i++) if (m[i]) { mean[0] += rgb[0][i]; mean[1] += rgb[1][i]; mean[2] += rgb[2][i]; tot++; }
+      if (!tot) { mean = ill.areas[a].meanRgb.slice(); tot = 1; }
+      mean = [mean[0] / tot, mean[1] / tot, mean[2] / tot];
+      // robust mask: pixels far from the area's typical colour (flowers, windows, text) get little weight
+      var mR = new Float32Array(NL);
+      for (it = 0; it < 3; it++) {
+        var sw = 0, s0 = 0, s1 = 0, s2 = 0;
+        for (i = 0; i < NL; i++) {
+          if (!m[i]) { mR[i] = 0; continue; }
+          var e0 = rgb[0][i] - mean[0], e1 = rgb[1][i] - mean[1], e2 = rgb[2][i] - mean[2];
+          var wt = Math.exp(-(e0 * e0 + e1 * e1 + e2 * e2) / (2 * 38 * 38)); mR[i] = wt;
+          sw += wt; s0 += wt * rgb[0][i]; s1 += wt * rgb[1][i]; s2 += wt * rgb[2][i];
+        }
+        if (sw > 0) mean = [s0 / sw, s1 / sw, s2 / sw];
+      }
+      means.push(mean);
+      var fields = [];
+      [[sigS, mR], [sigD, m]].forEach(function (cfg) {
+        var sg = cfg[0], mk = cfg[1], den = blurF(mk, lw, lh, sg), F = new Float32Array(3 * NL);
+        for (var c2 = 0; c2 < 3; c2++) {
+          var prem = new Float32Array(NL);
+          for (var j = 0; j < NL; j++) prem[j] = rgb[c2][j] * mk[j];
+          var num = blurF(prem, lw, lh, sg);
+          for (var j2 = 0; j2 < NL; j2++) F[3 * j2 + c2] = den[j2] > 2e-2 ? num[j2] / den[j2] : mean[c2];
+        }
+        fields.push(F);
+      });
+      soft.push(fields[0]); detail.push(fields[1]);
+    }
+    var fill = new Uint8ClampedArray(4 * N), shade = new Uint8ClampedArray(4 * N);
+    for (y = 0; y < h; y++) {
+      var fy = (y + 0.5) / s - 0.5, y0 = Math.floor(fy), wy = fy - y0, y1 = y0 + 1;
+      y0 = y0 < 0 ? 0 : y0 >= lh ? lh - 1 : y0; y1 = y1 < 0 ? 0 : y1 >= lh ? lh - 1 : y1;
+      for (x = 0; x < w; x++) {
+        var fx = (x + 0.5) / s - 0.5, x0 = Math.floor(fx), wx = fx - x0, x1 = x0 + 1;
+        x0 = x0 < 0 ? 0 : x0 >= lw ? lw - 1 : x0; x1 = x1 < 0 ? 0 : x1 >= lw ? lw - 1 : x1;
+        i = y * w + x; var ar2 = map[i], FS = soft[ar2], FD = detail[ar2];
+        var i00 = 3 * (y0 * lw + x0), i01 = 3 * (y0 * lw + x1), i10 = 3 * (y1 * lw + x0), i11 = 3 * (y1 * lw + x1);
+        var w00 = (1 - wy) * (1 - wx), w01 = (1 - wy) * wx, w10 = wy * (1 - wx), w11 = wy * wx;
+        var s0 = FS[i00] * w00 + FS[i01] * w01 + FS[i10] * w10 + FS[i11] * w11, s1 = FS[i00 + 1] * w00 + FS[i01 + 1] * w01 + FS[i10 + 1] * w10 + FS[i11 + 1] * w11, s2 = FS[i00 + 2] * w00 + FS[i01 + 2] * w01 + FS[i10 + 2] * w10 + FS[i11 + 2] * w11;
+        var d0 = FD[i00] * w00 + FD[i01] * w01 + FD[i10] * w10 + FD[i11] * w11, d1 = FD[i00 + 1] * w00 + FD[i01 + 1] * w01 + FD[i10 + 1] * w10 + FD[i11 + 1] * w11, d2 = FD[i00 + 2] * w00 + FD[i01 + 2] * w01 + FD[i10 + 2] * w10 + FD[i11 + 2] * w11;
+        var o4 = 4 * i;
+        fill[o4] = s0 * 0.94 + PAPER[0] * 0.06; fill[o4 + 1] = s1 * 0.94 + PAPER[1] * 0.06; fill[o4 + 2] = s2 * 0.94 + PAPER[2] * 0.06; fill[o4 + 3] = 255;
+        var dl = (d0 + d1 + d2 - s0 - s1 - s2) / 3, k2 = dl < 0 ? 1.5 : 1.1;
+        shade[o4] = s0 + (d0 - s0) * k2 + (dl < 0 ? dl * 0.3 : 0); shade[o4 + 1] = s1 + (d1 - s1) * k2 + (dl < 0 ? dl * 0.3 : 0); shade[o4 + 2] = s2 + (d2 - s2) * k2 + (dl < 0 ? dl * 0.3 : 0); shade[o4 + 3] = 255;
+      }
+    }
+    ill._fill = fill; ill._shade = shade;
+  }
+
+  /* ---- rendering */
+  function paintAreas(ill, an, upToRank, src, deltaOnly) {
+    var N = ill._w * ill._h, map = ill._areaMap, rank = ill._rank, img = new Uint8ClampedArray(4 * N), i, o;
+    for (i = 0; i < N; i++) {
+      o = 4 * i;
+      var inc = deltaOnly >= 0 ? (rank[map[i]] === deltaOnly) : (rank[map[i]] <= upToRank);
+      if (inc) { img[o] = src[o]; img[o + 1] = src[o + 1]; img[o + 2] = src[o + 2]; }
+      else if (deltaOnly >= 0) { img[o] = 255; img[o + 1] = 255; img[o + 2] = 255; }
+      else { img[o] = PAPER[0]; img[o + 1] = PAPER[1]; img[o + 2] = PAPER[2]; }
+      img[o + 3] = 255;
+    }
+    return img;
+  }
+  function canvasFromRGBA(w, h, data, scale) {
+    var c0 = mkCanvas(w, h), x0 = c0.getContext('2d'), id = x0.createImageData(w, h); id.data.set(data); x0.putImageData(id, 0, 0);
+    if (scale === 1) return c0;
+    var c = mkCanvas(Math.max(1, Math.round(w * scale)), Math.max(1, Math.round(h * scale))), ctx = c.getContext('2d');
+    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high'; ctx.drawImage(c0, 0, 0, c.width, c.height);
+    return c;
+  }
+  function drawSketch(ctx, ill, sc) {
+    ctx.save(); ctx.scale(sc, sc); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.strokeStyle = 'rgba(154,148,138,0.78)'; ctx.lineWidth = 1.2;
+    ctx.stroke(ill._sketchPath);
+    ctx.restore();
+  }
+  function drawLines(ctx, ill, sc, alpha) {
+    ctx.save(); ctx.scale(sc, sc); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.globalAlpha = alpha; ctx.strokeStyle = INK; ctx.lineWidth = 1.6;
+    ctx.stroke(ill._linePath);
+    ctx.restore();
+  }
+  function renderIllus(an, ill, idx, o) {
+    o = o || {}; var sc = o.scale || 1, w = ill._w, h = ill._h, st = ill.steps[idx];
+    if (!st) throw new Error('DMEngine.renderIllus: bad step ' + idx);
+    var data;
+    if (st.kind === 'final') return canvasFromRGBA(w, h, an.rgba, sc);
+    var N = w * h, i;
+    if (st.kind === 'sketch' || st.kind === 'lines') { data = new Uint8ClampedArray(4 * N); for (i = 0; i < N; i++) { data[4 * i] = PAPER[0]; data[4 * i + 1] = PAPER[1]; data[4 * i + 2] = PAPER[2]; data[4 * i + 3] = 255; } }
+    else if (st.kind === 'shading') data = paintAreas(ill, an, 1e9, ill._shade, -1);
+    else data = paintAreas(ill, an, ill._rank[st.areaId], ill._fill, -1);
+    var c = canvasFromRGBA(w, h, data, sc), ctx = c.getContext('2d');
+    if (st.kind === 'sketch') drawSketch(ctx, ill, sc);
+    else if (st.kind === 'lines') drawLines(ctx, ill, sc, 1);
+    else if (st.kind === 'color') drawLines(ctx, ill, sc, 1);
+    else if (st.kind === 'shading') drawLines(ctx, ill, sc, 0.4);
+    return c;
+  }
+  function renderIllusDelta(an, ill, idx) {
+    var w = ill._w, h = ill._h, st = ill.steps[idx], N = w * h, i, o;
+    if (!st) throw new Error('DMEngine.renderIllusDelta: bad step ' + idx);
+    var data;
+    if (st.kind === 'sketch' || st.kind === 'lines') { data = new Uint8ClampedArray(4 * N).fill(255); }
+    else if (st.kind === 'color') data = paintAreas(ill, an, 0, ill._fill, ill._rank[st.areaId]);
+    else {
+      var a = st.kind === 'shading' ? ill._shade : an.rgba, b = st.kind === 'shading' ? ill._fill : ill._shade, thr = st.kind === 'shading' ? 8 : 14;
+      data = new Uint8ClampedArray(4 * N);
+      for (i = 0; i < N; i++) {
+        o = 4 * i; var d = Math.abs(a[o] - b[o]) + Math.abs(a[o + 1] - b[o + 1]) + Math.abs(a[o + 2] - b[o + 2]);
+        if (d > thr) { data[o] = a[o]; data[o + 1] = a[o + 1]; data[o + 2] = a[o + 2]; } else { data[o] = data[o + 1] = data[o + 2] = 255; }
+        data[o + 3] = 255;
+      }
+    }
+    var c = canvasFromRGBA(w, h, data, 1), ctx = c.getContext('2d');
+    if (st.kind === 'sketch') drawSketch(ctx, ill, 1);
+    else if (st.kind === 'lines') drawLines(ctx, ill, 1, 1);
+    return c;
+  }
+
+  function areaAt(ill, an, x, y) {
+    x = Math.floor(x); y = Math.floor(y);
+    if (x < 0 || y < 0 || x >= ill._w || y >= ill._h) return null;
+    return ill._byId[ill._areaMap[y * ill._w + x]] || null;
+  }
+  function setAreaOrder(ill, areaId, newOrder) {
+    var a = ill._byId[areaId]; if (!a) return;
+    var list = ill.areas.filter(function (q) { return q !== a; });
+    var pos = clamp(Math.round(newOrder), 0, list.length);
+    list.splice(pos, 0, a);
+    list.forEach(function (q, k) { q.order = k; });
+    ill.areas = list; rebuildSteps(ill);
+  }
+  function mergeAreas(an, ill, idA, idB) {
+    if (idA === idB || !ill._byId[idA] || !ill._byId[idB]) return ill;
+    ill._segArea = ill._segToArea.map(function (v) { return v === idB ? idA : v; });
+    buildAreas(an, ill, null);   // ids are renumbered by size; order is recomputed
+    return ill;
+  }
+
   global.DMEngine = {
     version: VERSION, prepare: prepare, analyze: analyze, planStages: planStages,
     renderStage: renderStage, renderDelta: renderDelta,
     regionAt: regionAt, setRole: setRole, setOrder: setOrder, mergeRegions: mergeRegions, regionMask: regionMask,
-    toBlob: toBlob, colorName: colorName, summary: summary
+    toBlob: toBlob, colorName: colorName, summary: summary,
+    illustrate: illustrate, renderIllus: renderIllus, renderIllusDelta: renderIllusDelta, setAreaOrder: setAreaOrder, areaAt: areaAt, mergeAreas: mergeAreas
   };
 })(typeof window !== 'undefined' ? window : this);
