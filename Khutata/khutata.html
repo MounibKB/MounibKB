@@ -323,6 +323,42 @@ details.ex-more summary { cursor: pointer; color: var(--muted); font-weight: 700
 .ex-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; border-top: 1px solid var(--line); padding-top: 14px; }
 .ex-tools .lbl { font-size: 13px; color: var(--muted); font-weight: 600; }
 .ex-out:empty { display: none; }
+
+/* ===== Lesson step by step ===== */
+.walk { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px clamp(14px, 4vw, 26px); display: grid; gap: 14px; }
+.wk-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.wk-head h2 { font-size: 19px; color: var(--navy); display: flex; align-items: center; gap: 10px; }
+.wk-prog { display: grid; gap: 6px; }
+.wk-bar { height: 6px; border-radius: 99px; background: var(--surface-2); border: 1px solid var(--line); overflow: hidden; }
+.wk-bar i { display: block; height: 100%; background: var(--gold); border-radius: 99px; transition: width .3s ease; }
+.wk-count { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+.wk-dots { display: flex; flex-wrap: wrap; gap: 6px; }
+.wk-dot { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--surface-2); color: var(--muted); font-weight: 700; font-size: 13px; cursor: pointer; display: grid; place-items: center; padding: 0; }
+.wk-dot[data-seen="1"] { border-color: var(--gold-line); color: var(--gold); }
+.wk-dot[aria-current="true"] { background: var(--navy); border-color: var(--navy); color: var(--surface); }
+.wk-card { --c-bg: var(--p2-bg); --c-line: var(--p2-line); --c-fg: var(--p2-fg); border: 1px solid var(--c-line); border-radius: 14px; background: linear-gradient(180deg, var(--c-bg), transparent 140px); padding: 16px clamp(12px, 3vw, 20px); display: grid; gap: 10px; min-width: 0; }
+.wk-card.c1 { --c-bg: var(--p1-bg); --c-line: var(--p1-line); --c-fg: var(--p1-fg); }
+.wk-card.c3 { --c-bg: var(--p3-bg); --c-line: var(--p3-line); --c-fg: var(--p3-fg); }
+.wk-card.c4 { --c-bg: var(--p4-bg); --c-line: var(--p4-line); --c-fg: var(--p4-fg); }
+.wk-card.c5 { --c-bg: var(--p5-bg); --c-line: var(--p5-line); --c-fg: var(--p5-fg); }
+.wk-card.c6 { --c-bg: var(--p6-bg); --c-line: var(--p6-line); --c-fg: var(--p6-fg); }
+.wk-top { display: flex; align-items: center; gap: 12px; }
+.wk-num { flex: none; width: 46px; height: 46px; border-radius: 14px; background: var(--c-fg); color: var(--surface); display: grid; place-items: center; position: relative; }
+.wk-num .i { width: 24px; height: 24px; }
+.wk-num b { position: absolute; top: -7px; inset-inline-end: -7px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 99px; background: var(--surface); color: var(--c-fg); border: 1.5px solid var(--c-fg); font-size: 11.5px; display: grid; place-items: center; line-height: 1; }
+.wk-card h3 { font-size: 17px; color: var(--c-fg); }
+.wk-text { margin: 0; font-size: 16px; line-height: 1.8; max-width: 62ch; overflow-wrap: anywhere; }
+.wk-blocks { display: grid; gap: 10px; min-width: 0; }
+.wk-blocks:empty { display: none; }
+.wk-nav { display: flex; justify-content: space-between; gap: 8px; }
+.wk-nav .btn { min-width: 110px; justify-content: center; }
+.wk-end { border: 1px dashed var(--gold-line); background: var(--gold-soft); border-radius: 14px; padding: 14px 16px; display: grid; gap: 8px; justify-items: start; }
+.wk-end b { font-family: var(--font-display); color: var(--gold); font-size: 16px; }
+.wk-end .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.wk-end .chips span { background: var(--surface); border: 1px solid var(--gold-line); border-radius: 99px; padding: 2px 10px; font-size: 13.5px; font-weight: 600; }
+.wk-list { display: grid; gap: 12px; }
+.wk-empty { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { .wk-bar i { transition: none; } }
 mjx-container { color: inherit; }
 mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
 mjx-container:not([display="true"]) { display: inline-block; max-width: 100%; overflow-x: auto; overflow-y: hidden; vertical-align: middle; }
@@ -424,6 +460,7 @@ mjx-container[display="true"] { margin: .3em 0 !important; }
       </div>
     </div>
     <article class="poster" id="poster"></article>
+    <section class="walk" id="walk" aria-label="step by step"></section>
     <section class="explain" id="explain"></section>
     <section class="ask" id="ask">
       <h2><svg class="i" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg><span data-t="askTitle"></span></h2>
@@ -459,6 +496,7 @@ mjx-container[display="true"] { margin: .3em 0 !important; }
     level: ["مستوى الشرح", "Niveau d'explication", "Explanation level"],
     aiOpts: ["خيارات الذكاء الاصطناعي", "Options IA", "AI options"], aiModel: ["النموذج", "Modèle", "Model"], aiEffort: ["التفكير", "Réflexion", "Effort"],
     eLow: ["سريع", "Rapide", "Quick"], eMed: ["متوازن", "Équilibré", "Balanced"], eHigh: ["معمّق", "Approfondi", "Deep"],
+    walkMake: ["أنشئه الآن", "Le créer", "Create it"], walkMaking: ["يُعِدّ Claude الشرح خطوة بخطوة…", "Claude prépare la leçon pas à pas…", "Claude is preparing the step-by-step lesson…"],
     exMore: ["مثال محلول، أخطاء شائعة وأسئلة", "Exemple résolu, erreurs et questions", "Worked example, mistakes & questions"],
     exTools: ["لم تتضح الفكرة؟", "Pas encore clair ?", "Still unclear?"], exStuck: ["لم أفهم", "Je ne comprends pas", "I don't get it"], exSimpler: ["أبسط", "Plus simple", "Simpler"], exExample: ["بمثال من الحياة", "Avec un exemple concret", "With a real example"], exWhy: ["لماذا؟", "Pourquoi ?", "Why?"], exVisual: ["أرني ذلك", "Montre-moi", "Show me"],
     lvSimple: ["سهل جدًا", "Très simple", "Very simple"],
@@ -611,6 +649,21 @@ mjx-container[display="true"] { margin: .3em 0 !important; }
         { q: "اذكر أركان الشكر الثلاثة.", a: "شكر القلب، وشكر اللسان، وشكر الجوارح." },
         { q: "ما دلالة قوله تعالى: «لَئِن شَكَرْتُمْ لَأَزِيدَنَّكُمْ»؟", a: "أن الشكر سبب لمزيد فضل الله وعطائه." } ],
     },
+    walk: [
+      { title: "انظر حولك", icon: "gift", text: "صحتك، عائلتك، عقلك، طعامك… كلها نِعَم من الله. فكيف نشكره عليها؟", blocks: [] },
+      { title: "ما معنى الشكر؟", icon: "bulb", text: "الشكر ليس كلمة فقط. هو ثلاثة أشياء معًا.", blocks: [
+        { type: "callout", tone: "key", title: "التعريف", text: "الاعتراف بنعم الله باطنًا، والتحدث بها ظاهرًا، وصرفها في طاعته." } ] },
+      { title: "القلب يعرف", icon: "heart", text: "يُقرّ القلب أن كل نعمة من الله وحده، فيحبه عليها.", blocks: [] },
+      { title: "اللسان يحمد", icon: "chat", text: "تقول: الحمد لله، وتثني على الله، وتتحدث بنعمه.", blocks: [
+        { type: "question", q: "أكلت ثم قلت: «الحمد لله». أي ركن من أركان الشكر حققت؟", options: [ "شكر القلب", "شكر اللسان", "شكر الجوارح" ], answer: 1, why: "الحمد كلام، والكلام عمل اللسان.", branches: [] } ] },
+      { title: "الجوارح تعمل", icon: "hand", text: "تستعمل النعمة في طاعة الله: الصحة والعلم والمال في الخير، لا في المعصية.", blocks: [] },
+      { title: "لماذا نشكر؟", icon: "star", text: "الشكر يُنيل رضوان الله ويزيد فضله، ويطهّر النفس من الجحود والغفلة.", blocks: [
+        { type: "callout", tone: "tip", title: "سورة إبراهيم — الآية 7", text: "﴿لَئِن شَكَرْتُمْ لَأَزِيدَنَّكُمْ﴾" },
+        { type: "question", q: "حسب الآية، ماذا ينال من يشكر الله؟", options: [ "الزيادة من فضل الله", "لا يتغير شيء", "تنقص نعمه" ], answer: 0, why: "«لَأَزِيدَنَّكُمْ»: الشكر سبب لمزيد فضل الله وعطائه.", branches: [] } ] },
+      { title: "الصورة الكاملة", icon: "key", text: "الشكر الكامل: قلب يعرف، ولسان يحمد، وجوارح تعمل.", blocks: [
+        { type: "relations", title: "", nodes: [ { id: "n", label: "النعمة", sub: "من الله وحده" }, { id: "q", label: "القلب", sub: "يعرف ويحب" }, { id: "l", label: "اللسان", sub: "يحمد ويثني" }, { id: "j", label: "الجوارح", sub: "تعمل في الطاعة" } ],
+          edges: [ { from: "n", to: "q", label: "" }, { from: "q", to: "l", label: "" }, { from: "l", to: "j", label: "" } ] } ] },
+    ],
     notes: "",
   };
 
@@ -677,6 +730,22 @@ mjx-container[display="true"] { margin: .3em 0 !important; }
         { q: "ما شكل منحنى السرعة $v(t)$؟", a: "خط مستقيم ميله يساوي التسارع $a$." },
         { q: "كيف نعرف أن الحركة متباطئة؟", a: "إذا كان $a \\cdot v < 0$." } ],
     },
+    walk: [
+      { title: "ابدأ بصورة", icon: "eye", text: "دراجة على طريق مستقيم، وسرعتها تزيد بالمقدار نفسه في كل ثانية.", blocks: [] },
+      { title: "المسار مستقيم", icon: "ruler", text: "الجسم يتحرك على خط مستقيم، فيكفي محور واحد لتحديد موضعه.", blocks: [
+        { type: "svg", svg: MOTION_SVG, caption: "المسافات بين المواضع تكبر: الحركة متسارعة." } ] },
+      { title: "التسارع ثابت", icon: "zap", text: "التسارع $a$ = كم تتغير السرعة في كل ثانية. هنا لا يتغير: $a = \\text{Cte}$.", blocks: [
+        { type: "table", headers: [ "$t$ (s)", "0", "1", "2", "3" ], rows: [ [ "$v$ (m/s)", "1", "3", "5", "7" ] ], caption: "مثال: $a = 2\\ \\text{m/s}^2$، فالسرعة تزيد بـ 2 كل ثانية." } ] },
+      { title: "معادلة السرعة", icon: "chart", text: "السرعة دالة تآلفية للزمن: نبدأ بـ $v_0$ ونضيف $a$ كل ثانية.", blocks: [
+        { type: "formula", latex: "v(t) = a\\,t + v_0", legend: [ { symbol: "$a$", meaning: "التسارع", unit: "m/s²" }, { symbol: "$v_0$", meaning: "السرعة البدئية", unit: "m/s" } ], caption: "" },
+        { type: "question", q: "جسم تسارعه $a = 2\\ \\text{m/s}^2$ وسرعته البدئية $v_0 = 1\\ \\text{m/s}$. كم سرعته عند $t = 2\\ \\text{s}$؟", options: [ "$3\\ \\text{m/s}$", "$5\\ \\text{m/s}$", "$4\\ \\text{m/s}$" ], answer: 1, why: "$v = 2 \\times 2 + 1 = 5\\ \\text{m/s}$", branches: [] } ] },
+      { title: "معادلة الموضع", icon: "sigma", text: "الأفصول $x$ دالة من الدرجة الثانية للزمن، لذلك منحناه جزء من شلجم.", blocks: [
+        { type: "formula", latex: "x(t) = \\tfrac{1}{2}\\,a\\,t^2 + v_0\\,t + x_0", legend: [], caption: "" } ] },
+      { title: "متسارعة أم متباطئة؟", icon: "target", text: "انظر إلى إشارة $a \\cdot v$: موجبة ← متسارعة، سالبة ← متباطئة.", blocks: [
+        { type: "question", q: "جسم تسارعه $a = -2\\ \\text{m/s}^2$ وسرعته $v = 4\\ \\text{m/s}$. ما طبيعة حركته؟", options: [ "متسارعة", "متباطئة" ], answer: 1, why: "$a \\cdot v = -8 < 0$، إذن السرعة تتناقص.", branches: [] } ] },
+      { title: "بدون زمن", icon: "key", text: "إذا لم يُعطَ الزمن، استعمل العلاقة المستقلة عن الزمن.", blocks: [
+        { type: "formula", latex: "v^2 - v_0^2 = 2\\,a\\,(x - x_0)", legend: [], caption: "" } ] },
+    ],
     notes: "",
   };
 
@@ -687,7 +756,7 @@ mjx-container[display="true"] { margin: .3em 0 !important; }
     go: $("goBtn"), stop: $("stopBtn"), status: $("status"), level: $("level"), outLang: $("outLang"),
     pill: $("backendPill"), pillText: $("backendText"), keyBox: $("keyBox"), apiKey: $("apiKey"), saveKey: $("saveKey"),
     poster: $("poster"), explain: $("explain"), tag: $("resultTag"), copy: $("copyBtn"), png: $("pngBtn"), history: $("history"),
-    aiModel: $("aiModel"), aiEffort: $("aiEffort"), uiSeg: $("uiLang"), trSeg: $("trSeg"), askLog: $("askLog"), askForm: $("askForm"), askInput: $("askInput"), askBtn: $("askBtn"), ask: $("ask"),
+    aiModel: $("aiModel"), aiEffort: $("aiEffort"), uiSeg: $("uiLang"), trSeg: $("trSeg"), askLog: $("askLog"), askForm: $("askForm"), askInput: $("askInput"), askBtn: $("askBtn"), ask: $("ask"), walk: $("walk"),
   };
   const store = {
     get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
@@ -1135,6 +1204,7 @@ REPLY with ONLY one JSON object, no prose before or after:
   ],
   "evidence": [ { "kind": "quran" | "hadith" | "quote" | "text", "label": "e.g. الشاهد القرآني", "text": "exact text", "source": "", "translation": "", "significance": "what it shows, one sentence" } ],
   "memoryKey": { "label": "e.g. مفتاح الحفظ والفهم", "chips": [ { "text": "2–3 words", "icon": "<icon>" } ] },
+  "walk": [ { "title": "2–5 words", "text": "1–2 very short sentences, ≤ 25 words", "icon": "<icon>", "blocks": [ "0–2 teaching blocks: at most one visual and at most one question" ] } ],
   "explanation": {
     "simple": "the core idea in 1–2 short sentences, starting from something familiar",
     "analogy": "one short comparison with everyday life (one sentence)",
@@ -1160,6 +1230,7 @@ VISUALS (very important — but place them inside the relevant section's "blocks
 - "diagram": a clean, correct SVG drawn like a textbook figure. Rules: viewBox about 520×260 (height 180–400); only elements svg, g, path, line, polyline, polygon, rect, circle, ellipse, text, tspan, defs, marker; NO style, script, image, foreignObject, CSS classes or external links; colours ONLY #1f2937 (main lines and text), #2563eb (blue), #dc2626 (red), #16a34a (green), #ea580c (orange), #7c3aed (purple), #9ca3af (grey guides) or "none"; light fills with fill-opacity; arrowheads with <marker> in <defs>; font-size 12–16; short labels in the output language; nothing outside the viewBox; physically and geometrically correct (force directions, circuit symbols, angles, ray paths). Use single quotes for SVG attributes so the JSON stays valid.
 - "figure": only when an attached image contains an important figure (diagram, map, chart, experiment photo, table). "image" = its number in the list above; "box" = the figure's bounding box in that image in thousandths of width/height (0–1000), [left, top, right, bottom], with a small margin.
 
+WALK (the lesson step by step — very important): 4–7 steps that teach the WHOLE lesson from zero, in the order a good teacher would: start from something the student already knows, then exactly ONE new idea per step, and end with a step that puts everything together. Each step: a catchy short title, ≤ 25 words of plain friendly text (short sentences, no jargon left unexplained), and — only when it makes the idea click — ONE small visual block (svg, formula, table, timeline, causal, relations, graph or steps). Put a quick "question" block (2–3 options, with "why") on 2–3 steps, not all. Use the block vocabulary above, never "followups" or "model". Don't copy the schematic's sentences; make it feel like a conversation. Stay faithful to the lesson.
 EVIDENCE: 0–3 items, only texts that are in the lesson. MEMORY KEY: 2–4 chips that compress the lesson into a memorable formula (like "القلب يشعر | اللسان يحمد | الجوارح تعمل").
 EXPLANATION: ${LEVELS[level] || LEVELS.simple} "worked" is REQUIRED for maths/physics/chemistry (a short exercise solved step by step, one calculation per step, with units) and null for other subjects. "mistakes": 0–2. "questions": 3. Keep everything short; the student can ask for more.
 <icon> is one of: ${ICON_NAMES.join(", ")}.
@@ -1223,6 +1294,10 @@ ${JSON.stringify(stripForModel(d))}`;
     o.dataUrl = typeof v.dataUrl === "string" && v.dataUrl.startsWith("data:image/") ? v.dataUrl : "";
     return o.dataUrl || (o.image != null && o.box && o.box.length === 4 && o.box.every((n) => n != null)) ? o : null;
   }
+  function normWalk(w) {
+    return arr(w, 8).map((s) => ({ title: str(s && s.title, 120), text: str(s && s.text, 600), icon: ic(s && s.icon),
+      blocks: TB.normalize(s && s.blocks).filter((b) => b.type !== "followups" && b.type !== "model").slice(0, 2) })).filter((s) => s.title || s.text);
+  }
   function normalize(d) {
     if (!d || typeof d !== "object" || Array.isArray(d)) throw { code: "bad_shape" };
     const x = d.explanation || {};
@@ -1254,6 +1329,7 @@ ${JSON.stringify(stripForModel(d))}`;
         mistakes: arr(x.mistakes, 5).map((p) => str(p, 400)).filter(Boolean),
         questions: arr(x.questions, 8).map((q) => ({ q: str(q && q.q, 300), a: str(q && q.a, 600) })).filter((q) => q.q),
       },
+      walk: normWalk(d.walk),
       notes: str(d.notes, 600),
     };
     if (!out.title && !out.concept.term && !out.sections.length) throw { code: "bad_shape" };
@@ -1486,6 +1562,9 @@ ${JSON.stringify(stripForModel(d))}`;
     fr: { eyebrow: "Schéma de synthèse", key: "Clé de mémorisation", sig: "Portée :", visuals: "Représentations visuelles", explain: "Explique-moi simplement", analogy: "Imagine…", points: "Idées essentielles", worked: "Exemple résolu pas à pas", answer: "Résultat :", example: "Exemple concret", mistakes: "Attention à ces erreurs", qs: "Questions de révision", ans: "Réponse", notes: "Remarque :", fromPhoto: "Tiré des photos de la leçon", meaning: "Sens :" },
     en: { eyebrow: "Summary schematic", key: "Memory key", sig: "Meaning:", visuals: "Visuals", explain: "Explain it simply", analogy: "Imagine this", points: "Key ideas", worked: "Worked example, step by step", answer: "Result:", example: "Everyday example", mistakes: "Watch out for these mistakes", qs: "Review questions", ans: "Answer", notes: "Note:", fromPhoto: "From the lesson photos", meaning: "Meaning:" },
   };
+  Object.assign(T.ar, { walk: "الدرس خطوة بخطوة", one: "خطوة خطوة", all: "الكل", of: "الخطوة {i} من {n}", prev: "السابق", next: "التالي", done: "أحسنت! أنهيت الدرس.", recap: "تذكّر:", again: "من البداية", missing: "لا يوجد شرح خطوة بخطوة لهذه الخطاطة بعد." });
+  Object.assign(T.fr, { walk: "La leçon pas à pas", one: "Une à une", all: "Tout", of: "Étape {i} sur {n}", prev: "Précédent", next: "Suivant", done: "Bravo ! Leçon terminée.", recap: "À retenir :", again: "Recommencer", missing: "Pas encore d'explication pas à pas pour ce schéma." });
+  Object.assign(T.en, { walk: "The lesson step by step", one: "One at a time", all: "All", of: "Step {i} of {n}", prev: "Back", next: "Next", done: "Well done! Lesson finished.", recap: "Remember:", again: "Start again", missing: "No step-by-step lesson for this schematic yet." });
   function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null && text !== "") e.textContent = text; return e; }
   function arrowEl() { const d = el("div", "arrow"); d.innerHTML = '<svg viewBox="0 0 18 26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v20"/><path d="m4 17 5 5 5-5"/></svg>'; return d; }
   function titleNode(title) {
@@ -1595,6 +1674,86 @@ ${JSON.stringify(stripForModel(d))}`;
     }
     els.poster.replaceChildren(inner);
   }
+
+  /* ================= The lesson step by step ================= */
+  const walkIdx = new WeakMap();   // current step per lesson object
+  let walkAll = false;
+  function walkPrompt(d) {
+    return `You are a patient, warm teacher. Here is a lesson schematic (JSON):\n${lessonForModel()}\n
+Build "the lesson step by step" for a school student, in ${LANG_NAME[d.lang] || "Arabic"}.
+${'WALK (the lesson step by step — very important): 4–7 steps that teach the WHOLE lesson from zero, in the order a good teacher would: start from something the student already knows, then exactly ONE new idea per step, and end with a step that puts everything together. Each step: a catchy short title, ≤ 25 words of plain friendly text (short sentences, no jargon left unexplained), and — only when it makes the idea click — ONE small visual block (svg, formula, table, timeline, causal, relations, graph or steps). Put a quick "question" block (2–3 options, with "why") on 2–3 steps, not all. Use the block vocabulary above, never "followups" or "model". Don\'t copy the schematic\'s sentences; make it feel like a conversation. Stay faithful to the lesson.'}
+BLOCK VOCABULARY:\n${TB.GUIDE.replace(/^HOW TO TEACH[\s\S]*?using any of these, in any order:\n/, "").replace(/\{"type":"followups"[^\n]*\n/, "")}
+REPLY with ONLY JSON: {"walk":[{"title":"…","text":"…","icon":"<icon>","blocks":[…]}]}
+<icon> is one of: ${ICON_NAMES.join(", ")}.`;
+  }
+  function renderWalk(d) {
+    const L = T[d.lang] || T.ar, box = els.walk;
+    box.setAttribute("dir", d.lang === "ar" ? "rtl" : "ltr"); box.setAttribute("lang", d.lang);
+    const head = el("div", "wk-head"); const h = el("h2"); h.append(icon("flag"), document.createTextNode(L.walk)); head.append(h);
+    const steps = d.walk || [];
+    if (!steps.length) {
+      const row = el("div", "wk-empty"); row.append(el("span", null, L.missing));
+      if (state.backend !== "none") {
+        const b = el("button", "btn primary", tl("walkMake")); b.type = "button";
+        b.onclick = async () => {
+          const item = state.cur; b.disabled = true; row.replaceChildren(el("span", "spinner"), el("span", null, tl("walkMaking")));
+          try {
+            await backendReady;
+            const w = normWalk(parseJsonLoose(await ask(walkPrompt(d))).walk);
+            if (!w.length) throw { code: "bad_shape" };
+            d.walk = w; if (!item.example) saveHistory();
+            if (state.cur === item && curData() === d) renderWalk(d);
+          } catch (er) { if (curData() === d) { renderWalk(d); setStatus(errMsg((er && er.code) || "upstream_error"), "err"); } }
+        };
+        row.append(b);
+      }
+      box.replaceChildren(head, row); return;
+    }
+    const seg = el("div", "seg"); seg.setAttribute("role", "group");
+    [["one", false], ["all", true]].forEach(([k, v]) => { const b = el("button", null, L[k]); b.type = "button"; b.setAttribute("aria-pressed", String(walkAll === v)); b.onclick = () => { walkAll = v; renderWalk(d); }; seg.append(b); });
+    head.append(seg);
+    const card = (s, i) => {
+      const c = el("article", `wk-card c${(i % 6) + 1}`); const top = el("div", "wk-top"); const n = el("div", "wk-num"); n.append(icon(s.icon), el("b", null, String(i + 1)));
+      top.append(n, el("h3", null, s.title)); c.append(top);
+      if (s.text) c.append(el("p", "wk-text", s.text));
+      const bl = el("div", "wk-blocks"); if (s.blocks.length) TB.render(bl, s.blocks); c.append(bl);
+      return c;
+    };
+    if (walkAll) {
+      const list = el("div", "wk-list"); steps.forEach((s, i) => list.append(card(s, i)));
+      box.replaceChildren(head, list); typeset([list]); return;
+    }
+    const nodes = [head];
+    const prog = el("div", "wk-prog"); const bar = el("div", "wk-bar"); const fill = el("i"); bar.append(fill); const count = el("span", "wk-count"); prog.append(bar, count);
+    const dots = el("div", "wk-dots"); const stage = el("div"); const nav = el("div", "wk-nav");
+    const seen = new Set();
+    const go = (i, focus) => {
+      i = Math.max(0, Math.min(steps.length, i)); walkIdx.set(d, i);
+      const end = i === steps.length; if (!end) seen.add(i);
+      fill.style.width = `${Math.round(((end ? steps.length : i + 1) / steps.length) * 100)}%`;
+      count.textContent = end ? L.done : L.of.replace("{i}", i + 1).replace("{n}", steps.length);
+      dots.querySelectorAll("button").forEach((b, j) => { b.setAttribute("aria-current", String(j === i)); b.dataset.seen = seen.has(j) ? "1" : "0"; });
+      if (end) {
+        const e = el("div", "wk-end"); e.append(el("b", null, L.done));
+        if (d.memoryKey.chips.length) { e.append(el("span", null, (d.memoryKey.label || L.key) + " —")); const ch = el("div", "chips"); d.memoryKey.chips.forEach((c) => ch.append(el("span", null, c.text))); e.append(ch); }
+        stage.replaceChildren(e);
+      } else { stage.replaceChildren(card(steps[i], i)); typeset([stage]); }
+      const back = el("button", "btn", L.prev); back.type = "button"; back.disabled = i === 0; back.onclick = () => go(i - 1, true);
+      const fw = el("button", "btn primary", end ? L.again : L.next); fw.type = "button"; fw.onclick = () => go(end ? 0 : i + 1, true);
+      nav.replaceChildren(back, fw);
+      if (focus) { fw.focus({ preventScroll: true }); box.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "nearest" }); }
+    };
+    steps.forEach((s, i) => { const b = el("button", "wk-dot", String(i + 1)); b.type = "button"; b.title = s.title; b.setAttribute("aria-label", `${i + 1}. ${s.title}`); b.onclick = () => go(i); dots.append(b); });
+    nodes.push(prog, dots, stage, nav);
+    box.replaceChildren(...nodes);
+    box.onkeydown = (e) => {
+      if (walkAll || e.target.closest("input, textarea, select")) return;
+      const rtl = d.lang === "ar", cur = walkIdx.get(d) || 0;
+      if (e.key === "ArrowRight") { e.preventDefault(); go(cur + (rtl ? -1 : 1), true); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); go(cur + (rtl ? 1 : -1), true); }
+    };
+    go(Math.min(walkIdx.get(d) || 0, steps.length));
+  }
   let speaking = false;
   const listenLabel = () => (speaking ? t("stopListen") : t("listen"));
   function renderExplain(d) {
@@ -1664,11 +1823,11 @@ ${JSON.stringify(stripForModel(d))}`;
     if (speaking) { window.speechSynthesis.cancel(); speaking = false; }
     state.cur = item; state.curLang = lang;
     const d = lang === item.base.lang ? item.base : item.tr[lang];
-    renderPoster(d); renderExplain(d);
+    renderPoster(d); renderWalk(d); renderExplain(d);
     els.trSeg.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.l === lang)));
     state.chat = []; els.askLog.replaceChildren();
     updateTag(); renderHistory();
-    return typeset([els.poster, els.explain]);
+    return typeset([els.poster, els.walk, els.explain]);
   }
   const curData = () => (state.curLang === state.cur.base.lang ? state.cur.base : state.cur.tr[state.curLang]);
   function updateTag() {
@@ -1763,7 +1922,7 @@ ${JSON.stringify(stripForModel(d))}`;
 
   /* ================= Ask about the lesson ================= */
   const tl = (k) => t(k);
-  function lessonForModel() { const d = stripForModel(curData()); d.visuals.forEach((v) => { if (v.svg) v.svg = "(diagram)"; }); (d.sections || []).forEach((sc) => (sc.blocks || []).forEach((b) => { if (b.svg) b.svg = "(diagram)"; })); return JSON.stringify(d).slice(0, 60000); }
+  function lessonForModel() { const d = stripForModel(curData()); d.visuals.forEach((v) => { if (v.svg) v.svg = "(diagram)"; }); [...(d.sections || []), ...(d.walk || [])].forEach((sc) => (sc.blocks || []).forEach((b) => { if (b.svg) b.svg = "(diagram)"; })); return JSON.stringify(d).slice(0, 60000); }
   function renderAnswer(box, text) {
     box.replaceChildren(); let ul = null;
     text.split(/\n+/).forEach((line) => {
@@ -1820,6 +1979,10 @@ ${JSON.stringify(stripForModel(d))}`;
       if (e.significance) L.push(`   ${t.sig} ${e.significance}`);
     });
     if (d.memoryKey.chips.length) L.push("", `${d.memoryKey.label || t.key}: ${d.memoryKey.chips.map((c) => c.text).join(" | ")}`);
+    if (d.walk && d.walk.length) {
+      L.push("", `— ${t.walk} —`);
+      d.walk.forEach((s, i) => { L.push(`${i + 1}) ${s.title}${s.text ? ": " + s.text : ""}`); if (s.blocks.length) L.push(TB.plain(s.blocks).split("\n").map((y) => "   " + y).join("\n")); });
+    }
     const x = d.explanation;
     if (x.simple) L.push("", `— ${t.explain} —`, x.simple);
     if (x.analogy) L.push("", `${t.analogy}: ${x.analogy}`);
@@ -2084,6 +2247,7 @@ JSON: double every backslash inside strings (\\frac, \\vec).`;
   const nav = (navigator.language || "").slice(0, 2);
   uiLang = LANGS.includes(savedUi) ? savedUi : nav === "fr" ? "fr" : nav === "en" ? "en" : "ar";
   loadHistory();
+  EXAMPLES.forEach((e) => { e.base.walk = normWalk(e.base.walk); });
   state.cur = EXAMPLES[0];
   applyUi();
   show(EXAMPLES[0], "ar");
