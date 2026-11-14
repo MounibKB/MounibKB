@@ -55,6 +55,7 @@ label.opt { display: inline-flex; gap: 6px; align-items: center; font-size: 13px
 .lbl { min-width: 30px; height: 26px; padding: 0 6px; border-radius: 8px; background: var(--surface-2); display: grid; place-items: center; font-family: var(--font-mono); font-size: 12.5px; color: var(--accent); }
 .q { margin: 0; color: var(--muted); font-size: 13.5px; overflow-wrap: anywhere; }
 .a { margin: 0; font-size: 17px; font-weight: 700; overflow-wrap: anywhere; }
+.steps { margin: 4px 0; padding-inline-start: 22px; display: grid; gap: 4px; font-size: 14.5px; overflow-wrap: anywhere; }
 .why { margin: 0; font-size: 14px; color: var(--muted); overflow-wrap: anywhere; } .why b { color: var(--fg); }
 .item .vis { grid-column: 2; margin-top: 6px; }
 .note { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; }
@@ -486,13 +487,16 @@ JSON: double every backslash inside strings (\\frac, \\vec).`;
   const prompt = (n, text) => String.raw`You solve a student's homework. Source: ${n ? n + " page image(s)" : ""}${n && text ? " + " : ""}${text ? "the text below" : ""}.
 Answer EVERY question in order, with the SIMPLEST correct method a student at that level would use.
 For each question:
-- "answer": the final answer, ONE line (a value, a word, a short sentence, the right option). This is what matters.
-- "why": the simplest justification or method in ≤ 20 words (a key formula, the rule, the clue in the text). No padding.
+- "question": the full instruction kept faithful (never drop the statement to prove, the values, the options or the conditions); only trim filler words.
+- "answer": the final result, ONE line (a value, a word, a short sentence, the right option).
+- "why": the simplest method in ≤ 20 words (a key formula, the rule, the clue).
+- PROOFS AND "SHOW THAT" QUESTIONS (montrer que, démontrer, prouver, justifier, vérifier que, أثبت، بيّن أن، برهن): NEVER answer just "true"/"vrai"/"oui". Put the statement being proven in "answer" and write the actual proof in "steps": 2–6 lines, each one a real deduction or calculation (an equation or inequality with its justification in a few words), in logical order, so a student can copy it as their written solution. Do not skip an intermediate line that the reasoning needs; shorten wording, never reasoning. Do the same for any question whose mark depends on the working (calculations with several stages, equation solving, limits, derivatives, sign tables): "steps" holds the necessary stages, "answer" the final result.
+- Pure recall, true/false, multiple choice and one-step questions need no "steps" (use []).
 - "visual": ONLY if the answer itself is a figure/construction/table/graph (e.g. "construire", "tracer", "complete the table"): ONE block {"type":"svg"|"table"|"formula"|"graph",...}; otherwise omit.
 Be correct: check every computation. Quote texts faithfully. If something is unreadable, say so in "note" instead of guessing.
 Write in the language of the homework. Math in LaTeX between $…$ (double backslashes in JSON; vectors \\vect{AB}).
 SVG rules: viewBox about 520×260; only svg,g,path,line,polyline,polygon,rect,circle,ellipse,text,defs,marker; colours #1f2937,#2563eb,#dc2626,#16a34a,#ea580c,#7c3aed,#9ca3af; single quotes.
-Reply ONLY with JSON: {"title":"short title of the homework","lang":"fr|ar|en","parts":[{"title":"Exercice 1 (or empty)","items":[{"label":"1","question":"the question, shortened to ≤ 12 words","answer":"…","why":"…","visual":null}]}],"note":""}${text ? "\n\n<homework>\n" + text.slice(0, 60000) + "\n</homework>" : ""}`;
+Reply ONLY with JSON: {"title":"short title of the homework","lang":"fr|ar|en","parts":[{"title":"Exercice 1 (or empty)","items":[{"label":"1","question":"the instruction, faithful","answer":"…","why":"…","steps":[],"visual":null}]}],"note":""}${text ? "\n\n<homework>\n" + text.slice(0, 60000) + "\n</homework>" : ""}`;
 
   /* ---- render ---- */
   let last = store.get("rx.last", null);
@@ -500,7 +504,7 @@ Reply ONLY with JSON: {"title":"short title of the homework","lang":"fr|ar|en","
   function render(d) {
     const out = $("out"); out.hidden = false; out.replaceChildren(); out.dir = d.lang === "ar" ? "rtl" : "ltr";
     const head = el("div", "sheet-head"); head.append(el("h2", null, d.title || t("answers")));
-    const acts = el("div", "row"); const cp = el("button", "btn", t("copy")); cp.type = "button"; cp.onclick = () => { const txt = d.parts.map((p) => (p.title ? p.title + "\n" : "") + p.items.map((it) => `${it.label}. ${it.answer}${it.why ? " — " + it.why : ""}`).join("\n")).join("\n\n"); const ok = () => toast(t("copied")); try { navigator.clipboard.writeText(txt).then(ok, () => {}); } catch {} };
+    const acts = el("div", "row"); const cp = el("button", "btn", t("copy")); cp.type = "button"; cp.onclick = () => { const txt = d.parts.map((p) => (p.title ? p.title + "\n" : "") + p.items.map((it) => `${it.label}. ${it.answer}${it.why ? " — " + it.why : ""}${it.steps && it.steps.length ? "\n" + it.steps.map((x, k) => `   ${k + 1}) ${x}`).join("\n") : ""}`).join("\n")).join("\n\n"); const ok = () => toast(t("copied")); try { navigator.clipboard.writeText(txt).then(ok, () => {}); } catch {} };
     const nw = el("button", "btn", t("again")); nw.type = "button"; nw.onclick = () => { out.hidden = true; files.length = 0; paintPages(); $("text").value = ""; window.scrollTo({ top: 0, behavior: "smooth" }); };
     acts.append(cp, nw); head.append(acts); out.append(head);
     const sheet = el("div", "sheet");
@@ -511,6 +515,7 @@ Reply ONLY with JSON: {"title":"short title of the homework","lang":"fr|ar|en","
         const body = el("div"); body.style.display = "grid"; body.style.gap = "2px"; body.style.minWidth = "0";
         if (it.question) body.append(rich(el("p", "q"), it.question));
         body.append(rich(el("p", "a"), it.answer));
+        if (it.steps && it.steps.length) { const ol = el("ol", "steps"); it.steps.forEach((x) => ol.append(rich(el("li"), x))); body.append(ol); }
         if (it.why) body.append(rich(el("p", "why"), it.why));
         row.append(body);
         if (it.visual) { const v = el("div", "vis"); TB.render(v, [it.visual]); row.append(v); }
@@ -523,7 +528,7 @@ Reply ONLY with JSON: {"title":"short title of the homework","lang":"fr|ar|en","
   }
   function normalize(raw) {
     const S = (v, m = 600) => (typeof v === "string" ? v.slice(0, m) : v == null || typeof v === "object" ? "" : String(v).slice(0, m));
-    const parts = (Array.isArray(raw.parts) ? raw.parts : Array.isArray(raw.items) ? [{ title: "", items: raw.items }] : []).map((p) => ({ title: S(p && p.title, 80), items: (Array.isArray(p && p.items) ? p.items : []).map((it, i) => ({ label: S(it && it.label, 8) || String(i + 1), question: S(it && it.question, 200), answer: S(it && it.answer, 600), why: S(it && it.why, 300), visual: it && it.visual && typeof it.visual === "object" ? TB.normalize([it.visual]).filter((b) => ["svg", "table", "formula", "graph"].includes(b.type))[0] || null : null })).filter((it) => it.answer) })).filter((p) => p.items.length);
+    const parts = (Array.isArray(raw.parts) ? raw.parts : Array.isArray(raw.items) ? [{ title: "", items: raw.items }] : []).map((p) => ({ title: S(p && p.title, 80), items: (Array.isArray(p && p.items) ? p.items : []).map((it, i) => ({ label: S(it && it.label, 8) || String(i + 1), question: S(it && it.question, 400), answer: S(it && it.answer, 600), why: S(it && it.why, 300), steps: (Array.isArray(it && it.steps) ? it.steps : []).slice(0, 10).map((x) => S(x, 400)).filter(Boolean), visual: it && it.visual && typeof it.visual === "object" ? TB.normalize([it.visual]).filter((b) => ["svg", "table", "formula", "graph"].includes(b.type))[0] || null : null })).filter((it) => it.answer) })).filter((p) => p.items.length);
     if (!parts.length) throw { code: "x" };
     return { title: S(raw.title, 120), lang: LANGS.includes(raw.lang) ? raw.lang : "fr", parts, note: S(raw.note, 400) };
   }
