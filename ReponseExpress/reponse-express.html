@@ -542,8 +542,9 @@ Reply ONLY with JSON: {"title":"short title of the homework","lang":"fr|ar|en","
     typeset([out]);
   }
   function normalize(raw) {
-    const UI = /[\u25B2\u25B4\u25BC\u25BE\u2191\u2193\u2195\u21D5\u2B0D\u2B0C\u2B0E\u2B0F\u2B63\u2B65\uF000-\uF8FF]/g;
-    const S = (v, m = 600) => (typeof v === "string" ? v.replace(UI, "").slice(0, m) : v == null || typeof v === "object" ? "" : String(v).replace(UI, "").slice(0, m));
+    const UI = /[↑-↕⇅⇕⇳▲-▾⬀-⬑⬍-⬏⭠-⭥⯅-︎️]/g;
+    const UI_TEX = /\\(?:up|down|updown|Uparrow|Downarrow|Updownarrow|uparrow|downarrow|updownarrow)(?:arrow)?\b\s*/g;
+    const S = (v, m = 600) => (typeof v === "string" ? v.replace(UI_TEX, "").replace(UI, "").slice(0, m) : v == null || typeof v === "object" ? "" : String(v).replace(UI, "").slice(0, m));
     const parts = (Array.isArray(raw.parts) ? raw.parts : Array.isArray(raw.items) ? [{ title: "", items: raw.items }] : []).map((p) => ({ title: S(p && p.title, 80), items: (Array.isArray(p && p.items) ? p.items : []).map((it, i) => ({ label: S(it && it.label, 8) || String(i + 1), question: S(it && it.question, 400), answer: S(it && it.answer, 600), why: S(it && it.why, 900), steps: (Array.isArray(it && it.steps) ? it.steps : []).slice(0, 24).map((x) => S(x, 900)).filter(Boolean), visual: it && it.visual && typeof it.visual === "object" ? TB.normalize([it.visual]).filter((b) => ["svg", "table", "formula", "graph"].includes(b.type))[0] || null : null })).filter((it) => it.answer) })).filter((p) => p.items.length);
     if (!parts.length) throw { code: "x" };
     return { title: S(raw.title, 120), lang: LANGS.includes(raw.lang) ? raw.lang : "fr", parts, note: S(raw.note, 400) };
