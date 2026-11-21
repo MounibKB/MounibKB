@@ -143,6 +143,7 @@ mjx-container { color: inherit; } mjx-container:not([display="true"]) { display:
     <textarea id="text" data-tp="paste"></textarea>
     <div class="row">
       <label class="opt"><span data-t="model"></span><select id="model"><option value="haiku">Haiku 5.5</option><option value="sonnet">Sonnet 5.5</option><option value="opus">Opus 5.5</option></select></label>
+      <label class="opt"><span data-t="len"></span><select id="len"><option value="short" data-t="lShort"></option><option value="normal" data-t="lNorm"></option><option value="detailed" data-t="lDet" selected></option><option value="full" data-t="lFull"></option></select></label>
       <label class="opt"><span data-t="effort"></span><select id="effort"><option value="low" data-t="eLow"></option><option value="medium" data-t="eMed" selected></option><option value="high" data-t="eHigh"></option></select></label>
     </div>
     <button class="btn go" type="button" id="go" data-t="go"></button>
@@ -158,7 +159,7 @@ mjx-container { color: inherit; } mjx-container:not([display="true"]) { display:
     sub: ["Ton devoir, résolu de la façon la plus simple. Réponse d'abord, une ligne d'explication.", "واجبك محلول بأبسط طريقة. الجواب أولًا، ثم سطر شرح.", "Your homework, solved the simplest way. Answer first, one line of why."],
     drop: ["Glisse la photo de ton devoir ici", "اسحب صورة واجبك هنا", "Drop a photo of your homework here"], types: ["Photos · PDF · texte · Ctrl+V pour coller", "صور · PDF · نص · Ctrl+V للصق", "Photos · PDF · text · Ctrl+V to paste"],
     choose: ["Choisir", "اختيار", "Choose"], photo: ["Prendre une photo", "التقاط صورة", "Take a photo"], paste: ["…ou colle l'énoncé ici", "…أو الصق النص هنا", "…or paste the questions here"],
-    model: ["Modèle", "النموذج", "Model"], effort: ["Réflexion", "التفكير", "Effort"], eLow: ["Rapide", "سريع", "Quick"], eMed: ["Équilibré", "متوازن", "Balanced"], eHigh: ["Approfondi", "معمّق", "Deep"],
+    model: ["Modèle", "النموذج", "Model"], len: ["Longueur des réponses", "طول الأجوبة", "Answer length"], lShort: ["Brève", "مختصرة", "Short"], lNorm: ["Normale", "عادية", "Normal"], lDet: ["Détaillée", "مفصّلة", "Detailed"], lFull: ["Rédaction complète", "حل كامل مكتوب", "Full written solution"], effort: ["Réflexion", "التفكير", "Effort"], eLow: ["Rapide", "سريع", "Quick"], eMed: ["Équilibré", "متوازن", "Balanced"], eHigh: ["Approfondi", "معمّق", "Deep"],
     go: ["Répondre", "أجب", "Answer"], working: ["Je résous…", "أحلّ…", "Solving…"], need: ["Ajoute une photo, un PDF ou du texte.", "أضف صورة أو PDF أو نصًا.", "Add a photo, a PDF or text."],
     answers: ["Réponses", "الأجوبة", "Answers"], copy: ["Copier", "نسخ", "Copy"], copied: ["Copié", "نُسخ", "Copied"], again: ["Nouveau devoir", "واجب جديد", "New homework"],
     noAI: ["Claude n'est pas disponible ici. Ouvre la page dans Claude.", "Claude غير متاح هنا. افتح الصفحة داخل Claude.", "Claude isn't available here. Open the page in Claude."],
@@ -492,14 +493,18 @@ JSON: double every backslash inside strings (\\frac, \\vec).`;
     }
     throw { code: "none" };
   }
-  const prompt = (n, text) => String.raw`You solve a student's homework. Source: ${n ? n + " page image(s)" : ""}${n && text ? " + " : ""}${text ? "the text below" : ""}.
+  const LEN = {
+    short: `LENGTH = SHORT. "answer": the final result in ONE line. "why": the method in ≤ 20 words. "steps": [] except for proofs / "show that" questions (2–6 lines).`,
+    normal: `LENGTH = NORMAL. "answer": the final result in one line. "why": the method in ≤ 40 words. "steps": the necessary stages of every question that needs working (up to 8 lines, each with a few words of justification); [] for recall, true/false and one-step questions.`,
+    detailed: `LENGTH = DETAILED. Write what a good student would hand in. "answer": the final result. "why": the method and the rule used, 1–3 sentences. "steps": for EVERY question that needs reasoning or computation, each stage on its own line (up to 12), every line stating the operation AND why it is allowed (theorem, property, given); never skip an intermediate line.`,
+    full: `LENGTH = FULL WRITTEN SOLUTION. Write the complete solution as in a model correction. "steps" (up to 20 lines, no length limit per line within reason) for every question: restate what is given and what is asked, name the method or theorem, do every calculation line by line with its justification, check the result when useful, and end with a conclusion sentence. "answer": the final result. "why": the idea of the method in 1–3 sentences. Short questions still get 2–3 explanatory lines.`,
+  };
+  const prompt = (n, text, len) => String.raw`You solve a student's homework. Source: ${n ? n + " page image(s)" : ""}${n && text ? " + " : ""}${text ? "the text below" : ""}.
 Answer EVERY question in order, with the SIMPLEST correct method a student at that level would use.
+${LEN[len] || LEN.detailed}
 For each question:
 - "question": the full instruction kept faithful (never drop the statement to prove, the values, the options or the conditions); only trim filler words.
-- "answer": the final result, ONE line (a value, a word, a short sentence, the right option).
-- "why": the simplest method in ≤ 20 words (a key formula, the rule, the clue).
-- PROOFS AND "SHOW THAT" QUESTIONS (montrer que, démontrer, prouver, justifier, vérifier que, أثبت، بيّن أن، برهن): NEVER answer just "true"/"vrai"/"oui". Put the statement being proven in "answer" and write the actual proof in "steps": 2–6 lines, each one a real deduction or calculation (an equation or inequality with its justification in a few words), in logical order, so a student can copy it as their written solution. Do not skip an intermediate line that the reasoning needs; shorten wording, never reasoning. Do the same for any question whose mark depends on the working (calculations with several stages, equation solving, limits, derivatives, sign tables): "steps" holds the necessary stages, "answer" the final result.
-- Pure recall, true/false, multiple choice and one-step questions need no "steps" (use []).
+- PROOFS AND "SHOW THAT" QUESTIONS (montrer que, démontrer, prouver, justifier, vérifier que, أثبت، بيّن أن، برهن): NEVER answer just "true"/"vrai"/"oui". Put the statement being proven in "answer" and the actual proof in "steps", in logical order, so a student can copy it as their written solution. Shorten wording, never reasoning.
 - "visual": ONLY if the answer itself is a figure/construction/table/graph (e.g. "construire", "tracer", "complete the table"): ONE block {"type":"svg"|"table"|"formula"|"graph",...}; otherwise omit.
 Be correct: check every computation. Quote texts faithfully. If something is unreadable, say so in "note" instead of guessing.
 Write in the language of the homework. Math in LaTeX between $…$ (double backslashes in JSON; vectors \\vect{AB}).
@@ -536,7 +541,7 @@ Reply ONLY with JSON: {"title":"short title of the homework","lang":"fr|ar|en","
   }
   function normalize(raw) {
     const S = (v, m = 600) => (typeof v === "string" ? v.slice(0, m) : v == null || typeof v === "object" ? "" : String(v).slice(0, m));
-    const parts = (Array.isArray(raw.parts) ? raw.parts : Array.isArray(raw.items) ? [{ title: "", items: raw.items }] : []).map((p) => ({ title: S(p && p.title, 80), items: (Array.isArray(p && p.items) ? p.items : []).map((it, i) => ({ label: S(it && it.label, 8) || String(i + 1), question: S(it && it.question, 400), answer: S(it && it.answer, 600), why: S(it && it.why, 300), steps: (Array.isArray(it && it.steps) ? it.steps : []).slice(0, 10).map((x) => S(x, 400)).filter(Boolean), visual: it && it.visual && typeof it.visual === "object" ? TB.normalize([it.visual]).filter((b) => ["svg", "table", "formula", "graph"].includes(b.type))[0] || null : null })).filter((it) => it.answer) })).filter((p) => p.items.length);
+    const parts = (Array.isArray(raw.parts) ? raw.parts : Array.isArray(raw.items) ? [{ title: "", items: raw.items }] : []).map((p) => ({ title: S(p && p.title, 80), items: (Array.isArray(p && p.items) ? p.items : []).map((it, i) => ({ label: S(it && it.label, 8) || String(i + 1), question: S(it && it.question, 400), answer: S(it && it.answer, 600), why: S(it && it.why, 900), steps: (Array.isArray(it && it.steps) ? it.steps : []).slice(0, 24).map((x) => S(x, 900)).filter(Boolean), visual: it && it.visual && typeof it.visual === "object" ? TB.normalize([it.visual]).filter((b) => ["svg", "table", "formula", "graph"].includes(b.type))[0] || null : null })).filter((it) => it.answer) })).filter((p) => p.items.length);
     if (!parts.length) throw { code: "x" };
     return { title: S(raw.title, 120), lang: LANGS.includes(raw.lang) ? raw.lang : "fr", parts, note: S(raw.note, 400) };
   }
@@ -548,7 +553,7 @@ Reply ONLY with JSON: {"title":"short title of the homework","lang":"fr|ar|en","
     try {
       let { images, text } = await readAll(); text = [typed, text].filter(Boolean).join("\n\n");
       if (backend === "claude" && !imagesOk) images = []; images = images.slice(0, maxImg);
-      const raw = await ask(prompt(images.length, text), images);
+      const raw = await ask(prompt(images.length, text, $("len").value), images);
       last = normalize(parseJsonLoose(raw)); store.set("rx.last", last); setStatus(""); render(last);
       $("out").scrollIntoView({ behavior: "smooth", block: "start" });
     } catch (e) { const c = e && e.code; setStatus(c === "not_granted" ? t("denied") : c === "rate_limited" ? t("limited") : c === "none" ? t("noAI") : c === "key" ? t("key") : t("err"), false, true); }
@@ -563,8 +568,8 @@ Reply ONLY with JSON: {"title":"short title of the homework","lang":"fr|ar|en","
   }
   $("uiSeg").onclick = (e) => { const b = e.target.closest("button[data-l]"); if (!b) return; ui = b.dataset.l; store.set("rx.ui", ui); applyUi(); };
   const sv0 = store.get("rx.ui", ""); ui = LANGS.includes(sv0) ? sv0 : (navigator.language || "").startsWith("ar") ? "ar" : (navigator.language || "").startsWith("en") ? "en" : "fr";
-  const ms = store.get("rx.ai", {}); if (MODELS[ms.model]) $("model").value = ms.model; if (ms.effort) $("effort").value = ms.effort;
-  [$("model"), $("effort")].forEach((x) => x.onchange = () => store.set("rx.ai", { model: $("model").value, effort: $("effort").value }));
+  const ms = store.get("rx.ai", {}); if (MODELS[ms.model]) $("model").value = ms.model; if (ms.effort) $("effort").value = ms.effort; if (LEN[ms.len]) $("len").value = ms.len;
+  [$("model"), $("effort"), $("len")].forEach((x) => x.onchange = () => store.set("rx.ai", { model: $("model").value, effort: $("effort").value, len: $("len").value }));
   applyUi(); if (last) render(last);
   window.__rx = { render, normalize };
 })();
