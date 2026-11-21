@@ -55,14 +55,18 @@ label.opt { display: inline-flex; gap: 6px; align-items: center; font-size: 13px
 .item + .item { border-top: 1px dashed var(--line); }
 .qh { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; }
 .lbl { width: 26px; height: 26px; border-radius: 8px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-family: var(--font-mono); font-size: 12.5px; font-weight: 700; }
-.q { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
-.ans { border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); border-radius: 10px; padding: 9px 12px; display: grid; gap: 2px; min-width: 0; }
-.ans small { font-size: 11.5px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .05em; }
-.a { margin: 0; font-size: 16px; font-weight: 700; line-height: 1.6; overflow-wrap: anywhere; }
-.steps-box { margin: 0; padding: 0; list-style: none; counter-reset: st; display: grid; gap: 6px; font-size: 15px; line-height: 1.7; min-width: 0; }
-.steps-box li { counter-increment: st; position: relative; padding-inline-start: 30px; min-width: 0; overflow-wrap: anywhere; }
-.steps-box li::before { position: absolute; inset-inline-start: 0; top: .2em; content: counter(st); font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 0 5px; min-width: 22px; text-align: center; }
-.why { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.6; overflow-wrap: anywhere; border-inline-start: 3px solid var(--line); padding-inline-start: 10px; } .why b { color: var(--fg); }
+.q { margin: 0; color: var(--fg); font-size: 15px; font-weight: 600; line-height: 1.6; overflow-wrap: anywhere; padding-top: 1px; }
+.sec-l { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 4px; }
+.ans { border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--line)); background: color-mix(in srgb, var(--accent) 8%, transparent); border-radius: 10px; padding: 9px 12px; min-width: 0; }
+.ans .sec-l { color: var(--accent); }
+.a { margin: 0; font-size: 15.5px; font-weight: 600; line-height: 1.7; overflow-wrap: anywhere; }
+.sol { min-width: 0; }
+.steps-box { margin: 0; padding: 0; list-style: none; counter-reset: st; display: grid; gap: 0; font-size: 15px; line-height: 1.7; min-width: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.steps-box li { counter-increment: st; position: relative; padding: 8px 12px 8px 44px; min-width: 0; overflow-wrap: anywhere; }
+[dir="rtl"] .steps-box li { padding: 8px 44px 8px 12px; }
+.steps-box li + li { border-top: 1px solid var(--line); }
+.steps-box li::before { position: absolute; inset-inline-start: 12px; top: 10px; content: counter(st); width: 20px; height: 20px; border-radius: 50%; background: var(--surface-2); color: var(--muted); font-family: var(--font-mono); font-size: 11px; font-weight: 700; display: grid; place-items: center; line-height: 1; }
+.why { min-width: 0; } .why p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.6; overflow-wrap: anywhere; } .why b { color: var(--fg); }
 .item .vis { margin-top: 2px; }
 .note { font-size: 13px; color: var(--muted); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
 .toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--fg); color: var(--bg); border-radius: 999px; padding: 8px 16px; font-weight: 700; font-size: 14px; z-index: 50; }
@@ -529,10 +533,10 @@ Reply ONLY with JSON: {"title":"short title of the homework","lang":"fr|ar|en","
         const qb = el("div", null); qb.style.minWidth = "0"; qb.style.display = "grid"; qb.style.gap = "4px";
         if (it.question) qb.append(rich(el("p", "q"), it.question));
         qh.append(qb); row.append(qh);
-        const ans = el("div", "ans"); ans.append(el("small", null, d.lang === "ar" ? "الجواب" : d.lang === "en" ? "Answer" : "Réponse"));
-        ans.append(rich(el("p", "a"), it.answer)); row.append(ans);
-        if (it.steps && it.steps.length) { const ol = el("ol", "steps-box"); it.steps.forEach((x) => ol.append(rich(el("li"), x))); row.append(ol); }
-        if (it.why) row.append(rich(el("p", "why"), it.why));
+        const LB = { fr: ["Réponse", "Solution", "Méthode"], ar: ["الجواب", "الحل", "الطريقة"], en: ["Answer", "Solution", "Method"] }[d.lang] || ["Réponse", "Solution", "Méthode"];
+        const ans = el("div", "ans"); ans.append(el("small", "sec-l", LB[0]), rich(el("p", "a"), it.answer)); row.append(ans);
+        if (it.steps && it.steps.length) { const sb = el("div", "sol"); sb.append(el("small", "sec-l", LB[1])); const ol = el("ol", "steps-box"); it.steps.forEach((x) => ol.append(rich(el("li"), x))); sb.append(ol); row.append(sb); }
+        if (it.why) { const w = el("div", "why"); w.append(el("small", "sec-l", LB[2]), rich(el("p"), it.why)); row.append(w); }
         if (it.visual) { const v = el("div", "vis"); TB.render(v, [it.visual]); row.append(v); }
         ex.append(row);
       });
