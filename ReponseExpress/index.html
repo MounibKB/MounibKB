@@ -54,19 +54,25 @@ label.opt { display: inline-flex; gap: 6px; align-items: center; font-size: 13px
 .status { display: flex; gap: 10px; align-items: center; color: var(--muted); font-size: 14px; min-height: 20px; } .status.err { color: var(--bad); }
 .spin { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line); border-top-color: var(--accent); animation: rot .8s linear infinite; flex: none; }
 @keyframes rot { to { transform: rotate(360deg); } }
-.sheet { display: grid; gap: 4px; }
-.sheet-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+.sheet { display: grid; gap: 14px; }
+.sheet-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
 .sheet-head h2 { font-size: 20px; }
-.ex-t { font-family: var(--font-display); font-size: 15px; color: var(--muted); margin: 14px 0 4px; }
-.item { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; padding: 12px 0; border-top: 1px solid var(--line); }
-.item:first-of-type { border-top: 0; }
-.lbl { min-width: 30px; height: 26px; padding: 0 6px; border-radius: 8px; background: var(--surface-2); display: grid; place-items: center; font-family: var(--font-mono); font-size: 12.5px; color: var(--accent); }
-.q { margin: 0; color: var(--muted); font-size: 13.5px; overflow-wrap: anywhere; }
-.a { margin: 0; font-size: 17px; font-weight: 700; overflow-wrap: anywhere; }
-.steps { margin: 4px 0; padding-inline-start: 22px; display: grid; gap: 4px; font-size: 14.5px; overflow-wrap: anywhere; }
-.why { margin: 0; font-size: 14px; color: var(--muted); overflow-wrap: anywhere; } .why b { color: var(--fg); }
-.item .vis { grid-column: 2; margin-top: 6px; }
-.note { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; }
+.ex { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; min-width: 0; }
+.ex-t { font-family: var(--font-display); font-size: 14px; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; color: var(--accent); padding: 10px 16px; background: var(--surface-2); border-bottom: 1px solid var(--line); }
+.item { padding: 14px 16px; display: grid; gap: 10px; min-width: 0; }
+.item + .item { border-top: 1px dashed var(--line); }
+.qh { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; }
+.lbl { width: 26px; height: 26px; border-radius: 8px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-family: var(--font-mono); font-size: 12.5px; font-weight: 700; }
+.q { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
+.ans { border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); border-radius: 10px; padding: 9px 12px; display: grid; gap: 2px; min-width: 0; }
+.ans small { font-size: 11.5px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .05em; }
+.a { margin: 0; font-size: 16px; font-weight: 700; line-height: 1.6; overflow-wrap: anywhere; }
+.steps-box { margin: 0; padding: 0; list-style: none; counter-reset: st; display: grid; gap: 6px; font-size: 15px; line-height: 1.7; min-width: 0; }
+.steps-box li { counter-increment: st; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; align-items: baseline; overflow-wrap: anywhere; }
+.steps-box li::before { content: counter(st); font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 0 5px; min-width: 22px; text-align: center; }
+.why { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.6; overflow-wrap: anywhere; border-inline-start: 3px solid var(--line); padding-inline-start: 10px; } .why b { color: var(--fg); }
+.item .vis { margin-top: 2px; }
+.note { font-size: 13px; color: var(--muted); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
 .toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--fg); color: var(--bg); border-radius: 999px; padding: 8px 16px; font-weight: 700; font-size: 14px; z-index: 50; }
 /* ---- teaching blocks (shared engine) ---- */
 .tb { display: grid; gap: 10px; min-width: 0; }
@@ -522,18 +528,22 @@ Reply ONLY with JSON: {"title":"short title of the homework","lang":"fr|ar|en","
     acts.append(cp, nw); head.append(acts); out.append(head);
     const sheet = el("div", "sheet");
     d.parts.forEach((p) => {
-      if (p.title) sheet.append(el("div", "ex-t", p.title));
+      const ex = el("section", "ex");
+      if (p.title) ex.append(el("div", "ex-t", p.title));
       p.items.forEach((it) => {
-        const row = el("div", "item"); row.append(el("span", "lbl", it.label));
-        const body = el("div"); body.style.display = "grid"; body.style.gap = "2px"; body.style.minWidth = "0";
-        if (it.question) body.append(rich(el("p", "q"), it.question));
-        body.append(rich(el("p", "a"), it.answer));
-        if (it.steps && it.steps.length) { const ol = el("ol", "steps"); it.steps.forEach((x) => ol.append(rich(el("li"), x))); body.append(ol); }
-        if (it.why) body.append(rich(el("p", "why"), it.why));
-        row.append(body);
+        const row = el("div", "item");
+        const qh = el("div", "qh"); qh.append(el("span", "lbl", it.label));
+        const qb = el("div", null); qb.style.minWidth = "0"; qb.style.display = "grid"; qb.style.gap = "4px";
+        if (it.question) qb.append(rich(el("p", "q"), it.question));
+        qh.append(qb); row.append(qh);
+        const ans = el("div", "ans"); ans.append(el("small", null, d.lang === "ar" ? "الجواب" : d.lang === "en" ? "Answer" : "Réponse"));
+        ans.append(rich(el("p", "a"), it.answer)); row.append(ans);
+        if (it.steps && it.steps.length) { const ol = el("ol", "steps-box"); it.steps.forEach((x) => ol.append(rich(el("li"), x))); row.append(ol); }
+        if (it.why) row.append(rich(el("p", "why"), it.why));
         if (it.visual) { const v = el("div", "vis"); TB.render(v, [it.visual]); row.append(v); }
-        sheet.append(row);
+        ex.append(row);
       });
+      sheet.append(ex);
     });
     out.append(sheet);
     if (d.note) out.append(rich(el("p", "note"), d.note));
