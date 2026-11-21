@@ -61,11 +61,9 @@ label.opt { display: inline-flex; gap: 6px; align-items: center; font-size: 13px
 .ans .sec-l { color: var(--accent); }
 .a { margin: 0; font-size: 15.5px; font-weight: 600; line-height: 1.7; overflow-wrap: anywhere; }
 .sol { min-width: 0; }
-.steps-box { margin: 0; padding: 0; list-style: none; counter-reset: st; display: grid; gap: 0; font-size: 15px; line-height: 1.7; min-width: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
-.steps-box li { counter-increment: st; position: relative; padding: 8px 12px 8px 44px; min-width: 0; overflow-wrap: anywhere; }
-[dir="rtl"] .steps-box li { padding: 8px 44px 8px 12px; }
-.steps-box li + li { border-top: 1px solid var(--line); }
-.steps-box li::before { position: absolute; inset-inline-start: 12px; top: 10px; content: counter(st); width: 20px; height: 20px; border-radius: 50%; background: var(--surface-2); color: var(--muted); font-family: var(--font-mono); font-size: 11px; font-weight: 700; display: grid; place-items: center; line-height: 1; }
+.steps-box { margin: 0; padding: 2px 0 2px 14px; list-style: none; display: grid; gap: 4px; font-size: 15.5px; line-height: 1.8; min-width: 0; border-inline-start: 3px solid var(--line); }
+[dir="rtl"] .steps-box { padding: 2px 14px 2px 0; }
+.steps-box li { min-width: 0; overflow-wrap: anywhere; }
 .why { min-width: 0; } .why p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.6; overflow-wrap: anywhere; } .why b { color: var(--fg); }
 .item .vis { margin-top: 2px; }
 .note { font-size: 13px; color: var(--muted); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
@@ -158,7 +156,7 @@ mjx-container { color: inherit; } mjx-container:not([display="true"]) { display:
 (() => {
   "use strict";
   const UI = {
-    sub: ["Ton devoir, résolu de la façon la plus simple. Réponse d'abord, une ligne d'explication.", "واجبك محلول بأبسط طريقة. الجواب أولًا، ثم سطر شرح.", "Your homework, solved the simplest way. Answer first, one line of why."],
+    sub: ["Ton devoir, rédigé comme sur une copie.", "واجبك محرَّرًا كما يُكتب في ورقة الامتحان.", "Your homework, written up as on an exam paper."],
     drop: ["Glisse la photo de ton devoir ici", "اسحب صورة واجبك هنا", "Drop a photo of your homework here"], types: ["Photos · PDF · texte · Ctrl+V pour coller", "صور · PDF · نص · Ctrl+V للصق", "Photos · PDF · text · Ctrl+V to paste"],
     choose: ["Choisir", "اختيار", "Choose"], photo: ["Prendre une photo", "التقاط صورة", "Take a photo"], paste: ["…ou colle l'énoncé ici", "…أو الصق النص هنا", "…or paste the questions here"],
     model: ["Modèle", "النموذج", "Model"], len: ["Longueur des réponses", "طول الأجوبة", "Answer length"], lShort: ["Brève", "مختصرة", "Short"], lNorm: ["Normale", "عادية", "Normal"], lDet: ["Détaillée", "مفصّلة", "Detailed"], lFull: ["Rédaction complète", "حل كامل مكتوب", "Full written solution"], effort: ["Réflexion", "التفكير", "Effort"], eLow: ["Rapide", "سريع", "Quick"], eMed: ["Équilibré", "متوازن", "Balanced"], eHigh: ["Approfondi", "معمّق", "Deep"],
@@ -497,18 +495,22 @@ JSON: double every backslash inside strings (\\frac, \\vec).`;
     throw { code: "none" };
   }
   const LEN = {
-    short: `LENGTH = SHORT. "answer": the final result in ONE line. "why": the method in ≤ 20 words. "steps": [] except for proofs / "show that" questions (2–6 lines).`,
-    normal: `LENGTH = NORMAL. "answer": the final result in one line. "why": the method in ≤ 40 words. "steps": the necessary stages of every question that needs working (up to 8 lines, each with a few words of justification); [] for recall, true/false and one-step questions.`,
-    detailed: `LENGTH = DETAILED. Write what a good student would hand in. "answer": the final result. "why": the method and the rule used, 1–3 sentences. "steps": for EVERY question that needs reasoning or computation, each stage on its own line (up to 12), every line stating the operation AND why it is allowed (theorem, property, given); never skip an intermediate line.`,
-    full: `LENGTH = FULL WRITTEN SOLUTION. Write the complete solution as in a model correction. "steps" (up to 20 lines, no length limit per line within reason) for every question: restate what is given and what is asked, name the method or theorem, do every calculation line by line with its justification, check the result when useful, and end with a conclusion sentence. "answer": the final result. "why": the idea of the method in 1–3 sentences. Short questions still get 2–3 explanatory lines.`,
+    short: `LENGTH = SHORT: the rédaction in the fewest lines that still form a complete, valid solution (1–4 lines).`,
+    normal: `LENGTH = NORMAL: a standard rédaction (2–8 lines), every necessary step present.`,
+    detailed: `LENGTH = DETAILED: a careful rédaction (up to 12 lines); each line states the operation and, briefly inside the same sentence, the property or hypothesis that allows it ("d'après…", "car…", "donc…").`,
+    full: `LENGTH = FULL: a complete model rédaction (up to 20 lines): what is given, every computation line by line with its justification, and a concluding sentence.`,
   };
-  const prompt = (n, text, len) => String.raw`You solve a student's homework. Source: ${n ? n + " page image(s)" : ""}${n && text ? " + " : ""}${text ? "the text below" : ""}.
-Answer EVERY question in order, with the SIMPLEST correct method a student at that level would use.
+  const prompt = (n, text, len) => String.raw`You write the solutions ("rédaction") of a student's homework, exactly as a top student would write them on their exam paper. Source: ${n ? n + " page image(s)" : ""}${n && text ? " + " : ""}${text ? "the text below" : ""}.
+Answer EVERY question in order, with the simplest correct method for that level.
 ${LEN[len] || LEN.detailed}
+OUTPUT IS ONLY THE RÉDACTION — no teaching, no advice, no "on cherche…", no "pour démontrer il faut…", no method summary. Write in the formal style of a copy: "On a…", "Donc…", "D'où…", "Ainsi…", with math in LaTeX.
 For each question:
-- "question": the full instruction kept faithful (never drop the statement to prove, the values, the options or the conditions); only trim filler words.
-- PROOFS AND "SHOW THAT" QUESTIONS (montrer que, démontrer, prouver, justifier, vérifier que, أثبت، بيّن أن، برهن): NEVER answer just "true"/"vrai"/"oui". Put the statement being proven in "answer" and the actual proof in "steps", in logical order, so a student can copy it as their written solution. Shorten wording, never reasoning.
-- "visual": ONLY if the answer itself is a figure/construction/table/graph (e.g. "construire", "tracer", "complete the table"): ONE block {"type":"svg"|"table"|"formula"|"graph",...}; otherwise omit.
+- "question": the instruction, faithful and complete (keep every hypothesis, value and condition).
+- "steps": the rédaction, one line per deduction or calculation, in logical order. Recall, true/false or multiple-choice questions: one line.
+- "answer": the final result or the concluding sentence (e.g. "Donc $-\\frac{1}{2}<a<4$.").
+- "why": always "".
+STATEMENTS TO PROVE ARE TRUE. For "montrer que / démontrer / justifier / vérifier que / أثبت / بيّن أن", the statement is correct: write its proof. Never answer that it is false, impossible or not provable, and never build a counter-example. Use ALL the hypotheses given in the exercise and earlier questions, exactly as written (re-read them in the image: e.g. "2 < b < 5" is a hypothesis, not "2 − b < 5"). Before replying, check that every line follows from the previous ones and the hypotheses, and that the final line is the requested statement.
+- "visual": ONLY if the answer itself is a figure/construction/table/graph (e.g. "construire", "tracer", "compléter le tableau"): ONE block {"type":"svg"|"table"|"formula"|"graph",...}; otherwise omit.
 Ignore interface widgets in the images (spinners, arrows, input boxes, buttons): never transcribe them. Be correct: check every computation. Quote texts faithfully. If something is unreadable, say so in "note" instead of guessing.
 Write in the language of the homework. Math in LaTeX between $…$ (double backslashes in JSON; vectors \\vect{AB}).
 SVG rules: viewBox about 520×260; only svg,g,path,line,polyline,polygon,rect,circle,ellipse,text,defs,marker; colours #1f2937,#2563eb,#dc2626,#16a34a,#ea580c,#7c3aed,#9ca3af; single quotes.
@@ -520,7 +522,7 @@ Reply ONLY with JSON: {"title":"short title of the homework","lang":"fr|ar|en","
   function render(d) {
     const out = $("out"); out.hidden = false; out.replaceChildren(); out.dir = d.lang === "ar" ? "rtl" : "ltr";
     const head = el("div", "sheet-head"); head.append(el("h2", null, d.title || t("answers")));
-    const acts = el("div", "row"); const cp = el("button", "btn", t("copy")); cp.type = "button"; cp.onclick = () => { const txt = d.parts.map((p) => (p.title ? p.title + "\n" : "") + p.items.map((it) => `${it.label}. ${it.answer}${it.why ? " — " + it.why : ""}${it.steps && it.steps.length ? "\n" + it.steps.map((x, k) => `   ${k + 1}) ${x}`).join("\n") : ""}`).join("\n")).join("\n\n"); const ok = () => toast(t("copied")); try { navigator.clipboard.writeText(txt).then(ok, () => {}); } catch {} };
+    const acts = el("div", "row"); const cp = el("button", "btn", t("copy")); cp.type = "button"; cp.onclick = () => { const txt = d.parts.map((p) => (p.title ? p.title + "\n" : "") + p.items.map((it) => `${it.label}. ${it.question || ""}\n${(it.steps || []).map((x) => "   " + x).join("\n")}${it.answer && it.answer !== (it.steps || []).slice(-1)[0] ? "\n   " + it.answer : ""}`).join("\n")).join("\n\n"); const ok = () => toast(t("copied")); try { navigator.clipboard.writeText(txt).then(ok, () => {}); } catch {} };
     const nw = el("button", "btn", t("again")); nw.type = "button"; nw.onclick = () => { out.hidden = true; files.length = 0; paintPages(); $("text").value = ""; window.scrollTo({ top: 0, behavior: "smooth" }); };
     acts.append(cp, nw); head.append(acts); out.append(head);
     const sheet = el("div", "sheet");
@@ -533,10 +535,10 @@ Reply ONLY with JSON: {"title":"short title of the homework","lang":"fr|ar|en","
         const qb = el("div", null); qb.style.minWidth = "0"; qb.style.display = "grid"; qb.style.gap = "4px";
         if (it.question) qb.append(rich(el("p", "q"), it.question));
         qh.append(qb); row.append(qh);
-        const LB = { fr: ["Réponse", "Solution", "Méthode"], ar: ["الجواب", "الحل", "الطريقة"], en: ["Answer", "Solution", "Method"] }[d.lang] || ["Réponse", "Solution", "Méthode"];
-        const ans = el("div", "ans"); ans.append(el("small", "sec-l", LB[0]), rich(el("p", "a"), it.answer)); row.append(ans);
-        if (it.steps && it.steps.length) { const sb = el("div", "sol"); sb.append(el("small", "sec-l", LB[1])); const ol = el("ol", "steps-box"); it.steps.forEach((x) => ol.append(rich(el("li"), x))); sb.append(ol); row.append(sb); }
-        if (it.why) { const w = el("div", "why"); w.append(el("small", "sec-l", LB[2]), rich(el("p"), it.why)); row.append(w); }
+        const hasSteps = it.steps && it.steps.length;
+        if (hasSteps) { const ol = el("ol", "steps-box"); it.steps.forEach((x) => ol.append(rich(el("li"), x))); row.append(ol); }
+        const fin = (it.answer || "").trim(), last = hasSteps ? it.steps[it.steps.length - 1].trim() : "";
+        if (fin && fin !== last) { const ans = el("div", "ans"); ans.append(rich(el("p", "a"), fin)); row.append(ans); }
         if (it.visual) { const v = el("div", "vis"); TB.render(v, [it.visual]); row.append(v); }
         ex.append(row);
       });
